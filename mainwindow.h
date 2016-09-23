@@ -3,20 +3,20 @@
 
 #include <QMainWindow>
 #include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
 
 class MainWindow : public QMainWindow
 {
         Q_OBJECT
 
     private slots:
-
+        void about();
 
     public:
         MainWindow(QWidget *parent = 0);
         ~MainWindow();
 
-    private:
-        QMenu toolbar;
 };
 
 #endif // MAINWINDOW_H
