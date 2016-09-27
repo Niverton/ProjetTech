@@ -8,7 +8,11 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QAction>
+#include <QString>
 #include <QFileDialog>
+#include <QImageReader>
+#include <QLabel>
+#include <QPixmap>
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -30,6 +34,10 @@ class MainWindow : public QMainWindow {
     QAction* action_about;
     QAction* action_open_file;
     QAction* action_quit;
+
+    QLabel* image_label;
+    void display_image(QString path);
+    QPixmap pix_map;
 
   private slots:
     void about();
