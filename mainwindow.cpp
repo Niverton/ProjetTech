@@ -10,6 +10,8 @@
 #include <QLabel>
 #include <QApplication>
 #include <QImageReader>
+#include <QStyle>
+#include <QDesktopWidget>
 
 /**********************************************************************
  **********************************************************************
@@ -19,6 +21,10 @@
  **********************************************************************/
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+    QRect r = QApplication::desktop()->screenGeometry();
+    resize(r.width() * 0.5f, r.height() * 0.5f);
+    setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), qApp->desktop()->availableGeometry()));
+
     imgLabel_ = new QLabel(this);
     setCentralWidget(imgLabel_);
 
