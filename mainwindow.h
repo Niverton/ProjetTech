@@ -1,48 +1,38 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <stdio.h>
-
 #include <QMainWindow>
-#include <QMenuBar>
-#include <QMenu>
-#include <QMessageBox>
-#include <QAction>
-#include <QString>
-#include <QFileDialog>
-#include <QImageReader>
-#include <QLabel>
-#include <QPixmap>
 
-class MainWindow : public QMainWindow {
+#include <string>
+
+class QMenu;
+class QAction;
+class QLabel;
+
+class MainWindow : public QMainWindow
+{
     Q_OBJECT
 
-  public:
-    explicit MainWindow(QWidget *parent = 0);
+public:
+    MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-  private:
-    void createMenus();
-    void deleteMenus();
-
-    void createActions();
-    void deleteActions();
-
-    QMenu* menu_about;
-    QMenu* menu_file;
-
-    QAction* action_about;
-    QAction* action_open_file;
-    QAction* action_quit;
-
-    QLabel* image_label;
-    void display_image(QString path);
-    QPixmap pix_map;
-
-  private slots:
-    void about();
+private slots:
+    void renderMessageBox();
     void openFile();
-    void quit();
+
+private:
+    QLabel*     imgLabel_;
+    QLabel*     statusLabel_;
+
+    QMenu*      menuFile_;
+    QMenu*      menuAbout_;
+
+    QAction*    openAction_;
+    QAction*    quitAction_;
+    QAction*    aboutAction_;
+
+    std::string path_;
 };
 
 #endif // MAINWINDOW_H
