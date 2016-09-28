@@ -83,10 +83,15 @@ void MainWindow::renderMessageBox()
 void MainWindow::openFile()
 {
     QString p = QFileDialog::getOpenFileName(this, "Open", QString(), "Images (*.png *.jpg)");
-    path_ = p.toUtf8().constData();
-    statusLabel_->setText(p);
-    // timer pour virer le texte.
 
-    QPixmap pxM(p);
-    imgLabel_->setPixmap(pxM);
+    if(!p.isEmpty())
+    {
+        path_ = p.toUtf8().constData();
+        statusLabel_->setText(p);
+        // timer pour virer le texte.
+
+        QPixmap pxM(p);
+        imgLabel_->setScaledContents(true);
+        imgLabel_->setPixmap(pxM);
+    }
 }
