@@ -2,8 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
-#include <string>
+#include <QString>
 
 class QMenu;
 class QAction;
@@ -16,6 +15,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+protected:
+    void resizeEvent(QResizeEvent* event);
 
 private slots:
     void renderMessageBox();
@@ -32,7 +34,7 @@ private:
     QAction*    quitAction_;
     QAction*    aboutAction_;
 
-    std::string path_;
+    QString     path_;
 };
 
 #endif // MAINWINDOW_H

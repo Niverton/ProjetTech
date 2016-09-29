@@ -1,5 +1,5 @@
 # ProjetTech
 
-Standrd ISO C++11 
+Standard ISO C++11 
 https://isocpp.org/faq
-Hadrien Decoudras
+(Hadrien Decoudras)
