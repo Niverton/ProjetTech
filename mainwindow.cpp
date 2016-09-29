@@ -75,11 +75,22 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 
     if(!path_.isEmpty())
     {
-        QPixmap pxM = QPixmap::fromImage(image_);
-        QPixmap* pxmA = const_cast<QPixmap*>(imgLabel_->pixmap());
-        QPixmap pxmB = pxM.scaled(size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        pxmA->swap(static_cast<QPixmap&>(pxmB));
+        resizeLoadedImage();
     }
+}
+
+/**********************************************************************
+ **********************************************************************
+ *
+ * Loaded image resize.
+ *
+ **********************************************************************/
+void MainWindow::resizeLoadedImage()
+{
+    QPixmap pxM = QPixmap::fromImage(image_);
+    QPixmap* pxmA = const_cast<QPixmap*>(imgLabel_->pixmap());
+    QPixmap pxmB = pxM.scaled(size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    pxmA->swap(static_cast<QPixmap&>(pxmB));
 }
 
 /**********************************************************************
@@ -117,5 +128,6 @@ void MainWindow::openFile()
         //imgLabel_->setScaledContents(true);
 
         imgLabel_->setPixmap(QPixmap::fromImage(image_));
+        resizeLoadedImage();
     }
 }

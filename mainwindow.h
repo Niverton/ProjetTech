@@ -19,6 +19,7 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent* event);
+    void resizeLoadedImage();
 
 private slots:
     void renderMessageBox();
