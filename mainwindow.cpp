@@ -110,7 +110,6 @@ void MainWindow::openFile()
         // timer pour virer le texte.
 
         image_.load(p);
-        //imageReader_.setScaledSize(size());
 
         // Sous Qt5.3.2 et 5.7 -> Permet de ne pas utiliser le resize event.
         // Ne marche apparement pas chez tous.
