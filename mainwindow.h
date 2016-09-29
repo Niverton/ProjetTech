@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QString>
+#include <QImage>
 
 class QMenu;
 class QAction;
@@ -24,17 +25,18 @@ private slots:
     void openFile();
 
 private:
-    QLabel*     imgLabel_;
-    QLabel*     statusLabel_;
+    QLabel*         imgLabel_;
+    QLabel*         statusLabel_;
 
-    QMenu*      menuFile_;
-    QMenu*      menuAbout_;
+    QMenu*          menuFile_;
+    QMenu*          menuAbout_;
 
-    QAction*    openAction_;
-    QAction*    quitAction_;
-    QAction*    aboutAction_;
+    QAction*        openAction_;
+    QAction*        quitAction_;
+    QAction*        aboutAction_;
 
-    QString     path_;
+    QImage          image_;
+    QString         path_;
 };
 
 #endif // MAINWINDOW_H

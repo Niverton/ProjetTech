@@ -9,7 +9,6 @@
 #include <QStatusBar>
 #include <QLabel>
 #include <QApplication>
-#include <QImageReader>
 #include <QStyle>
 #include <QDesktopWidget>
 #include <QResizeEvent>
@@ -76,7 +75,7 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 
     if(!path_.isEmpty())
     {
-        QPixmap pxM(path_);
+        QPixmap pxM = QPixmap::fromImage(image_);
         QPixmap* pxmA = const_cast<QPixmap*>(imgLabel_->pixmap());
         QPixmap pxmB = pxM.scaled(size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         pxmA->swap(static_cast<QPixmap&>(pxmB));
@@ -110,13 +109,14 @@ void MainWindow::openFile()
         statusLabel_->setText(p);
         // timer pour virer le texte.
 
-        QPixmap pxM(p);
+        image_.load(p);
+        //imageReader_.setScaledSize(size());
 
         // Sous Qt5.3.2 et 5.7 -> Permet de ne pas utiliser le resize event.
         // Ne marche apparement pas chez tous.
         // Hadrien Decoudras.
         //imgLabel_->setScaledContents(true);
 
-        imgLabel_->setPixmap(pxM);
+        imgLabel_->setPixmap(QPixmap::fromImage(image_));
     }
 }
