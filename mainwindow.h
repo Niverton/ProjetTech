@@ -38,6 +38,8 @@ private:
 
     QImage          image_;
     QString         path_;
+
+    void initMenuBar();
 };
 
 #endif // MAINWINDOW_H
