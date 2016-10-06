@@ -38,7 +38,6 @@ private:
     QAction*        quitAction_;
     QAction*        aboutAction_;
 
-    QImage          image_;
     QImage          imageRight_;
     QImage          imageLeft_;
     QString         path_;
