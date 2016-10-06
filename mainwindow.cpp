@@ -25,9 +25,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     resize(r.width() * 0.5f, r.height() * 0.5f);
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), qApp->desktop()->availableGeometry()));
 
-    imgLabel_ = new QLabel(this);
-    setCentralWidget(imgLabel_);
-
+    //imgLabel_ = new QLabel(this);
+    imgLabelLeft_ = new QLabel(this);
+    imgLabelRight_ = new QLabel(this);
+    //setCentralWidget(imgLabel_);
+    setCentralWidget(imgLabelLeft_);
     initMenuBar();
 
     statusLabel_ = new QLabel(statusBar());
@@ -133,16 +135,16 @@ void MainWindow::openFile()
         // Hadrien Decoudras.
         //imgLabel_->setScaledContents(true);
 
-        imgLabel_->setPixmap(QPixmap::fromImage(image_));
-        //imgLabelLeft_->setPixmap(QPixmap::fromImage(imageLeft_));           //coreDump
+        //imgLabel_->setPixmap(QPixmap::fromImage(image_));²
+        imgLabelLeft_->setPixmap(QPixmap::fromImage(imageLeft_));           //coreDump
         //imgLabelRight_->setPixmap(QPixmap::fromImage(imageRight_));         //coreDump
         resizeLoadedImage();
     }
 }
 
 void MainWindow::cutImage(QImage* img){
-  unsigned int imageWidth = img->width();
-  unsigned int imageHeight = img->height();
+  int imageWidth = img->width();
+  int imageHeight = img->height();
 
   imageLeft_ = img->copy(0, 0, imageWidth/2, imageHeight/2);
   imageRight_ = img->copy(imageWidth/2, imageHeight/2, imageWidth, imageHeight);
