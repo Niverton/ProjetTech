@@ -87,7 +87,7 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 /**********************************************************************
  **********************************************************************
  *
- * Loaded image resize.
+ * Loaded image /*.
  *
  **********************************************************************/
 void MainWindow::resizeLoadedImage()
@@ -126,6 +126,7 @@ void MainWindow::openFile()
         // timer pour virer le texte.
 
         image_.load(p);
+        cutImage(&image_);
 
         // Sous Qt5.3.2 et 5.7 -> Permet de ne pas utiliser le resize event.
         // Ne marche apparement pas chez tous.
@@ -133,6 +134,16 @@ void MainWindow::openFile()
         //imgLabel_->setScaledContents(true);
 
         imgLabel_->setPixmap(QPixmap::fromImage(image_));
+        //imgLabelLeft_->setPixmap(QPixmap::fromImage(imageLeft_));           //coreDump
+        //imgLabelRight_->setPixmap(QPixmap::fromImage(imageRight_));         //coreDump
         resizeLoadedImage();
     }
+}
+
+void MainWindow::cutImage(QImage* img){
+  unsigned int imageWidth = img->width();
+  unsigned int imageHeight = img->height();
+
+  imageLeft_ = img->copy(0, 0, imageWidth/2, imageHeight/2);
+  imageRight_ = img->copy(imageWidth/2, imageHeight/2, imageWidth, imageHeight);
 }

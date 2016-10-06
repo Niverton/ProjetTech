@@ -26,6 +26,8 @@ private slots:
     void openFile();
 
 private:
+    QLabel*         imgLabelLeft_;
+    QLabel*         imgLabelRight_;
     QLabel*         imgLabel_;
     QLabel*         statusLabel_;
 
@@ -37,9 +39,13 @@ private:
     QAction*        aboutAction_;
 
     QImage          image_;
+    QImage          imageRight_;
+    QImage          imageLeft_;
     QString         path_;
 
     void initMenuBar();
+    void cutImage(QImage* img);
+
 };
 
 #endif // MAINWINDOW_H
