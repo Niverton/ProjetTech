@@ -22,21 +22,26 @@
  **********************************************************************/
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+    //
     QRect r = QApplication::desktop()->screenGeometry();
     resize(r.width() * 0.5f, r.height() * 0.5f);
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), qApp->desktop()->availableGeometry()));
 
+    //
     imgLabelLeft_ = new QLabel(this);
     imgLabelRight_ = new QLabel(this);
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->addWidget(imgLabelLeft_);
     layout->addWidget(imgLabelRight_);
     setLayout(layout);
+
+    // Initting menu bar
     initMenuBar();
 
     statusLabel_ = new QLabel(statusBar());
     statusBar()->addWidget(statusLabel_);
 
+    // Connecting menu events
     connect(openAction_, SIGNAL(triggered(bool)), this, SLOT(openFile()));
     connect(quitAction_, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
     connect(aboutAction_, SIGNAL(triggered(bool)), this, SLOT(renderMessageBox()));
@@ -50,6 +55,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
  **********************************************************************/
 MainWindow::~MainWindow() {}
 
+
+/**********************************************************************
+ **********************************************************************
+ *
+ * Init ufnction for menubar
+ *
+ **********************************************************************/
 void MainWindow::initMenuBar() {
   QMenuBar* mBar = menuBar();
   menuFile_ = new QMenu("File", mBar);
@@ -65,7 +77,6 @@ void MainWindow::initMenuBar() {
   aboutAction_ = new QAction("About", menuAbout_);
   aboutAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_A));
   menuAbout_->addAction(aboutAction_);
-
 
   mBar->addMenu(menuFile_);
   mBar->addMenu(menuAbout_);
@@ -102,6 +113,11 @@ void MainWindow::resizeLoadedImage()
     QPixmap pxmB = pxM.scaled(size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     pxmA->swap(static_cast<QPixmap&>(pxmB));
     //*/
+
+    // Work for image1
+    //TODO
+    // Work for image2
+    // TODO
 }
 
 /**********************************************************************
@@ -147,6 +163,12 @@ void MainWindow::openFile()
     }
 }
 
+/**********************************************************************
+ **********************************************************************
+ *
+ * Function splitting loaded image in two
+ *
+ **********************************************************************/
 void MainWindow::cutImage(QImage* img){
   int imageWidth = img->width();
   int imageHeight = img->height();
