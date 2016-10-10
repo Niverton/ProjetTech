@@ -30,10 +30,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     //
     imgLabelLeft_ = new QLabel(this);
     imgLabelRight_ = new QLabel(this);
-    QHBoxLayout* layout = new QHBoxLayout(this);
+    /*  QMainWindow possède son propre layout qui lui permet de disposer les barres d'outils
+        On est donc obligé de créer un widget qui contiendra le layout du contenu de la fenêtre
+        getCentralWidget() pour récupèrer ce widget
+    */
+    QWidget *central = new QWidget(this);
+    QHBoxLayout* layout = new QHBoxLayout;
     layout->addWidget(imgLabelLeft_);
     layout->addWidget(imgLabelRight_);
-    setLayout(layout);
+    central->setLayout(layout);
+    this->setCentralWidget(central);
 
     // Initting menu bar
     initMenuBar();
@@ -156,9 +162,9 @@ void MainWindow::openFile()
         // Hadrien Decoudras.
         //imgLabel_->setScaledContents(true);
 
-        //imgLabel_->setPixmap(QPixmap::fromImage(image_));²
-        imgLabelLeft_->setPixmap(QPixmap::fromImage(imageLeft_));           //coreDump
-        //imgLabelRight_->setPixmap(QPixmap::fromImage(imageRight_));         //coreDump
+        //imgLabel_->setPixmap(QPixmap::fromImage(image_));
+        imgLabelLeft_->setPixmap(QPixmap::fromImage(imageLeft_));
+        imgLabelRight_->setPixmap(QPixmap::fromImage(imageRight_));
         resizeLoadedImage();
     }
 }
@@ -174,5 +180,5 @@ void MainWindow::cutImage(QImage* img){
   int imageHeight = img->height();
 
   imageLeft_ = img->copy(0, 0, imageWidth/2, imageHeight);
-  imageRight_ = img->copy(imageWidth/2, imageHeight, imageWidth, imageHeight);
+  imageRight_ = img->copy(imageWidth/2, 0, imageWidth/2, imageHeight);
 }
