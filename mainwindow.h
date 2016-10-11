@@ -48,7 +48,7 @@ private:
 
     void initMenuBar();
     void cutImage(QImage* img);
-    void drawImage(QImage* img);
+    void drawImage(QImage img);
 
 };
 
