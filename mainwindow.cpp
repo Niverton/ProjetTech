@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     central->setLayout(layout_);
     this->setCentralWidget(central);
 
+    this->adjustSize();
     // Initting menu bar
     initMenuBar();
 
