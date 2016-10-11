@@ -49,7 +49,7 @@ private:
     void initMenuBar();
     void cutImage(QImage* img);
     void drawImage(QImage img);
-
+    void drawImages(QImage imgLeft, QImage imgRight);
 };
 
 #endif // MAINWINDOW_H
