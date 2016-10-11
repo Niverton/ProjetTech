@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QString>
 #include <QImage>
+#include <QHBoxLayout>
 
 class QMenu;
 class QAction;
@@ -38,12 +39,16 @@ private:
     QAction*        quitAction_;
     QAction*        aboutAction_;
 
+    QImage          imageLoaded_;
     QImage          imageRight_;
     QImage          imageLeft_;
     QString         path_;
 
+    QHBoxLayout*    layout_;
+
     void initMenuBar();
     void cutImage(QImage* img);
+    void drawImage(QImage* img);
 
 };
 

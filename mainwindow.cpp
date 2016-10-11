@@ -12,7 +12,6 @@
 #include <QStyle>
 #include <QDesktopWidget>
 #include <QResizeEvent>
-#include <QHBoxLayout>
 
 /**********************************************************************
  **********************************************************************
@@ -35,10 +34,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         getCentralWidget() pour récupèrer ce widget
     */
     QWidget *central = new QWidget(this);
-    QHBoxLayout* layout = new QHBoxLayout;
-    layout->addWidget(imgLabelLeft_);
-    layout->addWidget(imgLabelRight_);
-    central->setLayout(layout);
+    layout_ = new QHBoxLayout(this);
+    layout_->addWidget(imgLabelLeft_);
+    layout_->addWidget(imgLabelRight_);
+    central->setLayout(layout_);
     this->setCentralWidget(central);
 
     // Initting menu bar
@@ -181,4 +180,8 @@ void MainWindow::cutImage(QImage* img){
 
   imageLeft_ = img->copy(0, 0, imageWidth/2, imageHeight);
   imageRight_ = img->copy(imageWidth/2, 0, imageWidth/2, imageHeight);
+}
+
+void MainWindow::drawImage(QImage* img){
+
 }
