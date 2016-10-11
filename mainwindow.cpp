@@ -196,6 +196,8 @@ void MainWindow::cutImage(QImage* img){
 */
 void MainWindow::drawImage(QImage img){
   if (imagesCuttedIsDraw_){
+    imgLabelLeft_->clear();
+    imgLabelRight_->clear();
     layout_->removeWidget(imgLabelLeft_);
     layout_->removeWidget(imgLabelRight_);
     layout_->update();
@@ -212,6 +214,7 @@ void MainWindow::drawImage(QImage img){
 */
 void MainWindow::drawImages(QImage imgLeft, QImage imgRight){
   if (imageLoadedIsDraw_){
+      imgLabel_->clear();
       layout_->removeWidget(imgLabel_);
       layout_->update();
   }
