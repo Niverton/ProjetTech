@@ -27,17 +27,16 @@ private slots:
     void openFile();
 
 private:
-    QLabel*         imgLabelLeft_;
-    QLabel*         imgLabelRight_;
-    QLabel*         imgLabel_;
     QLabel*         statusLabel_;
 
     QMenu*          menuFile_;
     QMenu*          menuAbout_;
+    QMenu*          menuEdit_;
 
     QAction*        openAction_;
     QAction*        quitAction_;
     QAction*        aboutAction_;
+    QAction*        cutAction_;
 
     QImage          imageLoaded_;
     QImage          imageRight_;

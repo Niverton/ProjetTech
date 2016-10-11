@@ -26,17 +26,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     resize(r.width() * 0.5f, r.height() * 0.5f);
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), qApp->desktop()->availableGeometry()));
 
-    //
-    imgLabelLeft_ = new QLabel(this);
-    imgLabelRight_ = new QLabel(this);
     /*  QMainWindow possède son propre layout qui lui permet de disposer les barres d'outils
         On est donc obligé de créer un widget qui contiendra le layout du contenu de la fenêtre
         getCentralWidget() pour récupèrer ce widget
     */
     QWidget *central = new QWidget(this);
     layout_ = new QHBoxLayout(this);
-    layout_->addWidget(imgLabelLeft_);
-    layout_->addWidget(imgLabelRight_);
     central->setLayout(layout_);
     this->setCentralWidget(central);
 
@@ -69,21 +64,32 @@ MainWindow::~MainWindow() {}
  **********************************************************************/
 void MainWindow::initMenuBar() {
   QMenuBar* mBar = menuBar();
-  menuFile_ = new QMenu("File", mBar);
-  openAction_ = new QAction("Open", menuFile_);
+
+  //File
+  menuFile_ = new QMenu("Fichier", mBar);
+  //File - Open
+  openAction_ = new QAction("Ouvrir", menuFile_);
   openAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
   menuFile_->addAction(openAction_);
-
-  quitAction_ = new QAction("Quit", menuFile_);
+  //File - Quit
+  quitAction_ = new QAction("Quitter", menuFile_);
   quitAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
   menuFile_->addAction(quitAction_);
 
-  menuAbout_ = new QMenu("About", mBar);
-  aboutAction_ = new QAction("About", menuAbout_);
+  //Edit
+  menuEdit_ = new QMenu("Editer", mBar);
+  //Edit - cut
+  cutAction_ = new QAction("Couper l'image", menuEdit_);
+  menuEdit_->addAction(cutAction_);
+
+  //About
+  menuAbout_ = new QMenu("À Propos", mBar);
+  aboutAction_ = new QAction("À Propos", menuAbout_);
   aboutAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_A));
   menuAbout_->addAction(aboutAction_);
 
   mBar->addMenu(menuFile_);
+  mBar->addMenu(menuEdit_);
   mBar->addMenu(menuAbout_);
 }
 
