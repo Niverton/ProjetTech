@@ -45,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(openAction_, SIGNAL(triggered(bool)), this, SLOT(openFile()));
     connect(quitAction_, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
     connect(aboutAction_, SIGNAL(triggered(bool)), this, SLOT(renderMessageBox()));
+    connect(cutAction_, SIGNAL(triggered(bool)), this, SLOT(cutImgSlot()));
 }
 
 /**********************************************************************
@@ -157,10 +158,8 @@ void MainWindow::openFile()
         path_ = p;
         statusLabel_->setText(p);
         // timer pour virer le texte.
-        QImage* image = new QImage();
-        image->load(p);
-        cutImage(image);
-        delete image;
+        imageLoaded_ = new QImage();
+        imageLoaded_->load(p);
 
         // Sous Qt5.3.2 et 5.7 -> Permet de ne pas utiliser le resize event.
         // Ne marche apparement pas chez tous.
@@ -171,8 +170,10 @@ void MainWindow::openFile()
         //imgLabelLeft_->setPixmap(QPixmap::fromImage(imageLeft_));
         //imgLabelRight_->setPixmap(QPixmap::fromImage(imageRight_));
         //resizeLoadedImage();
-        //drawImage(*image);
-        drawImages(imageLeft_, imageRight_);
+        drawImage(*imageLoaded_);   //On afficher l'image.
+
+        //cutImage(imageLoaded_);
+        //drawImages(imageLeft_, imageRight_);
     }
 }
 
@@ -190,19 +191,46 @@ void MainWindow::cutImage(QImage* img){
   imageRight_ = img->copy(imageWidth/2, 0, imageWidth/2, imageHeight);
 }
 
+/*
+*   Fonction permettant d'afficher une image
+*/
 void MainWindow::drawImage(QImage img){
-  QLabel* imgLabel = new QLabel(this);
-  layout_->addWidget(imgLabel);
-  imgLabel->setPixmap(QPixmap::fromImage(img));
+  if (imagesCuttedIsDraw_){
+    layout_->removeWidget(imgLabelLeft_);
+    layout_->removeWidget(imgLabelRight_);
+    layout_->update();
+  }
+
+  imgLabel_ = new QLabel(this);
+  layout_->addWidget(imgLabel_);
+  imgLabel_->setPixmap(QPixmap::fromImage(img));
+  imageLoadedIsDraw_ = true;
 }
 
+/*
+*   Fonction permettant d'afficher deux images côte à côte
+*/
 void MainWindow::drawImages(QImage imgLeft, QImage imgRight){
-  QLabel* labelLeft = new QLabel(this);
-  QLabel* labelRight = new QLabel(this);
+  if (imageLoadedIsDraw_){
+      layout_->removeWidget(imgLabel_);
+      layout_->update();
+  }
 
-  layout_->addWidget(labelLeft);
-  layout_->addWidget(labelRight);
+  imgLabelLeft_ = new QLabel(this);
+  imgLabelRight_ = new QLabel(this);
 
-  labelLeft->setPixmap(QPixmap::fromImage(imgLeft));
-  labelRight->setPixmap(QPixmap::fromImage(imgRight));
+  layout_->addWidget(imgLabelLeft_);
+  layout_->addWidget(imgLabelRight_);
+
+  imgLabelLeft_->setPixmap(QPixmap::fromImage(imgLeft));
+  imgLabelRight_->setPixmap(QPixmap::fromImage(imgRight));
+  imagesCuttedIsDraw_ = true;
+}
+
+/*
+*   Action cut
+*/
+void MainWindow::cutImgSlot(){
+  cutImage(imageLoaded_);
+  drawImages(imageLeft_, imageRight_);
 }

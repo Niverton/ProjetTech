@@ -25,8 +25,12 @@ protected:
 private slots:
     void renderMessageBox();
     void openFile();
+    void cutImgSlot();
 
 private:
+    QLabel*         imgLabel_;
+    QLabel*         imgLabelRight_;
+    QLabel*         imgLabelLeft_;
     QLabel*         statusLabel_;
 
     QMenu*          menuFile_;
@@ -38,7 +42,10 @@ private:
     QAction*        aboutAction_;
     QAction*        cutAction_;
 
-    QImage          imageLoaded_;
+    bool            imageLoadedIsDraw_ = false;
+    QImage*         imageLoaded_;
+
+    bool            imagesCuttedIsDraw_ = false;
     QImage          imageRight_;
     QImage          imageLeft_;
     QString         path_;
