@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     central->setLayout(layout_);
     this->setCentralWidget(central);
 
+    //Ajuster le taille de la fenêtre en fonction de la taille de l'image.
     this->adjustSize();
     // Initting menu bar
     initMenuBar();
@@ -204,6 +205,8 @@ void MainWindow::cutImage(QImage* img){
 *   Fonction permettant d'afficher une image
 */
 void MainWindow::drawImage(QImage img){
+
+  //On efface le ou les images précédente
   if (imagesCuttedIsDraw_){
     imgLabelLeft_->clear();
     imgLabelRight_->clear();
@@ -220,6 +223,8 @@ void MainWindow::drawImage(QImage img){
   imgLabel_ = new QLabel(this);
   layout_->addWidget(imgLabel_);
   imgLabel_->setPixmap(QPixmap::fromImage(img));
+
+  this->adjustSize();   //Marche pas ?
   imageLoadedIsDraw_ = true;
   imagesCuttedIsDraw_ = false;
 }
@@ -228,6 +233,7 @@ void MainWindow::drawImage(QImage img){
 *   Fonction permettant d'afficher deux images côte à côte
 */
 void MainWindow::drawImages(QImage imgLeft, QImage imgRight){
+  //On efface le ou les images précédente
   if (imageLoadedIsDraw_){
       imgLabel_->clear();
       layout_->removeWidget(imgLabel_);
@@ -245,6 +251,8 @@ void MainWindow::drawImages(QImage imgLeft, QImage imgRight){
 
   imgLabelLeft_->setPixmap(QPixmap::fromImage(imgLeft));
   imgLabelRight_->setPixmap(QPixmap::fromImage(imgRight));
+
+  this->adjustSize();
   imagesCuttedIsDraw_ = true;
   imageLoadedIsDraw_ = false;
 }
