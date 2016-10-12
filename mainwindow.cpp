@@ -12,6 +12,8 @@
 #include <QStyle>
 #include <QDesktopWidget>
 #include <QResizeEvent>
+#include <QMouseEvent>
+#include <QRubberBand>
 
 /**********************************************************************
  **********************************************************************
@@ -83,6 +85,9 @@ void MainWindow::initMenuBar() {
   //Edit - cut
   cutAction_ = new QAction("Couper l'image", menuEdit_);
   menuEdit_->addAction(cutAction_);
+  //Edit - clipAction_
+  clipAction_ = new QAction("Rogner l'image", menuEdit_);
+  //menuEdit_->addAction(clipAction_);    //TODO
 
   //About
   menuAbout_ = new QMenu("À Propos", mBar);
@@ -141,7 +146,7 @@ void MainWindow::resizeLoadedImage()
  **********************************************************************/
 void MainWindow::renderMessageBox()
 {
-    QMessageBox::about(this, "About", "About QMessageBox");
+    QMessageBox::about(this, "About", "Projet technologique L3");
 }
 
 /**********************************************************************
@@ -185,6 +190,9 @@ void MainWindow::openFile()
  *
  **********************************************************************/
 void MainWindow::cutImage(QImage* img){
+  if (!imageLoadedIsDraw_){
+    return;
+  }
   int imageWidth = img->width();
   int imageHeight = img->height();
 
@@ -203,11 +211,17 @@ void MainWindow::drawImage(QImage img){
     layout_->removeWidget(imgLabelRight_);
     layout_->update();
   }
+  if (imageLoadedIsDraw_){
+    imgLabel_->clear();
+    layout_->removeWidget(imgLabel_);
+    layout_->update();
+  }
 
   imgLabel_ = new QLabel(this);
   layout_->addWidget(imgLabel_);
   imgLabel_->setPixmap(QPixmap::fromImage(img));
   imageLoadedIsDraw_ = true;
+  imagesCuttedIsDraw_ = false;
 }
 
 /*
@@ -219,6 +233,9 @@ void MainWindow::drawImages(QImage imgLeft, QImage imgRight){
       layout_->removeWidget(imgLabel_);
       layout_->update();
   }
+  if (imagesCuttedIsDraw_){
+    return;
+  }
 
   imgLabelLeft_ = new QLabel(this);
   imgLabelRight_ = new QLabel(this);
@@ -229,6 +246,7 @@ void MainWindow::drawImages(QImage imgLeft, QImage imgRight){
   imgLabelLeft_->setPixmap(QPixmap::fromImage(imgLeft));
   imgLabelRight_->setPixmap(QPixmap::fromImage(imgRight));
   imagesCuttedIsDraw_ = true;
+  imageLoadedIsDraw_ = false;
 }
 
 /*
@@ -237,4 +255,18 @@ void MainWindow::drawImages(QImage imgLeft, QImage imgRight){
 void MainWindow::cutImgSlot(){
   cutImage(imageLoaded_);
   drawImages(imageLeft_, imageRight_);
+}
+
+void MainWindow::clipImgSlot(){
+  //TODO
+  return;
+}
+
+void MainWindow::mousePressedEvent(QMouseEvent* event, int x_origin, int y_origin){
+  if (event->button() == Qt::LeftButton){ //Si clique droit est pressé
+    QRubberBand* rb = new QRubberBand(QRubberBand::Rectangle, this);
+    int x = event->x();
+    int y = event->y();
+    rb->setGeometry(x_origin, y_origin, x - x_origin, y - y_origin);
+  }
 }

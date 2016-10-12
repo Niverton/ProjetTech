@@ -26,6 +26,7 @@ private slots:
     void renderMessageBox();
     void openFile();
     void cutImgSlot();
+    void clipImgSlot();
 
 private:
     QLabel*         imgLabel_;
@@ -41,6 +42,7 @@ private:
     QAction*        quitAction_;
     QAction*        aboutAction_;
     QAction*        cutAction_;
+    QAction*        clipAction_;
 
     bool            imageLoadedIsDraw_ = false;
     QImage*         imageLoaded_;
@@ -56,6 +58,7 @@ private:
     void cutImage(QImage* img);
     void drawImage(QImage img);
     void drawImages(QImage imgLeft, QImage imgRight);
+    void mousePressedEvent(QMouseEvent* event, int x_origin, int y_origin);
 };
 
 #endif // MAINWINDOW_H
