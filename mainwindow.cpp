@@ -36,10 +36,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     QWidget *central = new QWidget(this);
     layout_ = new QHBoxLayout(this);
     central->setLayout(layout_);
-    this->setCentralWidget(central);
+    setCentralWidget(central);
 
     //Ajuster le taille de la fenêtre en fonction de la taille de l'image.
-    this->adjustSize();
+    adjustSize();
     // Initting menu bar
     initMenuBar();
 
@@ -90,9 +90,11 @@ void MainWindow::initMenuBar() {
   menuEdit_ = new QMenu("&Editer", mBar);
   //Edit - cut
   cutAction_ = new QAction("&Couper l'image", menuEdit_);
+  cutAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
   menuEdit_->addAction(cutAction_);
   //Edit - clipAction_
   clipAction_ = new QAction("&Rogner l'image", menuEdit_);
+  clipAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
   menuEdit_->addAction(clipAction_); //TODO
 
   //About
@@ -173,6 +175,7 @@ void MainWindow::openFile()
         //imgLabel_->setScaledContents(true);
 
         imgLabel_->setPixmap(QPixmap::fromImage(imageLoaded_));
+        adjustSize();
     }
 }
 

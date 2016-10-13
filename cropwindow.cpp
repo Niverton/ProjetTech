@@ -11,7 +11,7 @@
 CropWindow::CropWindow(const QImage *img) {
     //On marque la fenêtre pour être supprimée quand elle est fermée
     setAttribute(Qt::WA_DeleteOnClose);
-
+    setWindowTitle("Rogner l'image");
     // Init variables
     _cropping = false;
     _rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
@@ -22,7 +22,9 @@ CropWindow::CropWindow(const QImage *img) {
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(imgLabel_);
-    this->setLayout(layout);
+
+    setLayout(layout);
+    adjustSize();
 }
 
 /************
@@ -105,4 +107,5 @@ void CropWindow::cropImage(){
     );
     img_ = img_.copy(QRect(origin, size));
     imgLabel_->setPixmap(QPixmap::fromImage(img_));
+    adjustSize();
 }
