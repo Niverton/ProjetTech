@@ -36,7 +36,6 @@ private:
 
     QImage img_;
     QLabel *imgLabel_;
-    QRect selectedArea_; // Est-ce réellement utile ?
 };
 
 #endif

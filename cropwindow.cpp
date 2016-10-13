@@ -14,6 +14,7 @@ CropWindow::CropWindow(const QImage *img) {
 
     // Init variables
     _cropping = false;
+    _rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 
     img_ = img->copy(0,0, img->width(), img->height());
     imgLabel_ = new QLabel(this);
@@ -52,11 +53,9 @@ void CropWindow::mousePressEvent(QMouseEvent* ev){
         // Getting position
         _beginPoint = ev->pos();
         printf("%d \t %d \n", _beginPoint.x(), _beginPoint.y());
-         //Creating rubberband
-        if(_rubberBand == NULL)
-            _rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
-        //_rubberBand->setGeometry(QRect(_beginPoint, QSize()));
-        //_rubberBand->show();
+
+        _rubberBand->setGeometry(QRect(_beginPoint, _beginPoint));
+        _rubberBand->show();
     }
 
 }
@@ -69,7 +68,7 @@ void CropWindow::mouseReleaseEvent(QMouseEvent *ev){
         // Getting coordinates of cropping endPoint
         _endPoint = ev->pos();
         // Hiding rubberband
-        //_rubberBand->hide();
+        _rubberBand->hide();
         // If coordinates are set and not equal (not null and a mouse click holding has been made)
         if(!_beginPoint.isNull() && !_endPoint.isNull() && _beginPoint != _endPoint){
             cropImage();
@@ -86,9 +85,9 @@ void CropWindow::mouseReleaseEvent(QMouseEvent *ev){
 void CropWindow::mouseMoveEvent(QMouseEvent *event)
 {
     // Updating rubberBand if cropping
-    /*if(_cropping){
+    if(_cropping){
         _rubberBand->setGeometry(QRect(_beginPoint, event->pos()).normalized());
-    }*/
+    }
 
 }
 
