@@ -184,7 +184,7 @@ void MainWindow::cutImgSlot(){
 }
 
 void MainWindow::clipImgSlot(){
-  CropWindow *w = new CropWindow($imageLoaded_);
+  CropWindow *w = new CropWindow(&imageLoaded_);
   w->show();
   return;
 }
