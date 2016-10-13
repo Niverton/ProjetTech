@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     connect(quitAction_, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
     connect(aboutAction_, SIGNAL(triggered(bool)), this, SLOT(renderMessageBox()));
     connect(cutAction_, SIGNAL(triggered(bool)), this, SLOT(cutImgSlot()));
+    connect(clipAction_, SIGNAL(triggered(bool)), this, SLOT(clipImgSlot()));
 }
 
 /**********************************************************************
@@ -182,6 +183,9 @@ void MainWindow::cutImgSlot(){
     w->show();
 }
 
+/*
+ *  Action clip
+ */
 void MainWindow::clipImgSlot(){
     CropWindow *w = new CropWindow(&imageLoaded_);
     w->show();
