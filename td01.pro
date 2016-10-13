@@ -16,7 +16,9 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp\
-        stereowindow.cpp
+        stereowindow.cpp\
+        cropwindow.cpp
 
 HEADERS  += mainwindow.h\
-        stereowindow.h
+        stereowindow.h\
+        cropwindow.h

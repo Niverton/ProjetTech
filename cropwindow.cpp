@@ -15,7 +15,7 @@ CropWindow::CropWindow(const QImage *img) {
 /************
 *   resizeEvent
 */
-void StereoWindow::resizeEvent(QResizeEvent* event) {
+void CropWindow::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
     resizeImage();
 }
@@ -23,6 +23,6 @@ void StereoWindow::resizeEvent(QResizeEvent* event) {
 /***********
 *   Resize image to fit the window
 */
-void StereoWindow::resizeImage(){
+void CropWindow::resizeImage(){
 
 }

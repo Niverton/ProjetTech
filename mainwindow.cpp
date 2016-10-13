@@ -23,8 +23,7 @@
  * ctor
  *
  **********************************************************************/
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
-{
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     //
     QRect r = QApplication::desktop()->screenGeometry();
     resize(r.width() * 0.5f, r.height() * 0.5f);
@@ -93,7 +92,7 @@ void MainWindow::initMenuBar() {
   menuEdit_->addAction(cutAction_);
   //Edit - clipAction_
   clipAction_ = new QAction("Rogner l'image", menuEdit_);
-  //menuEdit_->addAction(clipAction_); //TODO
+  menuEdit_->addAction(clipAction_); //TODO
 
   //About
   menuAbout_ = new QMenu("À Propos", mBar);
@@ -184,9 +183,8 @@ void MainWindow::cutImgSlot(){
 }
 
 void MainWindow::clipImgSlot(){
-  CropWindow *w = new CropWindow(&imageLoaded_);
-  w->show();
-  return;
+    CropWindow *w = new CropWindow(&imageLoaded_);
+    w->show();
 }
 
 void MainWindow::mousePressedEvent(QMouseEvent* event, int x_origin, int y_origin){

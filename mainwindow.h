@@ -45,7 +45,7 @@ private:
     QAction*        clipAction_;
 
     bool            imageLoadedIsDraw_ = false;
-    QImage         imageLoaded_;
+    QImage          imageLoaded_;
 
     bool            imagesCuttedIsDraw_ = false;
     QImage          imageRight_;
