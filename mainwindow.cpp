@@ -76,28 +76,28 @@ void MainWindow::initMenuBar() {
   QMenuBar* mBar = menuBar();
 
   //File
-  menuFile_ = new QMenu("Fichier", mBar);
+  menuFile_ = new QMenu("&Fichier", mBar);
   //File - Open
-  openAction_ = new QAction("Ouvrir", menuFile_);
+  openAction_ = new QAction("&Ouvrir", menuFile_);
   openAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
   menuFile_->addAction(openAction_);
   //File - Quit
-  quitAction_ = new QAction("Quitter", menuFile_);
+  quitAction_ = new QAction("&Quitter", menuFile_);
   quitAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
   menuFile_->addAction(quitAction_);
 
   //Edit
-  menuEdit_ = new QMenu("Editer", mBar);
+  menuEdit_ = new QMenu("&Editer", mBar);
   //Edit - cut
-  cutAction_ = new QAction("Couper l'image", menuEdit_);
+  cutAction_ = new QAction("&Couper l'image", menuEdit_);
   menuEdit_->addAction(cutAction_);
   //Edit - clipAction_
-  clipAction_ = new QAction("Rogner l'image", menuEdit_);
+  clipAction_ = new QAction("&Rogner l'image", menuEdit_);
   menuEdit_->addAction(clipAction_); //TODO
 
   //About
-  menuAbout_ = new QMenu("À Propos", mBar);
-  aboutAction_ = new QAction("À Propos", menuAbout_);
+  menuAbout_ = new QMenu("À &Propos", mBar);
+  aboutAction_ = new QAction("À &Propos", menuAbout_);
   aboutAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_A));
   menuAbout_->addAction(aboutAction_);
 

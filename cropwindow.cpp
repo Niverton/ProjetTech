@@ -100,8 +100,8 @@ void CropWindow::cropImage(){
         (_beginPoint.y() < _endPoint.y()) ? _beginPoint.y() : _endPoint.y()  //Y
     );
     QSize size(
-        (_beginPoint.x() > _endPoint.x()) ? _beginPoint.x() - origin.x() : _endPoint.x() - origin.x(), //X
-        (_beginPoint.y() > _endPoint.y()) ? _beginPoint.y() - origin.y() : _endPoint.y() - origin.y()  //Y
+        (_beginPoint.x() > _endPoint.x()) ? _beginPoint.x() - origin.x() : _endPoint.x() - origin.x(), //W
+        (_beginPoint.y() > _endPoint.y()) ? _beginPoint.y() - origin.y() : _endPoint.y() - origin.y()  //H
     );
     img_ = img_.copy(QRect(origin, size));
     imgLabel_->setPixmap(QPixmap::fromImage(img_));
