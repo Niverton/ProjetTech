@@ -13,7 +13,7 @@
 StereoWindow::StereoWindow(const QImage *img) {
     //On marque la fenêtre pour être supprimée quand elle est fermée
     setAttribute(Qt::WA_DeleteOnClose);
-
+    setWindowTitle("Couper l'image");
     imgLeft_ = img->copy(0, 0, img->width()/2, img->height());
     imgRight_ = img->copy(img->width()/2, 0, img->width()/2, img->height());
 
@@ -26,7 +26,8 @@ StereoWindow::StereoWindow(const QImage *img) {
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(imgLabelLeft_);
     layout->addWidget(imgLabelRight_);
-    this->setLayout(layout);
+    setLayout(layout);
+    adjustSize();
 }
 
 /************
