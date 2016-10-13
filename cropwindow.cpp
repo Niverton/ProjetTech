@@ -52,7 +52,7 @@ void CropWindow::mousePressEvent(QMouseEvent* ev){
         _cropping = true;
         // Getting position
         _beginPoint = ev->pos();
-        printf("%d \t %d \n", _beginPoint.x(), _beginPoint.y());
+        //printf("%d \t %d \n", _beginPoint.x(), _beginPoint.y());
 
         _rubberBand->setGeometry(QRect(_beginPoint, _beginPoint));
         _rubberBand->show();
@@ -75,7 +75,7 @@ void CropWindow::mouseReleaseEvent(QMouseEvent *ev){
         }
         // Ending cropping
         _cropping = false;
-        printf("%d \t %d \n", _endPoint.x(), _endPoint.y());
+        //printf("%d \t %d \n", _endPoint.x(), _endPoint.y());
     }
 }
 
@@ -95,6 +95,14 @@ void CropWindow::mouseMoveEvent(QMouseEvent *event)
  *   Function used to crop the image
  */
 void CropWindow::cropImage(){
-    img_ = img_.copy(_beginPoint.x(), _beginPoint.y(), _endPoint.x(), _endPoint.y());
+    QPoint origin(
+        (_beginPoint.x() < _endPoint.x()) ? _beginPoint.x() : _endPoint.x(), //X
+        (_beginPoint.y() < _endPoint.y()) ? _beginPoint.y() : _endPoint.y()  //Y
+    );
+    QSize size(
+        (_beginPoint.x() > _endPoint.x()) ? _beginPoint.x() - origin.x() : _endPoint.x() - origin.x(), //X
+        (_beginPoint.y() > _endPoint.y()) ? _beginPoint.y() - origin.y() : _endPoint.y() - origin.y()  //Y
+    );
+    img_ = img_.copy(QRect(origin, size));
     imgLabel_->setPixmap(QPixmap::fromImage(img_));
 }
