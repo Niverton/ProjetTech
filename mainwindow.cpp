@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "stereowindow.h"
 
 #include <QMessageBox>
 #include <QMenuBar>
@@ -205,7 +206,9 @@ void MainWindow::cutImage(QImage* img){
 *   Fonction permettant d'afficher une image
 */
 void MainWindow::drawImage(QImage img){
-
+  StereoWindow *w = new StereoWindow(&img);
+  w->show();
+  /*
   //On efface le ou les images précédente
   if (imagesCuttedIsDraw_){
     imgLabelLeft_->clear();
@@ -227,6 +230,7 @@ void MainWindow::drawImage(QImage img){
   this->adjustSize();   //Marche pas ?
   imageLoadedIsDraw_ = true;
   imagesCuttedIsDraw_ = false;
+  */
 }
 
 /*
