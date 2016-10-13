@@ -22,8 +22,6 @@ private:
     QImage imgRight_;
     QLabel *imgLabelLeft_;
     QLabel *imgLabelRight_;
-
-
 };
 
 #endif

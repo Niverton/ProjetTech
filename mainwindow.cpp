@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "stereowindow.h"
+#include "cropwindow.h"
 
 #include <QMessageBox>
 #include <QMenuBar>
@@ -183,7 +184,8 @@ void MainWindow::cutImgSlot(){
 }
 
 void MainWindow::clipImgSlot(){
-  //TODO
+  CropWindow *w = new CropWindow($imageLoaded_);
+  w->show();
   return;
 }
 
