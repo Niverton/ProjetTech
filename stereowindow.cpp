@@ -34,11 +34,12 @@ StereoWindow::StereoWindow(const QImage *img) {
 */
 void StereoWindow::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
+    resizeImages();
 }
 
 /***********
 *   Resize images to fit the window
 */
-void StereoWindow::resizeLoadedImage(){
+void StereoWindow::resizeImages(){
 
 }

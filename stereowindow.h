@@ -15,7 +15,7 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent* event);
-    void resizeLoadedImage();
+    void resizeImages();
 
 private:
     QImage imgLeft_;
