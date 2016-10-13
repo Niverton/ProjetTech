@@ -45,7 +45,7 @@ private:
     QAction*        clipAction_;
 
     bool            imageLoadedIsDraw_ = false;
-    QImage*         imageLoaded_;
+    QImage         imageLoaded_;
 
     bool            imagesCuttedIsDraw_ = false;
     QImage          imageRight_;
@@ -55,9 +55,6 @@ private:
     QHBoxLayout*    layout_;
 
     void initMenuBar();
-    void cutImage(QImage* img);
-    void drawImage(QImage img);
-    void drawImages(QImage imgLeft, QImage imgRight);
     void mousePressedEvent(QMouseEvent* event, int x_origin, int y_origin);
 };
 

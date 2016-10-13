@@ -43,6 +43,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // Initting menu bar
     initMenuBar();
 
+    imgLabel_= new QLabel(this);
+    layout_->addWidget(imgLabel_);
+
     statusLabel_ = new QLabel(statusBar());
     statusBar()->addWidget(statusLabel_);
 
@@ -89,7 +92,7 @@ void MainWindow::initMenuBar() {
   menuEdit_->addAction(cutAction_);
   //Edit - clipAction_
   clipAction_ = new QAction("Rogner l'image", menuEdit_);
-  //menuEdit_->addAction(clipAction_);    //TODO
+  //menuEdit_->addAction(clipAction_); //TODO
 
   //About
   menuAbout_ = new QMenu("À Propos", mBar);
@@ -127,17 +130,10 @@ void MainWindow::resizeEvent(QResizeEvent* event)
  **********************************************************************/
 void MainWindow::resizeLoadedImage()
 {
-    /* TODO
-    QPixmap pxM = QPixmap::fromImage(image_);
+    QPixmap pxM = QPixmap::fromImage(imageLoaded_);
     QPixmap* pxmA = const_cast<QPixmap*>(imgLabel_->pixmap());
     QPixmap pxmB = pxM.scaled(size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     pxmA->swap(static_cast<QPixmap&>(pxmB));
-    //*/
-
-    // Work for image1
-    //TODO
-    // Work for image2
-    // TODO
 }
 
 /**********************************************************************
@@ -148,7 +144,7 @@ void MainWindow::resizeLoadedImage()
  **********************************************************************/
 void MainWindow::renderMessageBox()
 {
-    QMessageBox::about(this, "About", "Projet technologique L3");
+    QMessageBox::about(this, "A propos", "Projet technologique L3");
 }
 
 /**********************************************************************
@@ -159,114 +155,31 @@ void MainWindow::renderMessageBox()
  **********************************************************************/
 void MainWindow::openFile()
 {
-    QString p = QFileDialog::getOpenFileName(this, "Open", QString(), "Images (*.png *.jpg)");
+    QString p = QFileDialog::getOpenFileName(this, "Ouvrir", QString(), "Images (*.png *.jpg)");
 
     if(!p.isEmpty())
     {
         path_ = p;
         statusLabel_->setText(p);
         // timer pour virer le texte.
-        imageLoaded_ = new QImage();
-        imageLoaded_->load(p);
+        imageLoaded_ = QImage();
+        imageLoaded_.load(p);
 
         // Sous Qt5.3.2 et 5.7 -> Permet de ne pas utiliser le resize event.
         // Ne marche apparement pas chez tous.
         // Hadrien Decoudras.
         //imgLabel_->setScaledContents(true);
 
-        //imgLabel_->setPixmap(QPixmap::fromImage(image_));
-        //imgLabelLeft_->setPixmap(QPixmap::fromImage(imageLeft_));
-        //imgLabelRight_->setPixmap(QPixmap::fromImage(imageRight_));
-        //resizeLoadedImage();
-        drawImage(*imageLoaded_);   //On afficher l'image.
-
-        //cutImage(imageLoaded_);
-        //drawImages(imageLeft_, imageRight_);
+        imgLabel_->setPixmap(QPixmap::fromImage(imageLoaded_));
     }
-}
-
-/**********************************************************************
- **********************************************************************
- *
- * Function splitting loaded image in two
- *
- **********************************************************************/
-void MainWindow::cutImage(QImage* img){
-  if (!imageLoadedIsDraw_){
-    return;
-  }
-  int imageWidth = img->width();
-  int imageHeight = img->height();
-
-  imageLeft_ = img->copy(0, 0, imageWidth/2, imageHeight);
-  imageRight_ = img->copy(imageWidth/2, 0, imageWidth/2, imageHeight);
-}
-
-/*
-*   Fonction permettant d'afficher une image
-*/
-void MainWindow::drawImage(QImage img){
-  StereoWindow *w = new StereoWindow(&img);
-  w->show();
-  /*
-  //On efface le ou les images précédente
-  if (imagesCuttedIsDraw_){
-    imgLabelLeft_->clear();
-    imgLabelRight_->clear();
-    layout_->removeWidget(imgLabelLeft_);
-    layout_->removeWidget(imgLabelRight_);
-    layout_->update();
-  }
-  if (imageLoadedIsDraw_){
-    imgLabel_->clear();
-    layout_->removeWidget(imgLabel_);
-    layout_->update();
-  }
-
-  imgLabel_ = new QLabel(this);
-  layout_->addWidget(imgLabel_);
-  imgLabel_->setPixmap(QPixmap::fromImage(img));
-
-  this->adjustSize();   //Marche pas ?
-  imageLoadedIsDraw_ = true;
-  imagesCuttedIsDraw_ = false;
-  */
-}
-
-/*
-*   Fonction permettant d'afficher deux images côte à côte
-*/
-void MainWindow::drawImages(QImage imgLeft, QImage imgRight){
-  //On efface le ou les images précédente
-  if (imageLoadedIsDraw_){
-      imgLabel_->clear();
-      layout_->removeWidget(imgLabel_);
-      layout_->update();
-  }
-  if (imagesCuttedIsDraw_){
-    return;
-  }
-
-  imgLabelLeft_ = new QLabel(this);
-  imgLabelRight_ = new QLabel(this);
-
-  layout_->addWidget(imgLabelLeft_);
-  layout_->addWidget(imgLabelRight_);
-
-  imgLabelLeft_->setPixmap(QPixmap::fromImage(imgLeft));
-  imgLabelRight_->setPixmap(QPixmap::fromImage(imgRight));
-
-  this->adjustSize();
-  imagesCuttedIsDraw_ = true;
-  imageLoadedIsDraw_ = false;
 }
 
 /*
 *   Action cut
 */
 void MainWindow::cutImgSlot(){
-  cutImage(imageLoaded_);
-  drawImages(imageLeft_, imageRight_);
+    StereoWindow *w = new StereoWindow(&imageLoaded_);
+    w->show();
 }
 
 void MainWindow::clipImgSlot(){
