@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QResizeEvent>
 #include <QRubberBand>
+#include <stdio.h>
 
 CropWindow::CropWindow(const QImage *img) {
     //On marque la fenêtre pour être supprimée quand elle est fermée
@@ -35,7 +36,10 @@ void CropWindow::resizeEvent(QResizeEvent* event) {
 *   Resize image to fit the window
 */
 void CropWindow::resizeImage(){
-
+  QPixmap pxM = QPixmap::fromImage(img_);
+  QPixmap* pxmA = const_cast<QPixmap*>(imgLabel_->pixmap());
+  QPixmap pxmB = pxM.scaled(size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+  pxmA->swap(static_cast<QPixmap&>(pxmB));
 }
 
 /***********
@@ -47,12 +51,14 @@ void CropWindow::mousePressEvent(QMouseEvent* ev){
         _cropping = true;
         // Getting position
         _beginPoint = ev->pos();
-        // Creating rubberband
+        printf("%d \t %d \n", _beginPoint.x(), _beginPoint.y());
+         //Creating rubberband
         if(_rubberBand == NULL)
             _rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
-        _rubberBand->setGeometry(QRect(_beginPoint, QSize()));
-        _rubberBand->show();
+        //_rubberBand->setGeometry(QRect(_beginPoint, QSize()));
+        //_rubberBand->show();
     }
+
 }
 
 /***********
@@ -63,13 +69,14 @@ void CropWindow::mouseReleaseEvent(QMouseEvent *ev){
         // Getting coordinates of cropping endPoint
         _endPoint = ev->pos();
         // Hiding rubberband
-        _rubberBand->hide();
+        //_rubberBand->hide();
         // If coordinates are set and not equal (not null and a mouse click holding has been made)
         if(!_beginPoint.isNull() && !_endPoint.isNull() && _beginPoint != _endPoint){
             cropImage();
         }
         // Ending cropping
         _cropping = false;
+        printf("%d \t %d \n", _endPoint.x(), _endPoint.y());
     }
 }
 
@@ -79,9 +86,10 @@ void CropWindow::mouseReleaseEvent(QMouseEvent *ev){
 void CropWindow::mouseMoveEvent(QMouseEvent *event)
 {
     // Updating rubberBand if cropping
-    if(_cropping){
+    /*if(_cropping){
         _rubberBand->setGeometry(QRect(_beginPoint, event->pos()).normalized());
-    }
+    }*/
+
 }
 
 /***********

@@ -179,6 +179,9 @@ void MainWindow::openFile()
 *   Action cut
 */
 void MainWindow::cutImgSlot(){
+  if (!imageLoadedIsDraw_){
+    return;
+  }
     StereoWindow *w = new StereoWindow(&imageLoaded_);
     w->show();
 }
@@ -187,15 +190,9 @@ void MainWindow::cutImgSlot(){
  *  Action clip
  */
 void MainWindow::clipImgSlot(){
+  if (!imageLoadedIsDraw_){
+    return;
+  }
     CropWindow *w = new CropWindow(&imageLoaded_);
     w->show();
-}
-
-void MainWindow::mousePressedEvent(QMouseEvent* event, int x_origin, int y_origin){
-  if (event->button() == Qt::LeftButton){ //Si clique droit est pressé
-    QRubberBand* rb = new QRubberBand(QRubberBand::Rectangle, this);
-    int x = event->x();
-    int y = event->y();
-    rb->setGeometry(x_origin, y_origin, x - x_origin, y - y_origin);
-  }
 }
