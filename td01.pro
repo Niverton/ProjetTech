@@ -13,6 +13,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ProjetTech
 TEMPLATE = app
 
+LIBS += -L/usr/lib -lopencv_core -lopencv_imgproc
 
 SOURCES += main.cpp\
         mainwindow.cpp\
