@@ -18,10 +18,10 @@ protected:
     void resizeImages();
 
 private:
-    QImage imgLeft_;
-    QImage imgRight_;
-    QLabel *imgLabelLeft_;
-    QLabel *imgLabelRight_;
+    QImage _imgLeft;
+    QImage _imgRight;
+    QLabel *_imgLabelLeft;
+    QLabel *_imgLabelRight;
 };
 
 #endif

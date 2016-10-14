@@ -25,17 +25,17 @@ protected:
 
 private:
     // Cropping state
-    bool cropping_;
+    bool _cropping;
 
     // Cropping coordinates
-    QPoint beginPoint_;
-    QPoint endPoint_;
+    QPoint _beginPoint;
+    QPoint _endPoint;
 
     // Rubberband visualization
-    QRubberBand *rubberBand_;
+    QRubberBand *_rubberBand;
 
-    QImage img_;
-    QLabel *imgLabel_;
+    QImage _img;
+    QLabel *_imgLabel;
 };
 
 #endif

@@ -29,30 +29,30 @@ private slots:
     void clipImgSlot();
 
 private:
-    QLabel*         imgLabel_;
-    QLabel*         imgLabelRight_;
-    QLabel*         imgLabelLeft_;
-    QLabel*         statusLabel_;
+    QLabel*         _imgLabel;
+    QLabel*         _imgLabelRight;
+    QLabel*         _imgLabelLeft;
+    QLabel*         _statusLabel;
 
-    QMenu*          menuFile_;
-    QMenu*          menuAbout_;
-    QMenu*          menuEdit_;
+    QMenu*          _menuFile;
+    QMenu*          _menuAbout;
+    QMenu*          _menuEdit;
 
-    QAction*        openAction_;
-    QAction*        quitAction_;
-    QAction*        aboutAction_;
-    QAction*        cutAction_;
-    QAction*        clipAction_;
+    QAction*        _openAction;
+    QAction*        _quitAction;
+    QAction*        _aboutAction;
+    QAction*        _cutAction;
+    QAction*        _clipAction;
 
-    bool            imageLoadedIsDraw_ = false;
-    QImage          imageLoaded_;
+    bool            _imageLoadedIsDraw = false;
+    QImage          _imageLoaded;
 
-    bool            imagesCuttedIsDraw_ = false;
-    QImage          imageRight_;
-    QImage          imageLeft_;
-    QString         path_;
+    bool            _imagesCuttedIsDraw = false;
+    QImage          _imageRight;
+    QImage          _imageLeft;
+    QString         _path;
 
-    QHBoxLayout*    layout_;
+    QHBoxLayout*    _layout;
 
     void initMenuBar();
     void mousePressedEvent(QMouseEvent* event, int x_origin, int y_origin);

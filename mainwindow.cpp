@@ -34,8 +34,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
         getCentralWidget() pour récupèrer ce widget
     */
     QWidget *central = new QWidget(this);
-    layout_ = new QHBoxLayout(this);
-    central->setLayout(layout_);
+    _layout = new QHBoxLayout(central);
+    central->setLayout(_layout);
     setCentralWidget(central);
 
     //Ajuster le taille de la fenêtre en fonction de la taille de l'image.
@@ -43,18 +43,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // Initting menu bar
     initMenuBar();
 
-    imgLabel_= new QLabel(this);
-    layout_->addWidget(imgLabel_);
+    _imgLabel= new QLabel(this);
+    _layout->addWidget(_imgLabel);
 
-    statusLabel_ = new QLabel(statusBar());
-    statusBar()->addWidget(statusLabel_);
+    _statusLabel = new QLabel(statusBar());
+    statusBar()->addWidget(_statusLabel);
 
     // Connecting menu events
-    connect(openAction_, SIGNAL(triggered(bool)), this, SLOT(openFile()));
-    connect(quitAction_, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
-    connect(aboutAction_, SIGNAL(triggered(bool)), this, SLOT(renderMessageBox()));
-    connect(cutAction_, SIGNAL(triggered(bool)), this, SLOT(cutImgSlot()));
-    connect(clipAction_, SIGNAL(triggered(bool)), this, SLOT(clipImgSlot()));
+    connect(_openAction, SIGNAL(triggered(bool)), this, SLOT(openFile()));
+    connect(_quitAction, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
+    connect(_aboutAction, SIGNAL(triggered(bool)), this, SLOT(renderMessageBox()));
+    connect(_cutAction, SIGNAL(triggered(bool)), this, SLOT(cutImgSlot()));
+    connect(_clipAction, SIGNAL(triggered(bool)), this, SLOT(clipImgSlot()));
 }
 
 /**********************************************************************
@@ -76,36 +76,36 @@ void MainWindow::initMenuBar() {
   QMenuBar* mBar = menuBar();
 
   //File
-  menuFile_ = new QMenu("&Fichier", mBar);
+  _menuFile = new QMenu("&Fichier", mBar);
   //File - Open
-  openAction_ = new QAction("&Ouvrir", menuFile_);
-  openAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
-  menuFile_->addAction(openAction_);
+  _openAction = new QAction("&Ouvrir", _menuFile);
+  _openAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+  _menuFile->addAction(_openAction);
   //File - Quit
-  quitAction_ = new QAction("&Quitter", menuFile_);
-  quitAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
-  menuFile_->addAction(quitAction_);
+  _quitAction = new QAction("&Quitter", _menuFile);
+  _quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+  _menuFile->addAction(_quitAction);
 
   //Edit
-  menuEdit_ = new QMenu("&Editer", mBar);
+  _menuEdit = new QMenu("&Editer", mBar);
   //Edit - cut
-  cutAction_ = new QAction("&Couper l'image", menuEdit_);
-  cutAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
-  menuEdit_->addAction(cutAction_);
+  _cutAction = new QAction("&Couper l'image", _menuEdit);
+  _cutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
+  _menuEdit->addAction(_cutAction);
   //Edit - clipAction_
-  clipAction_ = new QAction("&Rogner l'image", menuEdit_);
-  clipAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
-  menuEdit_->addAction(clipAction_); //TODO
+  _clipAction = new QAction("&Rogner l'image", _menuEdit);
+  _clipAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
+  _menuEdit->addAction(_clipAction); //TODO
 
   //About
-  menuAbout_ = new QMenu("À &Propos", mBar);
-  aboutAction_ = new QAction("À &Propos", menuAbout_);
-  aboutAction_->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_A));
-  menuAbout_->addAction(aboutAction_);
+  _menuAbout = new QMenu("À &Propos", mBar);
+  _aboutAction = new QAction("À &Propos", _menuAbout);
+  _aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_A));
+  _menuAbout->addAction(_aboutAction);
 
-  mBar->addMenu(menuFile_);
-  mBar->addMenu(menuEdit_);
-  mBar->addMenu(menuAbout_);
+  mBar->addMenu(_menuFile);
+  mBar->addMenu(_menuEdit);
+  mBar->addMenu(_menuAbout);
 }
 
 
@@ -119,7 +119,7 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 {
     QMainWindow::resizeEvent(event);
 
-    if(!path_.isEmpty())
+    if(!_path.isEmpty())
     {
         resizeLoadedImage();
     }
@@ -133,8 +133,8 @@ void MainWindow::resizeEvent(QResizeEvent* event)
  **********************************************************************/
 void MainWindow::resizeLoadedImage()
 {
-    QPixmap pxM = QPixmap::fromImage(imageLoaded_);
-    QPixmap* pxmA = const_cast<QPixmap*>(imgLabel_->pixmap());
+    QPixmap pxM = QPixmap::fromImage(_imageLoaded);
+    QPixmap* pxmA = const_cast<QPixmap*>(_imgLabel->pixmap());
     QPixmap pxmB = pxM.scaled(size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     pxmA->swap(static_cast<QPixmap&>(pxmB));
 }
@@ -162,19 +162,19 @@ void MainWindow::openFile()
 
     if(!p.isEmpty())
     {
-        path_ = p;
-        statusLabel_->setText(p);
+        _path = p;
+        _statusLabel->setText(p);
         // timer pour virer le texte.
-        imageLoaded_ = QImage();
-        imageLoaded_.load(p);
-        imageLoadedIsDraw_ = true;
+        _imageLoaded = QImage();
+        _imageLoaded.load(p);
+        _imageLoadedIsDraw = true;
 
         // Sous Qt5.3.2 et 5.7 -> Permet de ne pas utiliser le resize event.
         // Ne marche apparement pas chez tous.
         // Hadrien Decoudras.
         //imgLabel_->setScaledContents(true);
 
-        imgLabel_->setPixmap(QPixmap::fromImage(imageLoaded_));
+        _imgLabel->setPixmap(QPixmap::fromImage(_imageLoaded));
         adjustSize();
     }
 }
@@ -183,10 +183,10 @@ void MainWindow::openFile()
 *   Action cut
 */
 void MainWindow::cutImgSlot(){
-  if (!imageLoadedIsDraw_){
+  if (!_imageLoadedIsDraw){
     return;
   }
-    StereoWindow *w = new StereoWindow(&imageLoaded_);
+    StereoWindow *w = new StereoWindow(&_imageLoaded);
     w->show();
 }
 
@@ -194,9 +194,9 @@ void MainWindow::cutImgSlot(){
  *  Action clip
  */
 void MainWindow::clipImgSlot(){
-  if (!imageLoadedIsDraw_){
+  if (!_imageLoadedIsDraw){
     return;
   }
-    CropWindow *w = new CropWindow(&imageLoaded_);
+    CropWindow *w = new CropWindow(&_imageLoaded);
     w->show();
 }

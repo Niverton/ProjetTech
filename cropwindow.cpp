@@ -13,15 +13,15 @@ CropWindow::CropWindow(const QImage *img) {
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowTitle("Rogner l'image");
     // Init variables
-    cropping_ = false;
-    rubberBand_ = new QRubberBand(QRubberBand::Rectangle, this);
+    _cropping = false;
+    _rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 
-    img_ = img->copy(0,0, img->width(), img->height());
-    imgLabel_ = new QLabel(this);
-    imgLabel_->setPixmap(QPixmap::fromImage(img_));
+    _img = img->copy(0,0, img->width(), img->height());
+    _imgLabel = new QLabel(this);
+    _imgLabel->setPixmap(QPixmap::fromImage(_img));
 
     QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->addWidget(imgLabel_);
+    layout->addWidget(_imgLabel);
 
     setLayout(layout);
     adjustSize();
@@ -39,8 +39,8 @@ void CropWindow::resizeEvent(QResizeEvent* event) {
 *   Resize image to fit the window
 */
 void CropWindow::resizeImage(){
-  QPixmap pxM = QPixmap::fromImage(img_);
-  QPixmap* pxmA = const_cast<QPixmap*>(imgLabel_->pixmap());
+  QPixmap pxM = QPixmap::fromImage(_img);
+  QPixmap* pxmA = const_cast<QPixmap*>(_imgLabel->pixmap());
   QPixmap pxmB = pxM.scaled(size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
   pxmA->swap(static_cast<QPixmap&>(pxmB));
 }
@@ -50,14 +50,14 @@ void CropWindow::resizeImage(){
  */
 void CropWindow::mousePressEvent(QMouseEvent* ev){
     // Beginning crop
-    if(!cropping_){
-        cropping_ = true;
+    if(!_cropping){
+        _cropping = true;
         // Getting position
-        beginPoint_ = ev->pos();
+        _beginPoint = ev->pos();
         //printf("%d \t %d \n", beginPoint_.x(), beginPoint_.y());
 
-        rubberBand_->setGeometry(QRect(beginPoint_, beginPoint_));
-        rubberBand_->show();
+        _rubberBand->setGeometry(QRect(_beginPoint, _beginPoint));
+        _rubberBand->show();
     }
 
 }
@@ -66,17 +66,17 @@ void CropWindow::mousePressEvent(QMouseEvent* ev){
  *   MouseRelease Event
  */
 void CropWindow::mouseReleaseEvent(QMouseEvent *ev){
-    if(cropping_){
+    if(_cropping){
         // Getting coordinates of cropping endPoint
-        endPoint_ = ev->pos();
+        _endPoint = ev->pos();
         // Hiding rubberband
-        rubberBand_->hide();
+        _rubberBand->hide();
         // If coordinates are set and not equal (not null and a mouse click holding has been made)
-        if(!beginPoint_.isNull() && !endPoint_.isNull() && beginPoint_ != endPoint_){
+        if(!_beginPoint.isNull() && !_endPoint.isNull() && _beginPoint != _endPoint){
             cropImage();
         }
         // Ending cropping
-        cropping_ = false;
+        _cropping = false;
         //printf("%d \t %d \n", endPoint_.x(), endPoint_.y());
     }
 }
@@ -87,8 +87,8 @@ void CropWindow::mouseReleaseEvent(QMouseEvent *ev){
 void CropWindow::mouseMoveEvent(QMouseEvent *event)
 {
     // Updating rubberBand if cropping
-    if(cropping_){
-        rubberBand_->setGeometry(QRect(beginPoint_, event->pos()).normalized());
+    if(_cropping){
+        _rubberBand->setGeometry(QRect(_beginPoint, event->pos()).normalized());
     }
 
 }
@@ -98,14 +98,14 @@ void CropWindow::mouseMoveEvent(QMouseEvent *event)
  */
 void CropWindow::cropImage(){
     QPoint origin(
-        (beginPoint_.x() < endPoint_.x()) ? beginPoint_.x() : endPoint_.x(), //X
-        (beginPoint_.y() < endPoint_.y()) ? beginPoint_.y() : endPoint_.y()  //Y
+        (_beginPoint.x() < _endPoint.x()) ? _beginPoint.x() : _endPoint.x(), //X
+        (_beginPoint.y() < _endPoint.y()) ? _beginPoint.y() : _endPoint.y()  //Y
     );
     QSize size(
-        (beginPoint_.x() > endPoint_.x()) ? beginPoint_.x() - origin.x() : endPoint_.x() - origin.x(), //W
-        (beginPoint_.y() > endPoint_.y()) ? beginPoint_.y() - origin.y() : endPoint_.y() - origin.y()  //H
+        (_beginPoint.x() > _endPoint.x()) ? _beginPoint.x() - origin.x() : _endPoint.x() - origin.x(), //W
+        (_beginPoint.y() > _endPoint.y()) ? _beginPoint.y() - origin.y() : _endPoint.y() - origin.y()  //H
     );
-    img_ = img_.copy(QRect(origin, size));
-    imgLabel_->setPixmap(QPixmap::fromImage(img_));
+    _img = _img.copy(QRect(origin, size));
+    _imgLabel->setPixmap(QPixmap::fromImage(_img));
     adjustSize();
 }
