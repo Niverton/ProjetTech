@@ -27,6 +27,9 @@ private slots:
     void openFile();
     void cutImgSlot();
     void clipImgSlot();
+    void blurSlot();
+    void sobelSlot();
+    void cannySlot();
 
 private:
     QLabel*         _imgLabel;
@@ -37,12 +40,23 @@ private:
     QMenu*          _menuFile;
     QMenu*          _menuAbout;
     QMenu*          _menuEdit;
+    QMenu*          _menuOpenCV;
 
+    //MenuFile
     QAction*        _openAction;
     QAction*        _quitAction;
+
+    //About
     QAction*        _aboutAction;
+
+    //Edit
     QAction*        _cutAction;
     QAction*        _clipAction;
+
+    //OpenCV
+    QAction*        _blurAction;
+    QAction*        _sobelAction;
+    QAction*        _cannyAction;
 
     bool            _imageLoadedIsDraw = false;
     QImage          _imageLoaded;
