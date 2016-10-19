@@ -16,6 +16,7 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QRubberBand>
+#include <opencv2/core/core.hpp>
 
 /**********************************************************************
  **********************************************************************
