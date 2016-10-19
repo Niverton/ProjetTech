@@ -16,7 +16,6 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QRubberBand>
-#include <opencv2/core/core.hpp>
 
 /**********************************************************************
  **********************************************************************
@@ -49,13 +48,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     _statusLabel = new QLabel(statusBar());
     statusBar()->addWidget(_statusLabel);
-
-    // Connecting menu events
-    connect(_openAction, SIGNAL(triggered(bool)), this, SLOT(openFile()));
-    connect(_quitAction, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
-    connect(_aboutAction, SIGNAL(triggered(bool)), this, SLOT(renderMessageBox()));
-    connect(_cutAction, SIGNAL(triggered(bool)), this, SLOT(cutImgSlot()));
-    connect(_clipAction, SIGNAL(triggered(bool)), this, SLOT(clipImgSlot()));
 }
 
 /**********************************************************************
@@ -82,10 +74,12 @@ void MainWindow::initMenuBar() {
   _openAction = new QAction("&Ouvrir", _menuFile);
   _openAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
   _menuFile->addAction(_openAction);
+  connect(_openAction, SIGNAL(triggered(bool)), this, SLOT(openFile()));
   //File - Quit
   _quitAction = new QAction("&Quitter", _menuFile);
   _quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
   _menuFile->addAction(_quitAction);
+  connect(_quitAction, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
 
   //Edit
   _menuEdit = new QMenu("&Editer", mBar);
@@ -93,16 +87,33 @@ void MainWindow::initMenuBar() {
   _cutAction = new QAction("&Couper l'image", _menuEdit);
   _cutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
   _menuEdit->addAction(_cutAction);
+  connect(_cutAction, SIGNAL(triggered(bool)), this, SLOT(cutImgSlot()));
   //Edit - clipAction_
   _clipAction = new QAction("&Rogner l'image", _menuEdit);
   _clipAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
-  _menuEdit->addAction(_clipAction); //TODO
+  _menuEdit->addAction(_clipAction);
+  connect(_clipAction, SIGNAL(triggered(bool)), this, SLOT(clipImgSlot()));
+
+  //OpenCV
+  _menuOpenCV = new QMenu("&OpenCV", mBar);
+    _blurAction = new QAction("&Flouter l'image", _menuOpenCV);
+    _menuOpenCV->addAction(_blurAction);
+    connect(_blurAction, SIGNAL(triggered(bool)), this, SLOT(blurSlot()));
+
+    _sobelAction = new QAction("Appliquer &Sobel", _menuOpenCV);
+    _menuOpenCV->addAction(_sobelAction);
+    connect(_sobelAction, SIGNAL(triggered(bool)), this, SLOT(sobelSlot()));
+
+    _cannyAction = new QAction("Appliquer &Canny", _menuOpenCV);
+    _menuOpenCV->addAction(_cannyAction);
+    connect(_cannyAction, SIGNAL(triggered(bool)), this, SLOT(cannySlot()));
 
   //About
   _menuAbout = new QMenu("À &Propos", mBar);
   _aboutAction = new QAction("À &Propos", _menuAbout);
   _aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_A));
   _menuAbout->addAction(_aboutAction);
+  connect(_aboutAction, SIGNAL(triggered(bool)), this, SLOT(renderMessageBox()));
 
   mBar->addMenu(_menuFile);
   mBar->addMenu(_menuEdit);
@@ -184,9 +195,8 @@ void MainWindow::openFile()
 *   Action cut
 */
 void MainWindow::cutImgSlot(){
-  if (!_imageLoadedIsDraw){
-    return;
-  }
+    if (!_imageLoadedIsDraw)
+        return;
     StereoWindow *w = new StereoWindow(&_imageLoaded);
     w->show();
 }
@@ -195,9 +205,32 @@ void MainWindow::cutImgSlot(){
  *  Action clip
  */
 void MainWindow::clipImgSlot(){
-  if (!_imageLoadedIsDraw){
-    return;
-  }
+    if (!_imageLoadedIsDraw)
+        return;
     CropWindow *w = new CropWindow(&_imageLoaded);
+    w->show();
+}
+
+void MainWindow::blurSlot(){
+    if (!_imageLoadedIsDraw)
+        return;
+    ProcessingWindow *w = new ProcessingWindow(&_imageLoaded);
+    w->blur();
+    w->show();
+}
+
+void MainWindow::sobelSlot(){
+    if (!_imageLoadedIsDraw)
+        return;
+    ProcessingWindow *w = new ProcessingWindow(&_imageLoaded);
+    w->sobel();
+    w->show();
+}
+
+void MainWindow::cannySlot(){
+    if (!_imageLoadedIsDraw)
+        return;
+    ProcessingWindow *w = new ProcessingWindow(&_imageLoaded);
+    w->canny();
     w->show();
 }
