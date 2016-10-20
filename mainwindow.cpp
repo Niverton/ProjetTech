@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "stereowindow.h"
 #include "cropwindow.h"
-#include "processing_window.h"
+#include "processingwindow.h"
 
 #include <QMessageBox>
 #include <QMenuBar>

@@ -18,10 +18,10 @@ LIBS += -L/usr/lib -lopencv_core -lopencv_imgproc
 SOURCES += main.cpp\
         mainwindow.cpp\
         stereowindow.cpp\
-        cropwindow.cpp \
-    processing_window.cpp
+        cropwindow.cpp\
+        processingwindow.cpp
 
 HEADERS  += mainwindow.h\
         stereowindow.h\
-        cropwindow.h \
-    processing_window.h
+        cropwindow.h\
+        processingwindow.h
