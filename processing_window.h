@@ -15,12 +15,14 @@ class ProcessingWindow : public QWidget {
 public:
     ProcessingWindow(QImage* img);
 
-    void ImgShow();
-    void Blur(QImage img);
+    void show();
+    void blur();
+    void sobel();
+    void canny();
 
 private:
     QImage _img;
-    QLabel *_imgLabel;
+    QLabel* _imgLabel;
 
 
     QImage Mat2QImage(cv::Mat const& src);
