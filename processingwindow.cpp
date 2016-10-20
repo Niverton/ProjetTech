@@ -1,4 +1,4 @@
-#include "processing_window.h"
+#include "processingwindow.h"
 #include <opencv2/imgproc/imgproc.hpp>
 
 ProcessingWindow::ProcessingWindow(QImage* img){
