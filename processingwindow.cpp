@@ -15,19 +15,62 @@ ProcessingWindow::ProcessingWindow(QImage* img){
   adjustSize();
 }
 
-void ProcessingWindow::Blur(QImage img){
-  cv::Mat mat = QImage2Mat(img);
+void ProcessingWindow::blur(){
+  int width = _img.width();
+  int height = _img.height();
 
-  _img = Mat2QImage(mat);
+  cv::Mat src = QImage2Mat(_img);
+  /*cv::Mat dst;
+
+  for (int y=0; y<height-1; y++){
+      for (int x=0; x<width-1; x++){
+          cv::blur(src, dst, cv::Size(x,y));
+        }
+    }
+  _img = Mat2QImage(dst);*/
 
 }
 
-void ProcessingWindow::ImgShow(){
+void ProcessingWindow::sobel(){
+  int width = _img.width();
+  int height = _img.height();
+
+  cv::Mat src = QImage2Mat(_img);
+  cv::Mat dst;
+
+  for (int y=0; y<height-1; y++){
+      for (int x=0; x<width-1; x++){
+          cv::Sobel(src, dst, src.depth(), x, y);
+        }
+    }
+  _img = Mat2QImage(dst);
+}
+
+void ProcessingWindow::canny(){
+
+  int width = _img.width();
+  int height = _img.height();
+
+
+  cv::Mat src = QImage2Mat(_img);
+  /*=cv::Mat dst;
+
+  for (int y=0; y<height-1; y++){
+      for (int x=0; x<width-1; x++){
+
+        }
+    }
+  _img = Mat2QImage(dst);*/
+}
+
+void ProcessingWindow::show(){
   _imgLabel = new QLabel(this);
   _imgLabel->setPixmap(QPixmap::fromImage(_img));
 }
 
 
+
+//Core dump là dedans.
 QImage ProcessingWindow::Mat2QImage(cv::Mat const& src)
 {
      cv::Mat temp; // make the same cv::Mat

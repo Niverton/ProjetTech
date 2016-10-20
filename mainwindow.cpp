@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "stereowindow.h"
 #include "cropwindow.h"
+#include "processing_window.h"
 
 #include <QMessageBox>
 #include <QMenuBar>
@@ -117,6 +118,7 @@ void MainWindow::initMenuBar() {
 
   mBar->addMenu(_menuFile);
   mBar->addMenu(_menuEdit);
+  mBar->addMenu(_menuOpenCV);
   mBar->addMenu(_menuAbout);
 }
 
@@ -220,17 +222,17 @@ void MainWindow::blurSlot(){
 }
 
 void MainWindow::sobelSlot(){
-    if (!_imageLoadedIsDraw)
+    /*if (!_imageLoadedIsDraw)
         return;
     ProcessingWindow *w = new ProcessingWindow(&_imageLoaded);
     w->sobel();
-    w->show();
+    w->show();*/
 }
 
 void MainWindow::cannySlot(){
-    if (!_imageLoadedIsDraw)
+    /*if (!_imageLoadedIsDraw)
         return;
     ProcessingWindow *w = new ProcessingWindow(&_imageLoaded);
     w->canny();
-    w->show();
+    w->show();*/
 }
