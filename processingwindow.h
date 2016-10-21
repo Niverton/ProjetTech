@@ -15,7 +15,6 @@ class ProcessingWindow : public QWidget {
 public:
     ProcessingWindow(QImage* img);
 
-    void show();
     void blur();
     void sobel();
     void canny();
