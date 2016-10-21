@@ -6,7 +6,8 @@
 #include <QLabel>
 #include <QResizeEvent>
 #include <QRubberBand>
-#include <stdio.h>
+
+#include <QDebug>
 
 CropWindow::CropWindow(const QImage *img) {
     //On marque la fenêtre pour être supprimée quand elle est fermée
@@ -54,7 +55,6 @@ void CropWindow::mousePressEvent(QMouseEvent* ev){
         _cropping = true;
         // Getting position
         _beginPoint = ev->pos();
-        //printf("%d \t %d \n", beginPoint_.x(), beginPoint_.y());
 
         _rubberBand->setGeometry(QRect(_beginPoint, _beginPoint));
         _rubberBand->show();
@@ -66,7 +66,7 @@ void CropWindow::mousePressEvent(QMouseEvent* ev){
  *   MouseRelease Event
  */
 void CropWindow::mouseReleaseEvent(QMouseEvent *ev){
-    if(_cropping){
+    if(_cropping && ev->pos().x() < size().width() && ev->pos().y() < size().height()){
         // Getting coordinates of cropping endPoint
         _endPoint = ev->pos();
         // Hiding rubberband
@@ -75,9 +75,18 @@ void CropWindow::mouseReleaseEvent(QMouseEvent *ev){
         if(!_beginPoint.isNull() && !_endPoint.isNull() && _beginPoint != _endPoint){
             cropImage();
         }
+
         // Ending cropping
         _cropping = false;
-        //printf("%d \t %d \n", endPoint_.x(), endPoint_.y());
+    }else if(_cropping && ev->pos().x() > _img.width() && ev->pos().y() > _img.height()){
+        _endPoint = QPoint(_img.width(), _img.height());
+        _rubberBand->hide();
+
+        if(!_beginPoint.isNull() && !_endPoint.isNull() && _beginPoint != _endPoint){
+            cropImage();
+        }
+
+        _cropping = false;
     }
 }
 
