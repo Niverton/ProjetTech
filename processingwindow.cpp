@@ -21,17 +21,13 @@ void ProcessingWindow::blur(){
 
   cv::Mat src = QImage2Mat(_img);
   cv::Mat dst;
+  cv::blur(src, dst, cv::Size(width, height));
 
-  for (int y=0; y<height-1; y++){
-      for (int x=0; x<width-1; x++){
-          cv::blur(src, dst, cv::Size(x,y));
-        }
-    }
   _img = Mat2QImage(dst);
 }
 
 void ProcessingWindow::sobel(){
-  /*int width = _img.width();
+  int width = _img.width();
   int height = _img.height();
 
   cv::Mat src = QImage2Mat(_img);
@@ -42,7 +38,7 @@ void ProcessingWindow::sobel(){
           cv::Sobel(src, dst, src.depth(), x, y);
         }
     }
-  _img = Mat2QImage(dst);*/
+  _img = Mat2QImage(dst);
 }
 
 void ProcessingWindow::canny(){
