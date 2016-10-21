@@ -7,6 +7,7 @@ ProcessingWindow::ProcessingWindow(QImage* img){
 
   _img = img->copy(0,0, img->width(), img->height());
   _imgLabel = new QLabel(this);
+  _imgLabel->setPixmap(QPixmap::fromImage(_img));
 
   QHBoxLayout *layout = new QHBoxLayout(this);
   layout->addWidget(_imgLabel);
@@ -20,14 +21,10 @@ void ProcessingWindow::blur(){
   int height = _img.height();
 
   cv::Mat src = QImage2Mat(_img);
-  cv::Mat dst;
-
-  for (int y=0; y<height-1; y++){
-      for (int x=0; x<width-1; x++){
-          cv::blur(src, dst, cv::Size(x,y));
-        }
-    }
+  cv::Mat dst = src.clone();
+  cv::blur(src, dst, cv::Size(15,15), cv::Point(1,1));
   _img = Mat2QImage(dst);
+  _imgLabel->setPixmap(QPixmap::fromImage(_img));
 }
 
 void ProcessingWindow::sobel(){
@@ -60,11 +57,6 @@ void ProcessingWindow::canny(){
         }
     }
   _img = Mat2QImage(dst);*/
-}
-
-void ProcessingWindow::show(){
-  _imgLabel = new QLabel(this);
-  _imgLabel->setPixmap(QPixmap::fromImage(_img));
 }
 
 QImage ProcessingWindow::Mat2QImage(cv::Mat const& src)
