@@ -1,5 +1,7 @@
 #include "processingwindow.h"
 #include <opencv2/imgproc/imgproc.hpp>
+#include <iostream>
+#include <stdlib.h>
 
 ProcessingWindow::ProcessingWindow(QImage* img){
   setAttribute(Qt::WA_DeleteOnClose);
@@ -21,14 +23,8 @@ void ProcessingWindow::blur(){
   int height = _img.height();
 
   cv::Mat src = QImage2Mat(_img);
-<<<<<<< HEAD
-  cv::Mat dst;
-  cv::blur(src, dst, cv::Size(width, height));
-
-=======
   cv::Mat dst = src.clone();
   cv::blur(src, dst, cv::Size(15,15), cv::Point(1,1));
->>>>>>> d1b45f126d3a1eaea87b12109382587ccbccf676
   _img = Mat2QImage(dst);
   _imgLabel->setPixmap(QPixmap::fromImage(_img));
 }
@@ -67,18 +63,16 @@ void ProcessingWindow::canny(){
 
 QImage ProcessingWindow::Mat2QImage(cv::Mat const& src)
 {
-     cv::Mat temp; // make the same cv::Mat
-     cvtColor(src, temp,CV_BGR2RGB); // cvtColor Makes a copt, that what i need
-     QImage dest((const uchar *) temp.data, temp.cols, temp.rows, temp.step, QImage::Format_RGB888);
-     dest.bits(); // enforce deep copy, see documentation
-     // of QImage::QImage ( const uchar * data, int width, int height, Format format )
-     return dest;
+  cv::Mat rgb;
+  cv::cvtColor(src, rgb, CV_BGR2RGB);
+  return QImage((const unsigned char*)(rgb.data), rgb.cols, rgb.rows, QImage::Format_RGB888);
 }
 
 cv::Mat ProcessingWindow::QImage2Mat(QImage const& src)
 {
-     cv::Mat tmp(src.height(),src.width(),CV_8UC3,(uchar*)src.bits(),src.bytesPerLine());
-     cv::Mat result; // deep copy just in case (my lack of knowledge with open cv)
-     cvtColor(tmp, result,CV_BGR2RGB);
-     return result;
+  cv::Mat mat = cv::Mat(src.height(), src.width(), CV_8UC4, (uchar*)src.bits(), src.bytesPerLine());
+  cv::Mat mat2 = cv::Mat(mat.rows, mat.cols, CV_8UC3 );
+  int from_to[] = {0,0,1,1,2,2};
+  cv::mixChannels( &mat, 1, &mat2, 1, from_to, 3 );
+  return mat2;
 }
