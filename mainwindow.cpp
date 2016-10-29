@@ -217,16 +217,16 @@ void MainWindow::blurSlot(){
     if (!_imageLoadedIsDraw)
         return;
     ProcessingWindow *w = new ProcessingWindow(&_imageLoaded);
-    w->blur();
+    w->blur(5);
     w->show();
 }
 
 void MainWindow::sobelSlot(){
-    /*if (!_imageLoadedIsDraw)
+    if (!_imageLoadedIsDraw)
         return;
     ProcessingWindow *w = new ProcessingWindow(&_imageLoaded);
-    w->sobel();
-    w->show();*/
+    w->sobel(3, 1);
+    w->show();
 }
 
 void MainWindow::cannySlot(){
