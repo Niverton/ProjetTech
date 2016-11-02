@@ -17,7 +17,7 @@ public:
 
     void blur(int kernel_size);
     void sobel(int kernel_size, int scale);
-    void canny();
+    void canny(int kernel_size, double threshold, int ratio);
 
 private:
     QImage _img;

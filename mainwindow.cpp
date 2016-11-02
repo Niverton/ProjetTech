@@ -230,9 +230,9 @@ void MainWindow::sobelSlot(){
 }
 
 void MainWindow::cannySlot(){
-    /*if (!_imageLoadedIsDraw)
+    if (!_imageLoadedIsDraw)
         return;
     ProcessingWindow *w = new ProcessingWindow(&_imageLoaded);
-    w->canny();
-    w->show();*/
+    w->canny(3, 20, 2);
+    w->show();
 }

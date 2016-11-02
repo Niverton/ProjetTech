@@ -34,12 +34,16 @@ void ProcessingWindow::sobel(int kernel_size=3, int scale=1){
   _imgLabel->setPixmap(QPixmap::fromImage(_img));
 }
 
-void ProcessingWindow::canny(){
-  /*cv::Mat src = QImage2Mat(_img);
-  cv::Mat dst;
-  cv::Canny()
-  _img = Mat2QImage(dst);
-  _imgLabel->setPixmap(QPixmap::fromImage(_img));*/
+void ProcessingWindow::canny(int kernel_size, double threshold, int ratio){
+  cv::Mat src = QImage2Mat(_img);
+
+  cv::Mat gray, edge, dst;
+  cv::cvtColor(src, gray, CV_BGR2GRAY);
+  cv::Canny( gray, edge, threshold, threshold*ratio, kernel_size);
+  edge.convertTo(dst, CV_8U);
+  cv::cvtColor(dst, dst, CV_GRAY2BGR);
+  _img=Mat2QImage(dst);
+   _imgLabel->setPixmap(QPixmap::fromImage(_img));
 }
 
 QImage ProcessingWindow::Mat2QImage(cv::Mat const& src)
