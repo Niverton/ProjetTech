@@ -19,6 +19,8 @@
 #include <QRubberBand>
 #include <QHBoxLayout>
 
+#include <QDebug>
+
 /**********************************************************************
  **********************************************************************
  *
@@ -140,7 +142,7 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 /**********************************************************************
  **********************************************************************
  *
- * Initial window size.
+ * Initial Window size.
  *
  **********************************************************************/
 QSize MainWindow::sizeHint() const
@@ -200,6 +202,7 @@ void MainWindow::openFile()
 
         _imgLabel->setPixmap(QPixmap::fromImage(_imageLoaded));
         resize(_imageLoaded.size());
+        move((QApplication::desktop()->screenGeometry().width() / 2) - (size().width() / 2), (QApplication::desktop()->screenGeometry().height() / 2) - (size().height() / 2));
     }
 }
 
