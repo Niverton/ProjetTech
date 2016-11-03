@@ -21,13 +21,13 @@ SOURCES += main.cpp\
         mainwindow.cpp\
         stereowindow.cpp\
         cropwindow.cpp\
-        processingwindow.cpp \
     imagetools.cpp \
-    imageprocessor.cpp
+    imageprocessor.cpp \
+    imageprocessingwidget.cpp
 
 HEADERS  += mainwindow.h\
         stereowindow.h\
         cropwindow.h\
-        processingwindow.h \
     imagetools.h \
-    imageprocessor.h
+    imageprocessor.h \
+    imageprocessingwidget.h

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "stereowindow.h"
 #include "cropwindow.h"
-#include "processingwindow.h"
+#include "imageprocessingwidget.h"
 
 #include <QMessageBox>
 #include <QMenuBar>
@@ -230,7 +230,7 @@ void MainWindow::blurSlot(){
     if (!_imageLoadedIsDraw)
         return;
     // Leak ?
-    ProcessingWindow *w = new ProcessingWindow(_imageLoaded, ImageProcessor::Filter::FILTER_BLUR);
+    ImageProcessingWidget *w = new ImageProcessingWidget(_imageLoaded, ImageProcessor::Filter::FILTER_BLUR);
     w->processImage();
     w->show();
 }
@@ -238,7 +238,7 @@ void MainWindow::blurSlot(){
 void MainWindow::sobelSlot(){
     if (!_imageLoadedIsDraw)
         return;
-    ProcessingWindow *w = new ProcessingWindow(_imageLoaded, ImageProcessor::Filter::FILTER_SOBEL);
+    ImageProcessingWidget *w = new ImageProcessingWidget(_imageLoaded, ImageProcessor::Filter::FILTER_SOBEL);
     w->processImage();
     w->show();
 }
@@ -246,7 +246,7 @@ void MainWindow::sobelSlot(){
 void MainWindow::cannySlot(){
     if (!_imageLoadedIsDraw)
         return;
-    ProcessingWindow *w = new ProcessingWindow(_imageLoaded, ImageProcessor::Filter::FILTER_CANNY);
+    ImageProcessingWidget *w = new ImageProcessingWidget(_imageLoaded, ImageProcessor::Filter::FILTER_CANNY);
     w->processImage();
     w->show();
 }
