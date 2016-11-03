@@ -216,7 +216,8 @@ void MainWindow::clipImgSlot(){
 void MainWindow::blurSlot(){
     if (!_imageLoadedIsDraw)
         return;
-    ProcessingWindow *w = new ProcessingWindow(&_imageLoaded);
+    // Leak ?
+    ProcessingWindow *w = new ProcessingWindow(_imageLoaded);
     w->blur(5);
     w->show();
 }
@@ -224,7 +225,7 @@ void MainWindow::blurSlot(){
 void MainWindow::sobelSlot(){
     if (!_imageLoadedIsDraw)
         return;
-    ProcessingWindow *w = new ProcessingWindow(&_imageLoaded);
+    ProcessingWindow *w = new ProcessingWindow(_imageLoaded);
     w->sobel(3, 1);
     w->show();
 }
@@ -232,7 +233,7 @@ void MainWindow::sobelSlot(){
 void MainWindow::cannySlot(){
     if (!_imageLoadedIsDraw)
         return;
-    ProcessingWindow *w = new ProcessingWindow(&_imageLoaded);
+    ProcessingWindow *w = new ProcessingWindow(_imageLoaded);
     w->canny(3, 20, 2);
     w->show();
 }
