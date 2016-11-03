@@ -230,23 +230,23 @@ void MainWindow::blurSlot(){
     if (!_imageLoadedIsDraw)
         return;
     // Leak ?
-    ProcessingWindow *w = new ProcessingWindow(_imageLoaded);
-    w->blur(5);
+    ProcessingWindow *w = new ProcessingWindow(_imageLoaded, ImageProcessor::Filter::FILTER_BLUR);
+    w->processImage();
     w->show();
 }
 
 void MainWindow::sobelSlot(){
     if (!_imageLoadedIsDraw)
         return;
-    ProcessingWindow *w = new ProcessingWindow(_imageLoaded);
-    w->sobel(3, 1);
+    ProcessingWindow *w = new ProcessingWindow(_imageLoaded, ImageProcessor::Filter::FILTER_SOBEL);
+    w->processImage();
     w->show();
 }
 
 void MainWindow::cannySlot(){
     if (!_imageLoadedIsDraw)
         return;
-    ProcessingWindow *w = new ProcessingWindow(_imageLoaded);
-    w->canny(3, 20, 2);
+    ProcessingWindow *w = new ProcessingWindow(_imageLoaded, ImageProcessor::Filter::FILTER_CANNY);
+    w->processImage();
     w->show();
 }

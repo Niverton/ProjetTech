@@ -22,10 +22,12 @@ SOURCES += main.cpp\
         stereowindow.cpp\
         cropwindow.cpp\
         processingwindow.cpp \
-    imagetools.cpp
+    imagetools.cpp \
+    imageprocessor.cpp
 
 HEADERS  += mainwindow.h\
         stereowindow.h\
         cropwindow.h\
         processingwindow.h \
-    imagetools.h
+    imagetools.h \
+    imageprocessor.h

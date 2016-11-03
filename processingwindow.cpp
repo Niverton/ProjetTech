@@ -1,10 +1,9 @@
 #include "processingwindow.h"
-#include "imagetools.h"
 
 #include <QLabel>
 #include <QHBoxLayout>
 
-ProcessingWindow::ProcessingWindow(const QImage& img, QWidget* parent) : QWidget(parent), _img(img)
+ProcessingWindow::ProcessingWindow(const QImage& img, ImageProcessor::Filter filter, QWidget* parent) : QWidget(parent), filter_(filter), imageProcessor_(img)
 {
     if(!parent)
     {
@@ -13,43 +12,42 @@ ProcessingWindow::ProcessingWindow(const QImage& img, QWidget* parent) : QWidget
 
     setWindowTitle("Rogner l'image");
 
-    _imgLabel = new QLabel(this);
-    _imgLabel->setPixmap(QPixmap::fromImage(_img));
+    imgLabel_ = new QLabel(this);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->addWidget(_imgLabel);
+    layout->addWidget(imgLabel_);
 
     setLayout(layout);
     adjustSize();
 }
 
-void ProcessingWindow::blur(int kernel_size){
-    cv::Mat src = ImageTools::image2Mat(_img);
-    cv::Mat dst = src.clone();
+void ProcessingWindow::processImage()
+{
+    switch(filter_)
+    {
+        case ImageProcessor::Filter::FILTER_NONE:
+        {
+            break;
+        }
 
-    cv::blur(src, dst, cv::Size(kernel_size, kernel_size));
+        case ImageProcessor::Filter::FILTER_BLUR:
+        {
+            imageProcessor_.blur(5);
+            break;
+        }
 
-    _img = ImageTools::cvMatToImage(dst);
-    _imgLabel->setPixmap(QPixmap::fromImage(_img));
-}
+        case ImageProcessor::Filter::FILTER_SOBEL:
+        {
+            imageProcessor_.sobel(3, 1);
+            break;
+        }
 
-void ProcessingWindow::sobel(int kernel_size, int scale){
-    cv::Mat src = ImageTools::image2Mat(_img);
-    cv::Mat dst;
+        case ImageProcessor::Filter::FILTER_CANNY:
+        {
+            imageProcessor_.canny(3, 20, 2);
+            break;
+        }
+    }
 
-    cv::Sobel(src, dst, src.depth(), 1, 0, kernel_size, scale);
-
-    _img = ImageTools::cvMatToImage(dst);
-    _imgLabel->setPixmap(QPixmap::fromImage(_img));
-}
-
-void ProcessingWindow::canny(int kernel_size, double threshold, int ratio){
-    cv::Mat src = ImageTools::image2Mat(_img);
-    cv::Mat gray, edge, dst;
-    cv::cvtColor(src, gray, CV_BGR2GRAY);
-    cv::Canny( gray, edge, threshold, threshold * ratio, kernel_size);
-    edge.convertTo(dst, CV_8U);
-    cv::cvtColor(dst, dst, CV_GRAY2BGR);
-    _img = ImageTools::cvMatToImage(dst);
-    _imgLabel->setPixmap(QPixmap::fromImage(_img));
+    imgLabel_->setPixmap(QPixmap::fromImage(imageProcessor_.getImage()));
 }

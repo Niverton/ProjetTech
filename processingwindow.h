@@ -1,8 +1,7 @@
 #ifndef PROCESSINGWINDOW_H
 #define PROCESSINGWINDOW_H
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+#include "imageprocessor.h"
 
 #include <QWidget>
 #include <QImage>
@@ -13,15 +12,15 @@ class ProcessingWindow : public QWidget {
     Q_OBJECT
 
 public:
-    ProcessingWindow(const QImage& img, QWidget* parent = 0);
+    ProcessingWindow(const QImage& img, ImageProcessor::Filter filter = ImageProcessor::Filter::FILTER_NONE, QWidget* parent = 0);
 
-    void blur(int kernel_size);
-    void sobel(int kernel_size, int scale);
-    void canny(int kernel_size, double threshold, int ratio);
+    void processImage();
 
 private:
-    QImage  _img;
-    QLabel* _imgLabel;
+    ImageProcessor::Filter  filter_;
+    ImageProcessor          imageProcessor_;
+
+    QLabel*                 imgLabel_;
 };
 
 #endif

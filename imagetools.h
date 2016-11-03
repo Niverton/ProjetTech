@@ -20,7 +20,7 @@ public:
      * \param img : QImage that has to be converted.
      * \return An opencv Mat object corresponding to a QImage image representation.
      */
-    static cv::Mat image2Mat(QImage const& img);
+    static cv::Mat imageToMat(QImage const& img);
 };
 
 #endif // IMAGETOOLS_H

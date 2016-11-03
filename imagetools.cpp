@@ -41,7 +41,7 @@ QImage ImageTools::cvMatToImage(const cv::Mat& inMat)
     return QImage();
 }
 
-cv::Mat ImageTools::image2Mat(QImage const& src)
+cv::Mat ImageTools::imageToMat(QImage const& src)
 {
     cv::Mat mat = cv::Mat(src.height(), src.width(), CV_8UC4, (uchar*)src.bits(), src.bytesPerLine());
     cv::Mat mat2 = cv::Mat(mat.rows, mat.cols, CV_8UC3 );
