@@ -1,10 +1,11 @@
 #ifndef PROCESSING_H
 #define PROCESSING_H
 
-#include <QWidget>
-#include <QImage>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+
+#include <QWidget>
+#include <QImage>
 
 class QLabel;
 

@@ -25,10 +25,7 @@
  *
  **********************************************************************/
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
-    //
-    QRect r = QApplication::desktop()->screenGeometry();
-    resize(r.width() * 0.5f, r.height() * 0.5f);
-    setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), qApp->desktop()->availableGeometry()));
+    move(QApplication::desktop()->availableGeometry().center() / 2);
 
     /*  QMainWindow possède son propre layout qui lui permet de disposer les barres d'outils
         On est donc obligé de créer un widget qui contiendra le layout du contenu de la fenêtre
@@ -67,36 +64,36 @@ MainWindow::~MainWindow() {}
  *
  **********************************************************************/
 void MainWindow::initMenuBar() {
-  QMenuBar* mBar = menuBar();
+    QMenuBar* mBar = menuBar();
 
-  //File
-  _menuFile = new QMenu("&Fichier", mBar);
-  //File - Open
-  _openAction = new QAction("&Ouvrir", _menuFile);
-  _openAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
-  _menuFile->addAction(_openAction);
-  connect(_openAction, SIGNAL(triggered(bool)), this, SLOT(openFile()));
-  //File - Quit
-  _quitAction = new QAction("&Quitter", _menuFile);
-  _quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
-  _menuFile->addAction(_quitAction);
-  connect(_quitAction, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
+    //File
+    _menuFile = new QMenu("&Fichier", mBar);
+    //File - Open
+    _openAction = new QAction("&Ouvrir", _menuFile);
+    _openAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+    _menuFile->addAction(_openAction);
+    connect(_openAction, SIGNAL(triggered(bool)), this, SLOT(openFile()));
+    //File - Quit
+    _quitAction = new QAction("&Quitter", _menuFile);
+    _quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+    _menuFile->addAction(_quitAction);
+    connect(_quitAction, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
 
-  //Edit
-  _menuEdit = new QMenu("&Editer", mBar);
-  //Edit - cut
-  _cutAction = new QAction("&Couper l'image", _menuEdit);
-  _cutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
-  _menuEdit->addAction(_cutAction);
-  connect(_cutAction, SIGNAL(triggered(bool)), this, SLOT(cutImgSlot()));
-  //Edit - clipAction_
-  _clipAction = new QAction("&Rogner l'image", _menuEdit);
-  _clipAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
-  _menuEdit->addAction(_clipAction);
-  connect(_clipAction, SIGNAL(triggered(bool)), this, SLOT(clipImgSlot()));
+    //Edit
+    _menuEdit = new QMenu("&Editer", mBar);
+    //Edit - cut
+    _cutAction = new QAction("&Couper l'image", _menuEdit);
+    _cutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
+    _menuEdit->addAction(_cutAction);
+    connect(_cutAction, SIGNAL(triggered(bool)), this, SLOT(cutImgSlot()));
+    //Edit - clipAction_
+    _clipAction = new QAction("&Rogner l'image", _menuEdit);
+    _clipAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
+    _menuEdit->addAction(_clipAction);
+    connect(_clipAction, SIGNAL(triggered(bool)), this, SLOT(clipImgSlot()));
 
-  //OpenCV
-  _menuOpenCV = new QMenu("&OpenCV", mBar);
+    //OpenCV
+    _menuOpenCV = new QMenu("&OpenCV", mBar);
     _blurAction = new QAction("&Flouter l'image", _menuOpenCV);
     _menuOpenCV->addAction(_blurAction);
     connect(_blurAction, SIGNAL(triggered(bool)), this, SLOT(blurSlot()));
@@ -109,17 +106,17 @@ void MainWindow::initMenuBar() {
     _menuOpenCV->addAction(_cannyAction);
     connect(_cannyAction, SIGNAL(triggered(bool)), this, SLOT(cannySlot()));
 
-  //About
-  _menuAbout = new QMenu("À &Propos", mBar);
-  _aboutAction = new QAction("À &Propos", _menuAbout);
-  _aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_A));
-  _menuAbout->addAction(_aboutAction);
-  connect(_aboutAction, SIGNAL(triggered(bool)), this, SLOT(renderMessageBox()));
+    //About
+    _menuAbout = new QMenu("À &Propos", mBar);
+    _aboutAction = new QAction("À &Propos", _menuAbout);
+    _aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_A));
+    _menuAbout->addAction(_aboutAction);
+    connect(_aboutAction, SIGNAL(triggered(bool)), this, SLOT(renderMessageBox()));
 
-  mBar->addMenu(_menuFile);
-  mBar->addMenu(_menuEdit);
-  mBar->addMenu(_menuOpenCV);
-  mBar->addMenu(_menuAbout);
+    mBar->addMenu(_menuFile);
+    mBar->addMenu(_menuEdit);
+    mBar->addMenu(_menuOpenCV);
+    mBar->addMenu(_menuAbout);
 }
 
 
@@ -137,6 +134,12 @@ void MainWindow::resizeEvent(QResizeEvent* event)
     {
         resizeLoadedImage();
     }
+}
+
+QSize MainWindow::sizeHint() const
+{
+    QRect r = QApplication::desktop()->screenGeometry();
+    return QSize(r.width() * 0.5f, r.height() * 0.5f);
 }
 
 /**********************************************************************
@@ -189,7 +192,7 @@ void MainWindow::openFile()
         //imgLabel_->setScaledContents(true);
 
         _imgLabel->setPixmap(QPixmap::fromImage(_imageLoaded));
-        adjustSize();
+        _imgLabel->setAlignment(Qt::AlignCenter);
     }
 }
 

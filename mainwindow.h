@@ -5,6 +5,7 @@
 #include <QString>
 #include <QImage>
 #include <QHBoxLayout>
+#include <QSize>
 
 class QMenu;
 class QAction;
@@ -21,6 +22,7 @@ public:
 protected:
     void resizeEvent(QResizeEvent* event);
     void resizeLoadedImage();
+    QSize sizeHint() const;
 
 private slots:
     void renderMessageBox();
@@ -69,7 +71,6 @@ private:
     QHBoxLayout*    _layout;
 
     void initMenuBar();
-    void mousePressedEvent(QMouseEvent* event, int x_origin, int y_origin);
 };
 
 #endif // MAINWINDOW_H
