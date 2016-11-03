@@ -1,5 +1,5 @@
-#ifndef PROCESSING_H
-#define PROCESSING_H
+#ifndef PROCESSINGWINDOW_H
+#define PROCESSINGWINDOW_H
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
