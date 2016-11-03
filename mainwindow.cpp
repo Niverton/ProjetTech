@@ -137,6 +137,12 @@ void MainWindow::resizeEvent(QResizeEvent* event)
     }
 }
 
+/**********************************************************************
+ **********************************************************************
+ *
+ * Initial window size.
+ *
+ **********************************************************************/
 QSize MainWindow::sizeHint() const
 {
     QRect r = QApplication::desktop()->screenGeometry();
@@ -193,7 +199,7 @@ void MainWindow::openFile()
         //imgLabel_->setScaledContents(true);
 
         _imgLabel->setPixmap(QPixmap::fromImage(_imageLoaded));
-        _imgLabel->setAlignment(Qt::AlignCenter);
+        resize(_imageLoaded.size());
     }
 }
 

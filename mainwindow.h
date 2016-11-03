@@ -33,6 +33,7 @@ private slots:
     void sobelSlot();
     void cannySlot();
 
+
 private:
     QLabel*         _imgLabel;
     QLabel*         _imgLabelRight;
