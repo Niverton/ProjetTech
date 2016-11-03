@@ -1,5 +1,5 @@
-#ifndef PROCESSINGWINDOW_H
-#define PROCESSINGWINDOW_H
+#ifndef IMAGEPROCESSINGWIDGET_H
+#define IMAGEPROCESSINGWIDGET_H
 
 #include "imageprocessor.h"
 
@@ -43,4 +43,4 @@ private:
     QLabel*                 imgLabel_;          /*!< Image container. */
 };
 
-#endif
+#endif // IMAGEPROCESSINGWIDGET_H
