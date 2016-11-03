@@ -6,7 +6,11 @@
 
 ProcessingWindow::ProcessingWindow(const QImage& img, QWidget* parent) : QWidget(parent), _img(img)
 {
-    setAttribute(Qt::WA_DeleteOnClose);
+    if(!parent)
+    {
+        setAttribute(Qt::WA_DeleteOnClose);
+    }
+
     setWindowTitle("Rogner l'image");
 
     _imgLabel = new QLabel(this);
