@@ -17,6 +17,7 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QRubberBand>
+#include <QHBoxLayout>
 
 /**********************************************************************
  **********************************************************************

@@ -4,12 +4,12 @@
 #include <QMainWindow>
 #include <QString>
 #include <QImage>
-#include <QHBoxLayout>
 #include <QSize>
 
 class QMenu;
 class QAction;
 class QLabel;
+class QHBoxLayout;
 
 class MainWindow : public QMainWindow
 {
