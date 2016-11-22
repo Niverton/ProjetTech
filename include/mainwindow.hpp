@@ -38,14 +38,8 @@ class MainWindow : public QMainWindow {
     bool drawRight;
 
     //Widget
-    QLabel* imageLeft;
-    QLabel* imageRight;
-
-
-    //OpenCV
-    cv::Mat matLeft;
-    cv::Mat matRight;
-    
+    ImageWidget* imageLeft;
+    ImageWidget* imageRight;
 };
 
 #endif // MAINWINDOW

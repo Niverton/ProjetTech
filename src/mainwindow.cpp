@@ -17,12 +17,13 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   //
   initMenuBar();
 
+  /* TODO
   imageLeft = new QLabel(this);
   imageDroite = new QLabel(this);
   
   layout->addWidget(imageLeft);
   layout->addWidget(imageDroite);
-  
+  //*/
 }
 
 MainWindow::~MainWindow() {}
@@ -50,7 +51,7 @@ void MainWindow::initMenuBar() {
     cutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
     menuEdit->addAction(cutAction);
     connect(cutAction, SIGNAL(triggered(bool)), this, SLOT(cutImgSlot()));
-    //Edit - clipAction_
+    //Edit - clipAction
     QAction clipAction = new QAction("&Rogner l'image", menuEdit);
     clipAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
     menuEdit->addAction(clipAction);

@@ -4,18 +4,23 @@
 class ImageTools {
   public:
     /*!
+     * \brief Gets the single instance of this class
+     */
+    static ImageTools getInstance();
+
+    /*!
      * \brief Converts an opencv Mat object into a QImage.
      * \param inMat: Mat object that has to be converted.
      * \return A QImage corresponding to an opencv Mat image representation.
      */
-    static QImage cvMatToImage(const cv::Mat& inMat);
+    QImage cvMatToImage(const cv::Mat& inMat);
 
     /*!
      * \brief Converts a QImage into an opencv Mat object.
      * \param img: QImage that has to be converted.
      * \return An opencv Mat object corresponding to a QImage image representation.
      */
-    static cv::Mat imageToMat(QImage const& img);
+    cv::Mat imageToMat(QImage const& img);
 
     /*!
      * \brief Splits an image verticaly
@@ -23,16 +28,23 @@ class ImageTools {
      * \param outputLeft: Left half of the image
      * \param outputRight: Right half of the image     
      */
-    static void split(const cv::Mat& input, cv::Mat& outputLeft, cv::Mat& outputRight);
+    void split(const cv::Mat& input, cv::Mat& outputLeft, cv::Mat& outputRight);
 
     //TODO: Document blur
-    static void blur(cv::Mat& image);
+    void blur(cv::Mat& image);
 
     //TODO Document sobel
-    static void sobel(cv::Mat& image);
+    void sobel(cv::Mat& image);
 
     //TODO Document canny
-    static void canny(cv::Mat& image);
+    void canny(cv::Mat& image);
+
+  private:
+    // Constructeur privé
+    ImageTools();
+    //Singleton
+    ImageTools* singleton = NULL;
+
 
 };
 
