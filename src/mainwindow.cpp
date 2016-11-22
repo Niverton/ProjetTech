@@ -17,7 +17,7 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   //
   initMenuBar();
 
-  /* TODO
+  /* TODO Reimplement with custom ImageWidget
   imageLeft = new QLabel(this);
   imageDroite = new QLabel(this);
   

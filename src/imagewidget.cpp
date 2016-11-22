@@ -11,6 +11,14 @@ ImageWidget::ImageWidget(QWidget *parent = Q_NULLPTR) : QWidget(parent) {
   rubberBand = new QRubberBand(this);
 }
 
+void ImageWidget::setImage(cv::Mat im) {
+  //TODO Implement
+}
+
+cv::Mat getImage() {
+  //TODO Implement
+}
+
 void ImageWidget::mousePressEvent(QMouseEvent* ev){
     // Beginning crop
     if(!isCroping){
