@@ -1,5 +1,7 @@
 #include "imagewidget.hpp"
 
+#include "imagetools.hpp"
+
 #include <QRect>
 #include <QPoint>
 #include <QRubberBand>
@@ -75,9 +77,7 @@ void ImageWidget::cropImage(){ //TODO
     (firstPoint.x() > firstPoint.x()) ? firstPoint.x() - origin.x() : firstPoint.x() - origin.x(), //W
     (firstPoint.y() > firstPoint.y()) ? firstPoint.y() - origin.y() : firstPoint.y() - origin.y()  //H
   );
-  /* TODO Reimplement with cv::Mat
-  image = image.copy(QRect(origin, size));
-  label->setPixmap(QPixmap::fromImage(image));
-  //*/
+
+  cv::Rect selec(origin.x(), origin.y(), size.width(), size.height());
   adjustSize();
 }

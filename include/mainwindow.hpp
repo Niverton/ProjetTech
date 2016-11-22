@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "imagetools.hpp"
+
 #include <QMainWindow>
 #include <QLabel>
 

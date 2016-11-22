@@ -1,6 +1,8 @@
 #ifndef IMAGEWIDGET_H
 #define IMAGEWIDGET_H
 
+#include "imagetools.hpp"
+
 #include <QWidget>
 #include <QLabel>
 #include <QRubberBand>

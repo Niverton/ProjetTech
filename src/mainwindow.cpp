@@ -1,4 +1,9 @@
 #include "mainwindow.hpp"
+#include "imagetools.hpp"
+
+#include <QMessageBox>
+#include <QMainWindow>
+#include <QLabel>
 
 MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   move(QApplication::desktop()->availableGeometry().center() / 2);
@@ -17,13 +22,11 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   //
   initMenuBar();
 
-  /* TODO Reimplement with custom ImageWidget
-  imageLeft = new QLabel(this);
-  imageDroite = new QLabel(this);
-  
+  imageLeft = new ImageWidget(this);
+  imageRight = new ImageWidget(this);
   layout->addWidget(imageLeft);
-  layout->addWidget(imageDroite);
-  //*/
+  layout->addWidget(imageRight);
+  
 }
 
 MainWindow::~MainWindow() {}
@@ -103,7 +106,7 @@ void MainWindow::updateImages() {
 *******/
 
 void renderAbout() {
-  //TODO Implement renderAbout
+  QMessageBox::about(this, "A propos", "Projet technologique L3");
 }
 void openFile() {
   //TODO Implement openFile
