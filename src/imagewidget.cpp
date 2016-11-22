@@ -12,23 +12,24 @@ ImageWidget::ImageWidget(QWidget *parent = Q_NULLPTR) : QWidget(parent) {
 }
 
 void ImageWidget::setImage(cv::Mat im) {
-  //TODO Implement
+  image = im.clone();
+  label->setPixmap(QPixmap::fromImage(tools->cvMatToImage(image)));
 }
 
 cv::Mat getImage() {
-  //TODO Implement
+  return image.clone();
 }
 
 void ImageWidget::mousePressEvent(QMouseEvent* ev){
-    // Beginning crop
-    if(!isCroping){
-        isCroping = true;
-        // Getting position
-        firstPoint = ev->pos();
+  // Beginning crop
+  if(!isCroping){
+    isCroping = true;
+    // Getting position
+    firstPoint = ev->pos();
 
-        rubberBand->setGeometry(QRect(firstPoint, firstPoint));
-        rubberBand->show();
-    }
+    rubberBand->setGeometry(QRect(firstPoint, firstPoint));
+    rubberBand->show();
+  }
 }
 
 void ImageWidget::mouseReleaseEvent(QMouseEvent *ev){
@@ -66,17 +67,17 @@ void ImageWidget::mouseMoveEvent(QMouseEvent *event)
 }
 
 void ImageWidget::cropImage(){ //TODO
-    QPoint origin(
-        (firstPoint.x() < firstPoint.x()) ? firstPoint.x() : firstPoint.x(), //X
-        (firstPoint.y() < firstPoint.y()) ? firstPoint.y() : firstPoint.y()  //Y
-    );
-    QSize size(
-        (firstPoint.x() > firstPoint.x()) ? firstPoint.x() - origin.x() : firstPoint.x() - origin.x(), //W
-        (firstPoint.y() > firstPoint.y()) ? firstPoint.y() - origin.y() : firstPoint.y() - origin.y()  //H
-    );
-    /* TODO Reimplement with cv::Mat
-    image = image.copy(QRect(origin, size));
-    label->setPixmap(QPixmap::fromImage(image));
-    //*/
-    adjustSize();
+  QPoint origin(
+    (firstPoint.x() < firstPoint.x()) ? firstPoint.x() : firstPoint.x(), //X
+    (firstPoint.y() < firstPoint.y()) ? firstPoint.y() : firstPoint.y()  //Y
+  );
+  QSize size(
+    (firstPoint.x() > firstPoint.x()) ? firstPoint.x() - origin.x() : firstPoint.x() - origin.x(), //W
+    (firstPoint.y() > firstPoint.y()) ? firstPoint.y() - origin.y() : firstPoint.y() - origin.y()  //H
+  );
+  /* TODO Reimplement with cv::Mat
+  image = image.copy(QRect(origin, size));
+  label->setPixmap(QPixmap::fromImage(image));
+  //*/
+  adjustSize();
 }

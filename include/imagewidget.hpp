@@ -37,6 +37,7 @@ class ImageWidget : QWidget {
     void setImage(cv::Mat im);
 
   private:
+    ImageTools* tools = ImageTools.getInstance();
     QLabel* label;
     cv::Mat image;
     //Selection
