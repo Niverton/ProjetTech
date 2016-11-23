@@ -127,5 +127,5 @@ void ImageProcessor::flann(QImage& img_1, QImage& img_2){
     std::vector< DMatch > matches;
     cv::matcher.match( descriptors_1, descriptors_2, matches );
     img_ = ImageTools::cvMatToImage(matches);
-    /*
+    */
 }
