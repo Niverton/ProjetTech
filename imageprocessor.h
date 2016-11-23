@@ -69,8 +69,11 @@ public:
      */
     void setImage(const QImage& image);
 
+    void flann(QImage& img_1, QImage& img_2);
+
 private:
     QImage  img_;   /*!< Transformed image. */
 };
 
 #endif // IMAGEPROCESSOR_H
+
