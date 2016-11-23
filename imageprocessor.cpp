@@ -103,9 +103,9 @@ void ImageProcessor::setImage(const QImage& image)
         - Algotithme de surf
         - Créer un descritpeur
         - Matcher les descripteurs avec flann
-
+*/
 void ImageProcessor::flann(QImage& img_1, QImage& img_2){
-
+    /*
     cv::Mat img_droite = ImageTools::imageToMat(img_1);
     cv::Mat img_gauche = ImageTools::imageToMat(img_2);
 
@@ -127,5 +127,5 @@ void ImageProcessor::flann(QImage& img_1, QImage& img_2){
     std::vector< DMatch > matches;
     cv::matcher.match( descriptors_1, descriptors_2, matches );
     img_ = ImageTools::cvMatToImage(matches);
+    /*
 }
-*/
