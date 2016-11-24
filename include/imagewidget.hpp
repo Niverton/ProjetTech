@@ -21,22 +21,20 @@ class ImageWidget : QWidget {
     //TODO Document
     void mousePressEvent(QMouseEvent* ev);
     //TODO Document
-    void resizeEvent(QResizeEvent* event);
-    //TODO Document
-    void resizeImage();
-    //TODO Document
     void mouseReleaseEvent(QMouseEvent* ev);
     //TODO Document
     void mouseMoveEvent(QMouseEvent *event);
     //TODO Document
     void cropImage();
-    //TODO Document
+    /* TODO Plus tard Gaspard
+    //TO DO Document
     void resizeEvent(QResizeEvent* event);
-    //TODO Document
+    //TO DO Document
     void resizeImage();
+    //*/
     
     cv::Mat getImage();
-    void setImage(cv::Mat im);
+    void setImage(const cv::Mat& im);
 
   private:
     ImageTools* tools = ImageTools.getInstance();

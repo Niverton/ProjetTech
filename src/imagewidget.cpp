@@ -13,12 +13,12 @@ ImageWidget::ImageWidget(QWidget *parent = Q_NULLPTR) : QWidget(parent) {
   rubberBand = new QRubberBand(this);
 }
 
-void ImageWidget::setImage(cv::Mat im) {
+void ImageWidget::setImage(const cv::Mat& im) {
   image = im.clone();
   label->setPixmap(QPixmap::fromImage(tools->cvMatToImage(image)));
 }
 
-cv::Mat getImage() {
+cv::Mat ImageWidget::getImage() {
   return image.clone();
 }
 
@@ -35,14 +35,13 @@ void ImageWidget::mousePressEvent(QMouseEvent* ev){
 }
 
 void ImageWidget::mouseReleaseEvent(QMouseEvent *ev){
-  /* TODO Reimplement with cv::Mat instead of QImage
     if(isCroping && ev->pos().x() < size().width() && ev->pos().y() < size().height()){
         // Getting coordinates of cropping endPoint
         firstPoint = ev->pos();
         // Hiding rubberband
         rubberBand->hide();
         // If coordinates are set and not equal (not null and a mouse click holding has been made)
-        if(!firstPoint.isNull() && !firstPoint.isNull() && firstPoint != firstPoint){
+        if(!firstPoint.isNull() && !secondPoint.isNull() && firstPoint != secondPoint){
             cropImage();
         }
 
@@ -58,7 +57,6 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent *ev){
 
         isCroping = false;
     }
-    //*/
 }
 
 void ImageWidget::mouseMoveEvent(QMouseEvent *event)
@@ -68,7 +66,7 @@ void ImageWidget::mouseMoveEvent(QMouseEvent *event)
     rubberBand->setGeometry(QRect(firstPoint, event->pos()).normalized());
 }
 
-void ImageWidget::cropImage(){ //TODO
+void ImageWidget::cropImage(){
   QPoint origin(
     (firstPoint.x() < firstPoint.x()) ? firstPoint.x() : firstPoint.x(), //X
     (firstPoint.y() < firstPoint.y()) ? firstPoint.y() : firstPoint.y()  //Y
@@ -79,5 +77,7 @@ void ImageWidget::cropImage(){ //TODO
   );
 
   cv::Rect selec(origin.x(), origin.y(), size.width(), size.height());
-  adjustSize();
+  cv::Mat cropped = image(selec);
+  setImage(cropped);
+  //adjustSize();
 }
