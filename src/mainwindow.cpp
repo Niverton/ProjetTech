@@ -93,7 +93,7 @@ void MainWindow::initMenuBar() {
 
 void MainWindow::resizeEvent(QResizeEvent* event) {
   QMainWindow::resizeEvent(event);
-  //TODO Implement (resize)
+  //TODO Resize à voir
 }
 
 /*******

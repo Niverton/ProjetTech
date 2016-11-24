@@ -17,7 +17,9 @@ LIBS += -L/usr/lib -lopencv_core -lopencv_imgproc
 
 SOURCES += src/projet.cpp \
     src/mainwindow.cpp \
-    src/imagetools.cpp
+    src/imagetools.cpp \
+    src/imagewidget.cpp
 
 HEADERS  += include/mainwindow.hpp \
-    include/imagetools.hpp
+    include/imagetools.hpp \
+    include/imagewidget.hpp
