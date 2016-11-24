@@ -38,13 +38,13 @@ class ImageTools {
     void split(const cv::Mat& input, cv::Mat& outputLeft, cv::Mat& outputRight);
 
     //TODO: Document blur
-    void blur(cv::Mat& image);
+    void blur(cv::Mat& image, int kernel_size);
 
     //TODO Document sobel
-    void sobel(cv::Mat& image);
+    void sobel(cv::Mat& image, int kernel_size, int scale);
 
     //TODO Document canny
-    void canny(cv::Mat& image);
+    oid canny(cv::Mat& image, int kernel_size, double threshold, int ratio);
 
   private:
     // Private constructors, do not implement
