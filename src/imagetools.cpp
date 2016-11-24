@@ -56,7 +56,10 @@ cv::Mat ImageTools::imageToMat(QImage const& src) {
 }
 
 void split(const cv::Mat& input, cv::Mat& outputLeft, cv::Mat& outputRight) {
-  //TODO Implement split 
+  cv::Mat tmp = input(cv::Rect(0,0,input.cols/2, input.rows));
+  tmp.copyTo(outputLeft);
+  tmp = input(cv::Rect(input.cols/2,0,input.cols, input.rows));
+  tmp.copyTo(outputRight);
 }
 void blur(cv::Mat& image, int kernel_size) {
   cv::Mat dst = image.clone();

@@ -1,12 +1,19 @@
 #ifndef IMAGE_TOOLS_H
 #define IMAGE_TOOLS_H
 
+/*!
+ * \brief This is a singleton. Use getInstance()
+ */
 class ImageTools {
   public:
     /*!
      * \brief Gets the single instance of this class
      */
-    static ImageTools getInstance();
+    static ImageTools& getInstance() {
+      static ImageTools instance; // Guaranteed to be destroyed.
+                                  // Instantiated on first use.
+      return instance;
+    }
 
     /*!
      * \brief Converts an opencv Mat object into a QImage.
@@ -40,10 +47,10 @@ class ImageTools {
     void canny(cv::Mat& image);
 
   private:
-    // Constructeur privé
-    ImageTools();
-    //Singleton
-    ImageTools* singleton = NULL;
+    // Private constructors, do not implement
+    ImageTools() {}
+    ImageTools(ImageTools const&)     = delete;
+    void operator=(ImageTools const&) = delete;
 
 
 };
