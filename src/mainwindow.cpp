@@ -91,14 +91,9 @@ void MainWindow::initMenuBar() {
   FOO
 *******/
 
-void MainWindow::resizeEvent(QResizeEvent* event)
-{
-   QMainWindow::resizeEvent(event);
-   //TODO Implement (resize)
-}
-
-void MainWindow::updateImages() {
-  //TODO Implement updateImages
+void MainWindow::resizeEvent(QResizeEvent* event) {
+  QMainWindow::resizeEvent(event);
+  //TODO Implement (resize)
 }
 
 /*******
@@ -109,20 +104,38 @@ void renderAbout() {
   QMessageBox::about(this, "A propos", "Projet technologique L3");
 }
 void openFile() {
-  //TODO Implement openFile
+  QString p = QFileDialog::getOpenFileName(this, "Ouvrir", QString(), "Images (*.png *.jpg)");
+
+  if(!p.isEmpty()) {
+    QImage imageLoaded(p);
+    imageLeft->setImage(imageLoaded);
+    drawLeft = true;
+
+    move((QApplication::desktop()->screenGeometry().width() / 2) - (size().width() / 2), (QApplication::desktop()->screenGeometry().height() / 2) - (size().height() / 2));
+  }
 }
 void cutImgSlot() {
   //TODO Implement cutImgSlot
+  if (!drawLeft || !drawRight)
+    return;
 }
 void clipImgSlot() {
   //TODO Implement clipImgSlot
+  if (!drawLeft || !drawRight)
+    return;
 }
 void blurSlot() {
   //TODO Implement blurSlot
+  if (!drawLeft || !drawRight)
+    return;
 }
 void sobelSlot() {
   //TODO Implement sobelSlot
+  if (!drawLeft || !drawRight)
+    return;
 }
 void cannySlot() {
   //TODO Implement cannySlot
+  if (!drawLeft || !drawRight)
+    return;
 }

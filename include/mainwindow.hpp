@@ -30,10 +30,6 @@ class MainWindow : public QMainWindow {
      * \brief Init all menus and actions in the menu bar
      */
     void initMenuBar();
-    /*!
-     * \brief Updates QLabels from cv::Mats
-     */
-    void updateImages();
 
     //Vars
     bool drawLeft; //Are labels drawn
