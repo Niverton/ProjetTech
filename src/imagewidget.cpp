@@ -18,7 +18,7 @@ void ImageWidget::setImage(const cv::Mat& im) {
   label->setPixmap(QPixmap::fromImage(tools->cvMatToImage(image)));
 }
 
-cv::Mat ImageWidget::getImage() {
+cv::Mat& ImageWidget::getImage() {
   return image.clone();
 }
 

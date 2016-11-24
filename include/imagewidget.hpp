@@ -33,7 +33,7 @@ class ImageWidget : QWidget {
     void resizeImage();
     //*/
     
-    cv::Mat getImage();
+    cv::Mat& getImage();
     void setImage(const cv::Mat& im);
 
   private:

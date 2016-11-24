@@ -115,14 +115,18 @@ void openFile() {
   }
 }
 void cutImgSlot() {
-  //TODO Implement cutImgSlot
-  if (!drawLeft || !drawRight)
-    return;
+  //TODO A voir
 }
 void clipImgSlot() {
   //TODO Implement clipImgSlot
-  if (!drawLeft || !drawRight)
+  if (!drawLeft) //Besoin que de l'image de gauche
     return;
+  ImageTools tools = ImageTools.getInstance();
+  cv::Mat& img = imageLeft->getImage();
+  cv::Mat left, right;
+  tools.split(img, left, right);
+  imageLeft->setImage(left);
+  imageRight->setImage(Right);  
 }
 void blurSlot() {
   //TODO Implement blurSlot
