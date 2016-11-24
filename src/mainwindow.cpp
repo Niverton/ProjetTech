@@ -118,7 +118,6 @@ void cutImgSlot() {
   //TODO A voir
 }
 void clipImgSlot() {
-  //TODO Implement clipImgSlot
   if (!drawLeft) //Besoin que de l'image de gauche
     return;
   ImageTools tools = ImageTools.getInstance();
@@ -129,17 +128,41 @@ void clipImgSlot() {
   imageRight->setImage(Right);  
 }
 void blurSlot() {
-  //TODO Implement blurSlot
-  if (!drawLeft || !drawRight)
+  if (!drawLeft)
     return;
+  ImageTools tools = ImageTools.getInstance();
+  cv::Mat img = imageLeft->getImage();
+  tools.blur(img, 3);
+  imageLeft->setImage(img);
+  if (!drawRight)
+    return;
+  img = imageRight->getImage();
+  tools.blur(img, 3);
+  imageRight->setImage(img);
 }
 void sobelSlot() {
-  //TODO Implement sobelSlot
-  if (!drawLeft || !drawRight)
+  if (!drawLeft)
     return;
+  ImageTools tools = ImageTools.getInstance();
+  cv::Mat img = imageLeft->getImage();
+  tools.sobel(img, 3, 1);
+  imageLeft->setImage(img);
+  if (!drawRight)
+    return;
+  img = imageRight->getImage();
+  tools.sobel(img, 3, 1);
+  imageRight->setImage(img);
 }
 void cannySlot() {
-  //TODO Implement cannySlot
-  if (!drawLeft || !drawRight)
+  if (!drawLeft)
     return;
+  ImageTools tools = ImageTools.getInstance();
+  cv::Mat img = imageLeft->getImage();
+  tools.canny(img, 3, 20, 2);
+  imageLeft->setImage(img);
+  if (!drawRight)
+    return;
+  img = imageRight->getImage();
+  tools.canny(img, 3, 20, 2);
+  imageRight->setImage(img);
 }
