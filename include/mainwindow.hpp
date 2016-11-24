@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "imagetools.hpp"
+#include "imagewidget.hpp"
 
 #include <QMainWindow>
 #include <QLabel>

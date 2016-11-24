@@ -1,6 +1,9 @@
 #ifndef IMAGE_TOOLS_H
 #define IMAGE_TOOLS_H
 
+#include <QImage>
+#include <opencv2/core/core.hpp>
+
 /*!
  * \brief This is a singleton. Use getInstance()
  */
@@ -13,7 +16,9 @@ class ImageTools {
       static ImageTools instance; // Guaranteed to be destroyed.
                                   // Instantiated on first use.
       return instance;
-    }
+    } //Do not implement
+    ImageTools(ImageTools const&)     = delete;
+    void operator=(ImageTools const&) = delete;
 
     /*!
      * \brief Converts an opencv Mat object into a QImage.
@@ -44,15 +49,11 @@ class ImageTools {
     void sobel(cv::Mat& image, int kernel_size, int scale);
 
     //TODO Document canny
-    oid canny(cv::Mat& image, int kernel_size, double threshold, int ratio);
+    void canny(cv::Mat& image, int kernel_size, double threshold, int ratio);
 
   private:
     // Private constructors, do not implement
     ImageTools() {}
-    ImageTools(ImageTools const&)     = delete;
-    void operator=(ImageTools const&) = delete;
-
-
 };
 
 #endif // IMAGE_TOOLS

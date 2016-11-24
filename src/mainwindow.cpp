@@ -1,12 +1,21 @@
 #include "mainwindow.hpp"
 #include "imagetools.hpp"
+#include "imagewidget.hpp"
 
 #include <QMessageBox>
 #include <QMainWindow>
 #include <QLabel>
+#include <QApplication>
+#include <QHBoxLayout>
+#include <QMenu>
+#include <QAction>
+#include <QMenuBar>
+#include <QFileDialog>
+#include <QString>
+#include <QDesktopWidget>
 
 MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
-  move(QApplication::desktop()->availableGeometry().center() / 2);
+  //move(QApplication::desktop()->availableGeometry().center() / 2);
 
   /*  QMainWindow possède son propre layout qui lui permet de disposer les barres d'outils
       On est donc obligé de créer un widget qui contiendra le layout du contenu de la fenêtre
@@ -14,7 +23,7 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   */
   QWidget *central = new QWidget(this);
   QLayout *layout = new QHBoxLayout(central);
-  central->setLayout(*layout);
+  central->setLayout(layout);
   setCentralWidget(central);
 
   //Ajuster le taille de la fenêtre en fonction de la taille de l'image.
@@ -26,7 +35,6 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   imageRight = new ImageWidget(this);
   layout->addWidget(imageLeft);
   layout->addWidget(imageRight);
-  
 }
 
 MainWindow::~MainWindow() {}
@@ -35,48 +43,48 @@ void MainWindow::initMenuBar() {
     QMenuBar* mBar = menuBar();
 
     //File
-    QMenu menuFile = new QMenu("&Fichier", mBar);
+    QMenu* menuFile = new QMenu("&Fichier", mBar);
     //File - Open
-    QAction openAction = new QAction("&Ouvrir", menuFile);
+    QAction* openAction = new QAction("&Ouvrir", menuFile);
     openAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
     menuFile->addAction(openAction);
     connect(openAction, SIGNAL(triggered(bool)), this, SLOT(openFile()));
     //File - Quit
-    QAction quitAction = new QAction("&Quitter", menuFile);
+    QAction* quitAction = new QAction("&Quitter", menuFile);
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     menuFile->addAction(quitAction);
     connect(quitAction, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
 
     //Edit
-    QMenu menuEdit = new QMenu("&Editer", mBar);
+    QMenu* menuEdit = new QMenu("&Editer", mBar);
     //Edit - cut
-    QAction cutAction = new QAction("&Couper l'image", menuEdit);
+    QAction* cutAction = new QAction("&Couper l'image", menuEdit);
     cutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
     menuEdit->addAction(cutAction);
     connect(cutAction, SIGNAL(triggered(bool)), this, SLOT(cutImgSlot()));
     //Edit - clipAction
-    QAction clipAction = new QAction("&Rogner l'image", menuEdit);
+    QAction* clipAction = new QAction("&Rogner l'image", menuEdit);
     clipAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
     menuEdit->addAction(clipAction);
     connect(clipAction, SIGNAL(triggered(bool)), this, SLOT(clipImgSlot()));
 
     //OpenCV
-    QMenu menuOpenCV = new QMenu("&OpenCV", mBar);
-    QAction blurAction = new QAction("&Flouter l'image", menuOpenCV);
+    QMenu* menuOpenCV = new QMenu("&OpenCV", mBar);
+    QAction* blurAction = new QAction("&Flouter l'image", menuOpenCV);
     menuOpenCV->addAction(blurAction);
     connect(blurAction, SIGNAL(triggered(bool)), this, SLOT(blurSlot()));
 
-    QAction sobelAction = new QAction("Appliquer &Sobel", menuOpenCV);
+    QAction* sobelAction = new QAction("Appliquer &Sobel", menuOpenCV);
     menuOpenCV->addAction(sobelAction);
     connect(sobelAction, SIGNAL(triggered(bool)), this, SLOT(sobelSlot()));
 
-    QAction cannyAction = new QAction("Appliquer &Canny", menuOpenCV);
+    QAction* cannyAction = new QAction("Appliquer &Canny", menuOpenCV);
     menuOpenCV->addAction(cannyAction);
     connect(cannyAction, SIGNAL(triggered(bool)), this, SLOT(cannySlot()));
 
     //About
-    QMenu menuAbout = new QMenu("À &Propos", mBar);
-    QAction aboutAction = new QAction("À &Propos", menuAbout);
+    QMenu* menuAbout = new QMenu("À &Propos", mBar);
+    QAction* aboutAction = new QAction("À &Propos", menuAbout);
     aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_A));
     menuAbout->addAction(aboutAction);
     connect(aboutAction, SIGNAL(triggered(bool)), this, SLOT(renderAbout()));
@@ -88,49 +96,41 @@ void MainWindow::initMenuBar() {
 }
 
 /*******
-  FOO
-*******/
-
-void MainWindow::resizeEvent(QResizeEvent* event) {
-  QMainWindow::resizeEvent(event);
-  //TODO Resize à voir
-}
-
-/*******
   SLOTS
 *******/
 
-void renderAbout() {
+void MainWindow::renderAbout() {
   QMessageBox::about(this, "A propos", "Projet technologique L3");
 }
-void openFile() {
+void MainWindow::openFile() {
   QString p = QFileDialog::getOpenFileName(this, "Ouvrir", QString(), "Images (*.png *.jpg)");
 
   if(!p.isEmpty()) {
     QImage imageLoaded(p);
-    imageLeft->setImage(imageLoaded);
+    ImageTools& tools = ImageTools::getInstance();
+    imageLeft->setImage(tools.imageToMat(imageLoaded));
     drawLeft = true;
 
     move((QApplication::desktop()->screenGeometry().width() / 2) - (size().width() / 2), (QApplication::desktop()->screenGeometry().height() / 2) - (size().height() / 2));
   }
 }
-void cutImgSlot() {
+void MainWindow::cutImgSlot() {
   //TODO A voir
 }
-void clipImgSlot() {
+void MainWindow::clipImgSlot() {
   if (!drawLeft) //Besoin que de l'image de gauche
     return;
-  ImageTools tools = ImageTools.getInstance();
-  cv::Mat& img = imageLeft->getImage();
+  cv::Mat img = imageLeft->getImage();
+  ImageTools& tools = ImageTools::getInstance();  
   cv::Mat left, right;
   tools.split(img, left, right);
   imageLeft->setImage(left);
-  imageRight->setImage(Right);  
+  imageRight->setImage(right);  
 }
-void blurSlot() {
+void MainWindow::blurSlot() {
   if (!drawLeft)
     return;
-  ImageTools tools = ImageTools.getInstance();
+  ImageTools& tools = ImageTools::getInstance();  
   cv::Mat img = imageLeft->getImage();
   tools.blur(img, 3);
   imageLeft->setImage(img);
@@ -140,10 +140,10 @@ void blurSlot() {
   tools.blur(img, 3);
   imageRight->setImage(img);
 }
-void sobelSlot() {
+void MainWindow::sobelSlot() {
   if (!drawLeft)
     return;
-  ImageTools tools = ImageTools.getInstance();
+  ImageTools& tools = ImageTools::getInstance();  
   cv::Mat img = imageLeft->getImage();
   tools.sobel(img, 3, 1);
   imageLeft->setImage(img);
@@ -153,10 +153,10 @@ void sobelSlot() {
   tools.sobel(img, 3, 1);
   imageRight->setImage(img);
 }
-void cannySlot() {
+void MainWindow::cannySlot() {
   if (!drawLeft)
     return;
-  ImageTools tools = ImageTools.getInstance();
+  ImageTools& tools = ImageTools::getInstance();  
   cv::Mat img = imageLeft->getImage();
   tools.canny(img, 3, 20, 2);
   imageLeft->setImage(img);

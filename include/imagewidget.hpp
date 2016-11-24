@@ -13,8 +13,8 @@
 /*!
  * \brief Cropable Image Widget
  */
-class ImageWidget : QWidget {
-  QObject
+class ImageWidget : public QWidget {
+  Q_OBJECT
 
   public:
     ImageWidget(QWidget *parent = Q_NULLPTR);
@@ -33,14 +33,13 @@ class ImageWidget : QWidget {
     void resizeImage();
     //*/
     
-    cv::Mat& getImage();
+    cv::Mat getImage();
     void setImage(const cv::Mat& im);
-
   private:
-    ImageTools* tools = ImageTools.getInstance();
     QLabel* label;
     cv::Mat image;
     //Selection
+    bool isCroping;
     QRubberBand* rubberBand;
     QPoint firstPoint;
     QPoint secondPoint;

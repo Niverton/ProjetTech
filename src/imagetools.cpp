@@ -1,5 +1,9 @@
 #include "imagetools.hpp"
 
+#include <QImage>
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+
 QImage ImageTools::cvMatToImage(const cv::Mat& inMat) {
   switch(inMat.type())
       {
@@ -65,7 +69,7 @@ void sobel(cv::Mat& image, int kernel_size, int scale) {
   int dy = 0;   //derivate y
 
   cv::Mat dst = image.clone();
-  cv::Sobel(image, dst, src.depth(), dx, dy, kernel_size, scale)
+  cv::Sobel(image, dst, image.depth(), dx, dy, kernel_size, scale);
 
   image = dst;
 }

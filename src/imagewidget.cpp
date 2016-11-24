@@ -6,19 +6,21 @@
 #include <QPoint>
 #include <QRubberBand>
 #include <QLabel>
+#include <QMouseEvent>
 #include <opencv2/core/core.hpp>
 
-ImageWidget::ImageWidget(QWidget *parent = Q_NULLPTR) : QWidget(parent) {
+ImageWidget::ImageWidget(QWidget *parent /*= Q_NULLPTR*/) : QWidget(parent), isCroping(false) {
   label = new QLabel(this);
-  rubberBand = new QRubberBand(this);
+  rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 }
 
 void ImageWidget::setImage(const cv::Mat& im) {
+  ImageTools& tools = ImageTools::getInstance();
   image = im.clone();
-  label->setPixmap(QPixmap::fromImage(tools->cvMatToImage(image)));
+  label->setPixmap(QPixmap::fromImage(tools.cvMatToImage(image)));
 }
 
-cv::Mat& ImageWidget::getImage() {
+cv::Mat ImageWidget::getImage() {
   return image.clone();
 }
 
@@ -47,8 +49,8 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent *ev){
 
         // Ending cropping
         isCroping = false;
-    }else if(isCroping && ev->pos().x() > image.width() && ev->pos().y() > image.height()){
-        firstPoint = QPoint(image.width(), image.height());
+    }else if(isCroping && ev->pos().x() > image.cols && ev->pos().y() > image.rows){
+        firstPoint = QPoint(image.cols, image.rows);
         rubberBand->hide();
 
         if(!firstPoint.isNull() && !firstPoint.isNull() && firstPoint != firstPoint){
