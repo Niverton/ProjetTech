@@ -105,27 +105,48 @@ void ImageProcessor::setImage(const QImage& image)
         - Matcher les descripteurs avec flann
 */
 void ImageProcessor::flann(QImage& img_1, QImage& img_2){
-    /*
+
     cv::Mat img_droite = ImageTools::imageToMat(img_1);
     cv::Mat img_gauche = ImageTools::imageToMat(img_2);
 
     int minHessian = 400;
-    cv::SurfFeatureDetector detector( minHessian );
-    
+
+    cv::SurfFeatureDetector detector (minHessian);
     std::vector<cv::KeyPoint> keypoints_1, keypoints_2;
-    cv::detector.detect( img_droite, keypoints_1 );
-    cv::detector.detect( img_gauche, keypoints_2 );
 
-    //Surf descriptor
+    detector.detect( img_droite, keypoints_1 );
+    detector.detect( img_gauche, keypoints_2 );
+
     cv::SurfDescriptorExtractor extractor;
-
     cv::Mat descriptors_1, descriptors_2;
-
-    //Matching descriptor vectors using FLANN matcher
-
+    
+    extractor.compute(img_droite, keypoints_1, descriptors_1);
+    extractor.compute(img_gauche, keypoints_2, descriptors_2);
+  
     cv::FlannBasedMatcher matcher;
-    std::vector< DMatch > matches;
-    cv::matcher.match( descriptors_1, descriptors_2, matches );
-    img_ = ImageTools::cvMatToImage(matches);
+    std::vector<cv::DMatch> matches;
+
+    matcher.match(descriptors_1, descriptors_2, matches);
+    
+    double max_dist = 0; 
+    double min_dist = 100;
+    double dist;
+
+    for (int i=0; i<descriptors_1.rows; i++){
+        dist = matches[i].distance;
+        if (dist < min_dist) min_dist = dist;
+        if (dist > max_dist) max_dist = dist;
+    }
+
+    std::vector<cv::DMatch> good_matches;
+    for (int i=0; i<descriptors_1.rows; i++){
+        if (matches[i].distance <= cv::max(2*min_dist, 0.02))
+            good_matches.push_back( matches[i]);
+    }
+    /*
+    cv::Mat img;
+    drawMatches( img_1, keypoints_1, img_2, keypoints_2,
+               good_matches, img, cv::Scalar::all(-1), cv::Scalar::all(-1),
+               vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
     */
-}
+  }
