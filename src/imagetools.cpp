@@ -1,12 +1,5 @@
 #include "imagetools.hpp"
 
-static ImageTools getInstance() {
-  if (singleton == NULL)
-    singleton = new ImageTools();
-
-  return singleton;
-}
-
 QImage ImageTools::cvMatToImage(const cv::Mat& inMat) {
   switch(inMat.type())
       {
@@ -87,9 +80,3 @@ void canny(cv::Mat& image, int kernel_size, double threshold, int ratio) {
 
   image = dst;
 }
-
-/*******
-  Privé
-*******/
-
-ImageTools::ImageTools() {}
