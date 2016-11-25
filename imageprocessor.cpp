@@ -143,10 +143,10 @@ void ImageProcessor::flann(QImage& img_1, QImage& img_2){
         if (matches[i].distance <= cv::max(2*min_dist, 0.02))
             good_matches.push_back( matches[i]);
     }
-    /*
+    
     cv::Mat img;
-    drawMatches( img_1, keypoints_1, img_2, keypoints_2,
+    drawMatches( img_droite, keypoints_1, img_gauche, keypoints_2,
                good_matches, img, cv::Scalar::all(-1), cv::Scalar::all(-1),
-               vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
-    */
+               std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+    
   }
