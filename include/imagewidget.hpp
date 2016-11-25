@@ -13,11 +13,11 @@
 /*!
  * \brief Cropable Image Widget
  */
-class ImageWidget : public QWidget {
+class ImageWidget : public QLabel {
   Q_OBJECT
 
   public:
-    ImageWidget(QWidget *parent = Q_NULLPTR);
+    ImageWidget(QWidget *parent = nullptr);
     //TODO Document
     void mousePressEvent(QMouseEvent* ev);
     //TODO Document
@@ -32,11 +32,12 @@ class ImageWidget : public QWidget {
     //TO DO Document
     void resizeImage();
     //*/
+
+    //QSize sizeHint() const;
     
     cv::Mat getImage();
     void setImage(const cv::Mat& im);
   private:
-    QLabel* label;
     cv::Mat image;
     //Selection
     bool isCroping;

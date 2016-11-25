@@ -9,16 +9,14 @@
 #include <QMouseEvent>
 #include <opencv2/core/core.hpp>
 
-ImageWidget::ImageWidget(QWidget *parent /*= Q_NULLPTR*/) : QWidget(parent), isCroping(false) {
-  label = new QLabel(this);
+ImageWidget::ImageWidget(QWidget *parent /*= Q_NULLPTR*/) : QLabel(parent), isCroping(false) {
   rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 }
 
 void ImageWidget::setImage(const cv::Mat& im) {
   ImageTools& tools = ImageTools::getInstance();
   image = im.clone();
-  label->setPixmap(QPixmap::fromImage(tools.cvMatToImage(image)));
-  label->adjustSize();
+  setPixmap(QPixmap::fromImage(tools.cvMatToImage(image)));
   adjustSize();
 }
 
