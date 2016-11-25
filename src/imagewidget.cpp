@@ -18,6 +18,8 @@ void ImageWidget::setImage(const cv::Mat& im) {
   ImageTools& tools = ImageTools::getInstance();
   image = im.clone();
   label->setPixmap(QPixmap::fromImage(tools.cvMatToImage(image)));
+  label->adjustSize();
+  adjustSize();
 }
 
 cv::Mat ImageWidget::getImage() {

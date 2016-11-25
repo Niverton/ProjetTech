@@ -52,19 +52,19 @@ cv::Mat ImageTools::imageToMat(QImage const& src) {
   return mat2;
 }
 
-void split(const cv::Mat& input, cv::Mat& outputLeft, cv::Mat& outputRight) {
+void ImageTools::split(const cv::Mat& input, cv::Mat& outputLeft, cv::Mat& outputRight) {
   cv::Mat tmp = input(cv::Rect(0,0,input.cols/2, input.rows));
   tmp.copyTo(outputLeft);
   tmp = input(cv::Rect(input.cols/2,0,input.cols, input.rows));
   tmp.copyTo(outputRight);
 }
-void blur(cv::Mat& image, int kernel_size) {
+void ImageTools::blur(cv::Mat& image, int kernel_size) {
   cv::Mat dst = image.clone();
   cv::blur(image, dst, cv::Size(kernel_size, kernel_size));
 
   image = dst;
 }
-void sobel(cv::Mat& image, int kernel_size, int scale) {
+void ImageTools::sobel(cv::Mat& image, int kernel_size, int scale) {
   int dx = 1;   //derivate x
   int dy = 0;   //derivate y
 
@@ -73,7 +73,7 @@ void sobel(cv::Mat& image, int kernel_size, int scale) {
 
   image = dst;
 }
-void canny(cv::Mat& image, int kernel_size, double threshold, int ratio) {
+void ImageTools::canny(cv::Mat& image, int kernel_size, double threshold, int ratio) {
   cv::Mat src = image.clone();
   cv::Mat gray, edge, dst;
   cv::cvtColor(src, gray, CV_BGR2GRAY);

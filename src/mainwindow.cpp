@@ -103,7 +103,8 @@ void MainWindow::renderAbout() {
   QMessageBox::about(this, "A propos", "Projet technologique L3");
 }
 void MainWindow::openFile() {
-  QString p = QFileDialog::getOpenFileName(this, "Ouvrir", QString(), "Images (*.png *.jpg)");
+  QString p = QFileDialog::getOpenFileName( 0, "Ouvrir", QString(), "Images (*.png *.jpg)");
+                                          //this
 
   if(!p.isEmpty()) {
     QImage imageLoaded(p);
@@ -113,19 +114,22 @@ void MainWindow::openFile() {
 
     move((QApplication::desktop()->screenGeometry().width() / 2) - (size().width() / 2), (QApplication::desktop()->screenGeometry().height() / 2) - (size().height() / 2));
   }
+  adjustSize();
 }
 void MainWindow::cutImgSlot() {
-  //TODO A voir
-}
-void MainWindow::clipImgSlot() {
-  if (!drawLeft) //Besoin que de l'image de gauche
+  if (!drawLeft)
     return;
   cv::Mat img = imageLeft->getImage();
   ImageTools& tools = ImageTools::getInstance();  
   cv::Mat left, right;
   tools.split(img, left, right);
   imageLeft->setImage(left);
-  imageRight->setImage(right);  
+  imageRight->setImage(right); 
+  centralWidget()->adjustSize();
+}
+void MainWindow::clipImgSlot() {
+  //TODO A voir
+  centralWidget()->adjustSize();
 }
 void MainWindow::blurSlot() {
   if (!drawLeft)
@@ -139,6 +143,7 @@ void MainWindow::blurSlot() {
   img = imageRight->getImage();
   tools.blur(img, 3);
   imageRight->setImage(img);
+  centralWidget()->adjustSize();
 }
 void MainWindow::sobelSlot() {
   if (!drawLeft)
@@ -152,6 +157,7 @@ void MainWindow::sobelSlot() {
   img = imageRight->getImage();
   tools.sobel(img, 3, 1);
   imageRight->setImage(img);
+  centralWidget()->adjustSize();
 }
 void MainWindow::cannySlot() {
   if (!drawLeft)
@@ -165,4 +171,5 @@ void MainWindow::cannySlot() {
   img = imageRight->getImage();
   tools.canny(img, 3, 20, 2);
   imageRight->setImage(img);
+  centralWidget()->adjustSize();
 }
