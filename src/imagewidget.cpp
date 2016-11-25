@@ -53,7 +53,7 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent *ev){
         firstPoint = QPoint(image.cols, image.rows);
         rubberBand->hide();
 
-        if(!firstPoint.isNull() && !firstPoint.isNull() && firstPoint != firstPoint){
+        if(!firstPoint.isNull() && !secondPoint.isNull() && firstPoint != secondPoint){
             cropImage();
         }
 
