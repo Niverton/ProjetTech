@@ -111,6 +111,7 @@ void MainWindow::openFile() {
     ImageTools& tools = ImageTools::getInstance();
     imageLeft->setImage(tools.imageToMat(imageLoaded));
     drawLeft = true;
+    drawRight = false;
 
     move((QApplication::desktop()->screenGeometry().width() / 2) - (size().width() / 2), (QApplication::desktop()->screenGeometry().height() / 2) - (size().height() / 2));
   }
@@ -126,6 +127,7 @@ void MainWindow::cutImgSlot() {
   imageLeft->setImage(left);
   imageRight->setImage(right); 
   centralWidget()->adjustSize();
+  drawRight = true;
 }
 void MainWindow::clipImgSlot() {
   //TODO A voir
