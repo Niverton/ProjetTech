@@ -15,6 +15,7 @@ class MainWindow : public QMainWindow {
   public:
     MainWindow();
     ~MainWindow();
+    void adjustSize();
 
   private slots:
     void renderAbout();

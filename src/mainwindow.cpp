@@ -15,7 +15,7 @@
 #include <QDesktopWidget>
 
 MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
-  //move(QApplication::desktop()->availableGeometry().center() / 2);
+  move(QApplication::desktop()->availableGeometry().center() / 2);
 
   /*  QMainWindow possède son propre layout qui lui permet de disposer les barres d'outils
       On est donc obligé de créer un widget qui contiendra le layout du contenu de la fenêtre
@@ -98,6 +98,11 @@ void MainWindow::initMenuBar() {
     mBar->addMenu(menuEdit);
     mBar->addMenu(menuOpenCV);
     mBar->addMenu(menuAbout);
+}
+
+void MainWindow::adjustSize() {
+  centralWidget()->adjustSize();
+  QMainWindow::adjustSize();
 }
 
 /*******
