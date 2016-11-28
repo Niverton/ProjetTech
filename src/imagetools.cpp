@@ -5,6 +5,8 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include "opencv2/calib3d/calib3d.hpp"
 
+#include <opencv2/highgui/highgui.hpp>
+
 
 
 QImage ImageTools::cvMatToImage(const cv::Mat& inMat) {
@@ -89,7 +91,7 @@ void ImageTools::canny(cv::Mat& image, int kernel_size, double threshold, int ra
 }
 
 cv::Mat ImageTools::disparityMap(cv::Mat& img_gauche, cv::Mat& img_droite){
-    cv::Mat disp;
+    cv::Mat disp, disp8;
     cv::Mat img_g, img_d;
 
     cv::cvtColor(img_gauche, img_g, CV_BGR2GRAY);
@@ -97,20 +99,26 @@ cv::Mat ImageTools::disparityMap(cv::Mat& img_gauche, cv::Mat& img_droite){
 
 
     cv::StereoBM sbm;
-        /*
         sbm.state->SADWindowSize = 9;
         sbm.state->numberOfDisparities = 112;
         sbm.state->preFilterSize = 5;
-        sbm.state->preFilterCap = 1;
-        sbm.state->minDisparity = 0;
-        sbm.state->textureThreshold = 5;
-        sbm.state->uniquenessRatio = 5;
+        sbm.state->preFilterCap = 61;
+        sbm.state->minDisparity = -39;
+        sbm.state->textureThreshold = 507;
+        sbm.state->uniquenessRatio = 0;
         sbm.state->speckleWindowSize = 0;
-        sbm.state->speckleRange = 20;
-        sbm.state->disp12MaxDiff = 64;
-        */
-        
+        sbm.state->speckleRange = 8;
+        sbm.state->disp12MaxDiff = 1;
     sbm(img_g, img_d, disp);
+    
+    //cv::cvtColor(disp, disp, CV_GRAY2BGR);        //Necessaire mais ne fonctionne pas
+
+    cv::normalize(disp, disp8, 0, 255, CV_MINMAX, CV_8U);
+
+    cv::imshow("image gauche", img_g);
+    cv::imshow("image droite", img_d);
+    cv::imshow("disp", disp8);
+
     return disp;
 }
 

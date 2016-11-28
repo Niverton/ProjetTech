@@ -186,16 +186,15 @@ void MainWindow::cannySlot() {
   centralWidget()->adjustSize();
 }
 void MainWindow::dispMapSlot(){
-  if (!drawLeft && !drawRight)
+  if (!drawLeft || !drawRight)
     return;
   ImageTools& tools = ImageTools::getInstance();
 
   cv::Mat img_droite = imageRight->getImage();
   cv::Mat img_gauche = imageLeft->getImage();
 
-  cv::Mat disp = tools.disparityMap(img_droite, img_gauche);
-  imageLeft->setImage(img_gauche);
-  imageRight->setImage(img_droite);
+  cv::Mat disp = tools.disparityMap(img_gauche, img_droite); 
 
+  imageLeft->setImage(disp);
   centralWidget()->adjustSize();
 }
