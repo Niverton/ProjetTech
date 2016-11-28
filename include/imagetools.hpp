@@ -52,7 +52,7 @@ class ImageTools {
     //TODO Document canny
    void canny(cv::Mat& image, int kernel_size, double threshold, int ratio);
    
-   cv::Mat disparityMap(cv::Mat& img_droite, cv::Mat& img_gauche);
+   cv::Mat disparityMapBM(cv::Mat& img_droite, cv::Mat& img_gauche);
   private:
     // Private constructors, do not implement
     ImageTools() {}

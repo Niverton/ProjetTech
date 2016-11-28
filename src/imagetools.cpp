@@ -90,35 +90,20 @@ void ImageTools::canny(cv::Mat& image, int kernel_size, double threshold, int ra
   image = dst;
 }
 
-cv::Mat ImageTools::disparityMap(cv::Mat& img_gauche, cv::Mat& img_droite){
+cv::Mat ImageTools::disparityMapBM(cv::Mat& img_gauche, cv::Mat& img_droite){
     cv::Mat disp, disp8;
     cv::Mat img_g, img_d;
 
     cv::cvtColor(img_gauche, img_g, CV_BGR2GRAY);
     cv::cvtColor(img_droite, img_d, CV_BGR2GRAY);
 
-
     cv::StereoBM sbm;
-        sbm.state->SADWindowSize = 9;
-        sbm.state->numberOfDisparities = 112;
-        sbm.state->preFilterSize = 5;
-        sbm.state->preFilterCap = 61;
-        sbm.state->minDisparity = -39;
-        sbm.state->textureThreshold = 507;
-        sbm.state->uniquenessRatio = 0;
-        sbm.state->speckleWindowSize = 0;
-        sbm.state->speckleRange = 8;
-        sbm.state->disp12MaxDiff = 1;
     sbm(img_g, img_d, disp);
     
-    //cv::cvtColor(disp, disp, CV_GRAY2BGR);        //Necessaire mais ne fonctionne pas
+    disp.convertTo(disp, CV_8U);
+    cv::cvtColor(disp, disp, CV_GRAY2BGR);
 
     cv::normalize(disp, disp8, 0, 255, CV_MINMAX, CV_8U);
 
-    cv::imshow("image gauche", img_g);
-    cv::imshow("image droite", img_d);
-    cv::imshow("disp", disp8);
-
     return disp;
 }
-

@@ -193,7 +193,7 @@ void MainWindow::dispMapSlot(){
   cv::Mat img_droite = imageRight->getImage();
   cv::Mat img_gauche = imageLeft->getImage();
 
-  cv::Mat disp = tools.disparityMap(img_gauche, img_droite); 
+  cv::Mat disp = tools.disparityMapBM(img_gauche, img_droite); 
 
   imageLeft->setImage(disp);
   centralWidget()->adjustSize();
