@@ -9,7 +9,7 @@
 #include <QMouseEvent>
 #include <opencv2/core/core.hpp>
 
-ImageWidget::ImageWidget(QWidget *parent /*= Q_NULLPTR*/) : QLabel(parent), isCroping(false) {
+ImageWidget::ImageWidget(QWidget *parent /*= Q_NULLPTR*/) : QLabel(parent), isCroping(false), firstPoint(), secondPoint() {
   rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 }
 
@@ -26,7 +26,7 @@ cv::Mat ImageWidget::getImage() {
 
 void ImageWidget::mousePressEvent(QMouseEvent* ev){
   // Beginning crop
-  if(!isCroping){
+  if(!isCroping && !image.empty()){
     isCroping = true;
     // Getting position
     firstPoint = ev->pos();
@@ -39,21 +39,22 @@ void ImageWidget::mousePressEvent(QMouseEvent* ev){
 void ImageWidget::mouseReleaseEvent(QMouseEvent *ev){
     if(isCroping && ev->pos().x() < size().width() && ev->pos().y() < size().height()){
         // Getting coordinates of cropping endPoint
-        firstPoint = ev->pos();
+        secondPoint = ev->pos();
         // Hiding rubberband
         rubberBand->hide();
         // If coordinates are set and not equal (not null and a mouse click holding has been made)
-        if(!firstPoint.isNull() && !secondPoint.isNull() && firstPoint != secondPoint){
+        if(firstPoint != secondPoint){
             cropImage();
         }
 
         // Ending cropping
         isCroping = false;
     }else if(isCroping && ev->pos().x() > image.cols && ev->pos().y() > image.rows){
-        firstPoint = QPoint(image.cols, image.rows);
+        secondPoint.setX(image.cols);
+        secondPoint.setY(image.rows);
         rubberBand->hide();
 
-        if(!firstPoint.isNull() && !secondPoint.isNull() && firstPoint != secondPoint){
+        if(firstPoint != secondPoint){
             cropImage();
         }
 
@@ -69,17 +70,21 @@ void ImageWidget::mouseMoveEvent(QMouseEvent *event)
 }
 
 void ImageWidget::cropImage(){
+  if (image.empty())
+    return;
+  
   QPoint origin(
-    (firstPoint.x() < firstPoint.x()) ? firstPoint.x() : firstPoint.x(), //X
-    (firstPoint.y() < firstPoint.y()) ? firstPoint.y() : firstPoint.y()  //Y
+    (firstPoint.x() < secondPoint.x()) ? firstPoint.x() : secondPoint.x(), //X
+    (firstPoint.y() < secondPoint.y()) ? firstPoint.y() : secondPoint.y()  //Y
   );
   QSize size(
-    (firstPoint.x() > firstPoint.x()) ? firstPoint.x() - origin.x() : firstPoint.x() - origin.x(), //W
-    (firstPoint.y() > firstPoint.y()) ? firstPoint.y() - origin.y() : firstPoint.y() - origin.y()  //H
+    (firstPoint.x() > secondPoint.x()) ? firstPoint.x() - origin.x() : secondPoint.x() - origin.x(), //W
+    (firstPoint.y() > secondPoint.y()) ? firstPoint.y() - origin.y() : secondPoint.y() - origin.y()  //H
   );
 
   cv::Rect selec(origin.x(), origin.y(), size.width(), size.height());
   cv::Mat cropped = image(selec);
   setImage(cropped);
-  //adjustSize();
+  adjustSize();
+  parentWidget()->adjustSize();
 }
