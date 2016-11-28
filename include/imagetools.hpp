@@ -1,5 +1,6 @@
 #ifndef IMAGE_TOOLS_H
 #define IMAGE_TOOLS_H
+#define NON_FREE 0 // 0(false) 1(true)
 
 #include <QImage>
 #include <opencv2/core/core.hpp>
@@ -49,8 +50,8 @@ class ImageTools {
     void sobel(cv::Mat& image, int kernel_size, int scale);
 
     //TODO Document canny
-    void canny(cv::Mat& image, int kernel_size, double threshold, int ratio);
-
+   void canny(cv::Mat& image, int kernel_size, double threshold, int ratio);
+   
   private:
     // Private constructors, do not implement
     ImageTools() {}

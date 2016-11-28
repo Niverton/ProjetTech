@@ -4,6 +4,9 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+
+
+
 QImage ImageTools::cvMatToImage(const cv::Mat& inMat) {
   switch(inMat.type())
       {
@@ -84,3 +87,7 @@ void ImageTools::canny(cv::Mat& image, int kernel_size, double threshold, int ra
 
   image = dst;
 }
+
+
+
+
