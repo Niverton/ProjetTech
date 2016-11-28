@@ -29,7 +29,8 @@ void ImageWidget::mousePressEvent(QMouseEvent* ev){
   if(!isCroping && !image.empty()){
     isCroping = true;
     // Getting position
-    firstPoint = ev->pos();
+    firstPoint.setX(ev->pos().x());
+    firstPoint.setY(ev->pos().y());
 
     rubberBand->setGeometry(QRect(firstPoint, firstPoint));
     rubberBand->show();
@@ -37,33 +38,19 @@ void ImageWidget::mousePressEvent(QMouseEvent* ev){
 }
 
 void ImageWidget::mouseReleaseEvent(QMouseEvent *ev){
-    if(isCroping && ev->pos().x() < size().width() && ev->pos().y() < size().height()){
-        // Getting coordinates of cropping endPoint
-        secondPoint = ev->pos();
-        // Hiding rubberband
-        rubberBand->hide();
-        // If coordinates are set and not equal (not null and a mouse click holding has been made)
-        if(firstPoint != secondPoint){
-            cropImage();
-        }
+  if (!isCroping)
+    return;
+  
+  secondPoint.setX((ev->pos().x() > image.cols) ? image.cols : ev->pos().x());
+  secondPoint.setY((ev->pos().y() > image.cols) ? image.cols : ev->pos().y());
 
-        // Ending cropping
-        isCroping = false;
-    }else if(isCroping && ev->pos().x() > image.cols && ev->pos().y() > image.rows){
-        secondPoint.setX(image.cols);
-        secondPoint.setY(image.rows);
-        rubberBand->hide();
-
-        if(firstPoint != secondPoint){
-            cropImage();
-        }
-
-        isCroping = false;
-    }
+  rubberBand->hide();
+  if(firstPoint != secondPoint)
+    cropImage();
+  isCroping = false;
 }
 
-void ImageWidget::mouseMoveEvent(QMouseEvent *event)
-{
+void ImageWidget::mouseMoveEvent(QMouseEvent *event) {
   // Updating rubberBand if cropping
   if(isCroping)
     rubberBand->setGeometry(QRect(firstPoint, event->pos()).normalized());
@@ -84,7 +71,7 @@ void ImageWidget::cropImage(){
 
   cv::Rect selec(origin.x(), origin.y(), size.width(), size.height());
   cv::Mat cropped = image(selec);
-  setImage(cropped);
+  setImage(cropped.clone());
   adjustSize();
   parentWidget()->adjustSize();
 }
