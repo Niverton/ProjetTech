@@ -82,6 +82,11 @@ void MainWindow::initMenuBar() {
     menuOpenCV->addAction(cannyAction);
     connect(cannyAction, SIGNAL(triggered(bool)), this, SLOT(cannySlot()));
 
+    QAction* DispMapAction = new QAction("&Carte de dispatité", menuOpenCV);
+    menuOpenCV->addAction(DispMapAction);
+    connect(DispMapAction, SIGNAL(triggered(bool)), this, SLOT(dispMapSlot()));
+
+
     //About
     QMenu* menuAbout = new QMenu("À &Propos", mBar);
     QAction* aboutAction = new QAction("À &Propos", menuAbout);
@@ -173,5 +178,19 @@ void MainWindow::cannySlot() {
   img = imageRight->getImage();
   tools.canny(img, 3, 20, 2);
   imageRight->setImage(img);
+  centralWidget()->adjustSize();
+}
+void MainWindow::dispMapSlot(){
+  if (!drawLeft && !drawRight)
+    return;
+  ImageTools& tools = ImageTools::getInstance();
+
+  cv::Mat img_droite = imageRight->getImage();
+  cv::Mat img_gauche = imageLeft->getImage();
+
+  cv::Mat disp = tools.disparityMap(img_droite, img_gauche);
+  imageLeft->setImage(img_gauche);
+  imageRight->setImage(img_droite);
+
   centralWidget()->adjustSize();
 }

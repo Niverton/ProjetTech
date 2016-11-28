@@ -24,6 +24,7 @@ class MainWindow : public QMainWindow {
     void blurSlot();
     void sobelSlot();
     void cannySlot();
+    void dispMapSlot();
 
   private:
     //Foo

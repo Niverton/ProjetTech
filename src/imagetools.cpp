@@ -3,7 +3,7 @@
 #include <QImage>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
+#include "opencv2/calib3d/calib3d.hpp"
 
 
 
@@ -88,6 +88,29 @@ void ImageTools::canny(cv::Mat& image, int kernel_size, double threshold, int ra
   image = dst;
 }
 
+cv::Mat ImageTools::disparityMap(cv::Mat& img_gauche, cv::Mat& img_droite){
+    cv::Mat disp;
+    cv::Mat img_g, img_d;
+
+    cv::cvtColor(img_gauche, img_g, CV_BGR2GRAY);
+    cv::cvtColor(img_droite, img_d, CV_BGR2GRAY);
 
 
+    cv::StereoBM sbm;
+        /*
+        sbm.state->SADWindowSize = 9;
+        sbm.state->numberOfDisparities = 112;
+        sbm.state->preFilterSize = 5;
+        sbm.state->preFilterCap = 1;
+        sbm.state->minDisparity = 0;
+        sbm.state->textureThreshold = 5;
+        sbm.state->uniquenessRatio = 5;
+        sbm.state->speckleWindowSize = 0;
+        sbm.state->speckleRange = 20;
+        sbm.state->disp12MaxDiff = 64;
+        */
+        
+    sbm(img_g, img_d, disp);
+    return disp;
+}
 
