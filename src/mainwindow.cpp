@@ -94,6 +94,12 @@ void MainWindow::initMenuBar() {
     menuAbout->addAction(aboutAction);
     connect(aboutAction, SIGNAL(triggered(bool)), this, SLOT(renderAbout()));
 
+#if NON_FREE == 1
+    QAction* FlannAction = new QAction("&Algorithme de flann (non free)", menuOpenCV);
+    menuOpenCV->addAction(FlannAction);
+    connect(FlannAction, SIGNAL(triggeredmatching function for call to ‘ImageTools::flann(bool)), this, SLOT(flannSlot()));
+#endif
+
     mBar->addMenu(menuFile);
     mBar->addMenu(menuEdit);
     mBar->addMenu(menuOpenCV);
@@ -198,3 +204,21 @@ void MainWindow::dispMapSlot(){
   imageLeft->setImage(disp);
   centralWidget()->adjustSize();
 }
+
+
+  void MainWindow::flannSlot(){
+  #if NON_FREE == 1
+    if (!drawLeft || !drawRight)
+      return;
+    ImageTools& tools = ImageTools::getInstance();
+
+    cv::Mat img_gauche = imageLeft->getImage();
+    cv::Mat img_droite = imageRight->getImage();
+
+    cv::Mat disp = tools.flann(img_gauche, img_droite);
+
+    imageLeft->setImage(disp);
+    centralWidget()->adjustSize();
+  #endif
+  }
+

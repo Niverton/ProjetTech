@@ -4,9 +4,13 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "opencv2/calib3d/calib3d.hpp"
+# include "opencv2/features2d/features2d.hpp"
 
 #include <opencv2/highgui/highgui.hpp>
 
+#if NON_FREE == 1
+    # include "opencv2/nonfree/features2d.hpp"
+#endif
 
 
 QImage ImageTools::cvMatToImage(const cv::Mat& inMat) {
@@ -45,7 +49,7 @@ QImage ImageTools::cvMatToImage(const cv::Mat& inMat) {
               return image;
           }
       }
-
+      
   return QImage();
 }
 
@@ -91,19 +95,77 @@ void ImageTools::canny(cv::Mat& image, int kernel_size, double threshold, int ra
 }
 
 cv::Mat ImageTools::disparityMapBM(cv::Mat& img_gauche, cv::Mat& img_droite){
-    cv::Mat disp, disp8;
+    cv::Mat disp16 = cv::Mat(img_gauche.rows, img_gauche.cols, CV_16S);
+    cv::Mat disp8 = cv::Mat(img_gauche.rows, img_gauche.cols, CV_8UC1);
     cv::Mat img_g, img_d;
 
     cv::cvtColor(img_gauche, img_g, CV_BGR2GRAY);
     cv::cvtColor(img_droite, img_d, CV_BGR2GRAY);
 
-    cv::StereoBM sbm;
-    sbm(img_g, img_d, disp);
+    int ratio = 3;
+    int ndisparities = 16 * ratio;
+    int SADWindowSize = 21;
     
-    disp.convertTo(disp, CV_8U);
-    cv::cvtColor(disp, disp, CV_GRAY2BGR);
+    cv::StereoBM sbm = cv::StereoBM(cv::StereoBM::BASIC_PRESET, ndisparities, SADWindowSize );
+    sbm( img_g, img_d, disp16, CV_16S );
+    //Image dans disp de type
 
-    cv::normalize(disp, disp8, 0, 255, CV_MINMAX, CV_8U);
+    disp16.convertTo(disp8, CV_8UC1);
+    disp16.convertTo(disp16, CV_16U);
+    cv::cvtColor(disp16, disp16, CV_GRAY2BGR);
 
-    return disp;
+    cv::normalize(disp16, disp8, 0, 255, CV_MINMAX, CV_8U);
+
+    return disp16;
 }
+
+
+#if NON_FREE == 1
+    cv::Mat ImageTools::flann(cv::Mat& img_gauche, cv::Mat img_droite){
+
+        int minHessian = 400;
+
+        cv::SurfFeatureDetector detector (minHessian);
+        std::vector<cv::KeyPoint> keypoints_1, keypoints_2;
+
+        detector.detect( img_droite, keypoints_1 );
+        detector.detect( img_gauche, keypoints_2 );
+
+        cv::SurfDescriptorExtractor extractor;
+        cv::Mat descriptors_1, descriptors_2;
+        
+        extractor.compute(img_droite, keypoints_1, descriptors_1);
+        extractor.compute(img_gauche, keypoints_2, descriptors_2);
+    
+        cv::FlannBasedMatcher matcher;
+        std::vector<cv::DMatch> matches;
+
+        matcher.match(descriptors_1, descriptors_2, matches);
+        
+        double max_dist = 0; 
+        double min_dist = 100;
+        double dist;
+
+        for (int i=0; i<descriptors_1.rows; i++){
+            dist = matches[i].distance;
+            if (dist < min_dist) min_dist = dist;
+            if (dist > max_dist) max_dist = dist;
+        }
+
+        std::vector<cv::DMatch> good_matches;
+        for (int i=0; i<descriptors_1.rows; i++){
+            if (matches[i].distance <= cv::max(2*min_dist, 0.02))
+                good_matches.push_back( matches[i]);
+        }
+        
+        cv::Mat img;
+        drawMatches( img_droite, keypoints_1, img_gauche, keypoints_2,
+                good_matches, img, cv::Scalar::all(-1), cv::Scalar::all(-1),
+                std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+        
+
+        imshow( "Good Matches", img );
+        return img;
+    }
+
+#endif

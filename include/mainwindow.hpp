@@ -26,6 +26,7 @@ class MainWindow : public QMainWindow {
     void sobelSlot();
     void cannySlot();
     void dispMapSlot();
+    void flannSlot();
 
   private:
     //Foo

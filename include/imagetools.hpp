@@ -1,6 +1,6 @@
 #ifndef IMAGE_TOOLS_H
 #define IMAGE_TOOLS_H
-#define NON_FREE 0 // 0(false) 1(true)
+#define NON_FREE 1 // 0(false) 1(true)
 
 #include <QImage>
 #include <opencv2/core/core.hpp>
@@ -53,6 +53,11 @@ class ImageTools {
    void canny(cv::Mat& image, int kernel_size, double threshold, int ratio);
    
    cv::Mat disparityMapBM(cv::Mat& img_droite, cv::Mat& img_gauche);
+   
+   #if NON_FREE == 1
+   cv::Mat flann(cv::Mat& img_1, cv::Mat img_2);
+   #endif
+
   private:
     // Private constructors, do not implement
     ImageTools() {}
