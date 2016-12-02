@@ -109,7 +109,10 @@ cv::Mat ImageTools::disparityMapBM(cv::Mat& img_gauche, cv::Mat& img_droite){
     cv::StereoBM sbm = cv::StereoBM(cv::StereoBM::BASIC_PRESET, ndisparities, SADWindowSize );
     sbm( img_g, img_d, disp16, CV_16S );
 
-    disp16.convertTo(disp16, CV_8U);
+    double minVal; double maxVal;
+    cv::minMaxLoc( disp16, &minVal, &maxVal );
+
+    disp16.convertTo(disp16, CV_8UC1, 255/(maxVal - minVal));
     cv::cvtColor(disp16, disp16, CV_GRAY2BGR);
 
     //cv::normalize(disp16, disp8, 0, 255, CV_MINMAX, CV_8U);
