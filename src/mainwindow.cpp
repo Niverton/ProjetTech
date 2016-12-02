@@ -95,9 +95,9 @@ void MainWindow::initMenuBar() {
     connect(aboutAction, SIGNAL(triggered(bool)), this, SLOT(renderAbout()));
 
 #if NON_FREE == 1
-    QAction* FlannAction = new QAction("&Algorithme de flann (non free)", menuOpenCV);
-    menuOpenCV->addAction(FlannAction);
-    connect(FlannAction, SIGNAL(triggeredmatching function for call to ‘ImageTools::flann(bool)), this, SLOT(flannSlot()));
+    QAction* flannAction = new QAction("&Algorithme de flann (avec surf)", menuOpenCV);
+    menuOpenCV->addAction(flannAction);
+    connect(flannAction, SIGNAL(triggered(bool)), this, SLOT(flannSlot()));
 #endif
 
     mBar->addMenu(menuFile);

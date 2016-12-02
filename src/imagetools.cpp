@@ -102,19 +102,17 @@ cv::Mat ImageTools::disparityMapBM(cv::Mat& img_gauche, cv::Mat& img_droite){
     cv::cvtColor(img_gauche, img_g, CV_BGR2GRAY);
     cv::cvtColor(img_droite, img_d, CV_BGR2GRAY);
 
-    int ratio = 3;
+    int ratio = 7;
     int ndisparities = 16 * ratio;
     int SADWindowSize = 21;
     
     cv::StereoBM sbm = cv::StereoBM(cv::StereoBM::BASIC_PRESET, ndisparities, SADWindowSize );
     sbm( img_g, img_d, disp16, CV_16S );
-    //Image dans disp de type
 
-    disp16.convertTo(disp8, CV_8UC1);
-    disp16.convertTo(disp16, CV_16U);
+    disp16.convertTo(disp16, CV_8U);
     cv::cvtColor(disp16, disp16, CV_GRAY2BGR);
 
-    cv::normalize(disp16, disp8, 0, 255, CV_MINMAX, CV_8U);
+    //cv::normalize(disp16, disp8, 0, 255, CV_MINMAX, CV_8U);
 
     return disp16;
 }
@@ -162,9 +160,6 @@ cv::Mat ImageTools::disparityMapBM(cv::Mat& img_gauche, cv::Mat& img_droite){
         drawMatches( img_droite, keypoints_1, img_gauche, keypoints_2,
                 good_matches, img, cv::Scalar::all(-1), cv::Scalar::all(-1),
                 std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
-        
-
-        imshow( "Good Matches", img );
         return img;
     }
 
