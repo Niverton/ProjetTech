@@ -14,8 +14,7 @@ TEMPLATE = app
 CONFIG += c++11 debug
 
 INCLUDEPATH += include/
-LIBS += -L/usr/lib -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_features2d -lopencv_flann -lopencv_calib3d
-
+LIBS += -L/usr/lib -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_features2d -lopencv_flann -lopencv_calib3d -lopencv_nonfree
 SOURCES += src/projet.cpp \
     src/mainwindow.cpp \
     src/imagetools.cpp \
