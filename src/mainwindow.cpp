@@ -126,6 +126,8 @@ void MainWindow::openFile() {
     QImage imageLoaded(p);
     ImageTools& tools = ImageTools::getInstance();
     imageLeft->setImage(tools.imageToMat(imageLoaded));
+    cv::Mat empty;
+    imageRight->setImage(empty);
     drawLeft = true;
     drawRight = false;
 
@@ -201,7 +203,9 @@ void MainWindow::dispMapSlot(){
 
   cv::Mat disp = tools.disparityMapBM(img_gauche, img_droite); 
 
+  cv::Mat empty;
   imageLeft->setImage(disp);
+  imageRight->setImage(empty);
   centralWidget()->adjustSize();
 }
 
@@ -217,7 +221,9 @@ void MainWindow::dispMapSlot(){
 
     cv::Mat disp = tools.flann(img_gauche, img_droite);
 
+    cv::Mat empty;
     imageLeft->setImage(disp);
+    imageRight->setImage(empty);
     centralWidget()->adjustSize();
   #endif
   }

@@ -37,7 +37,8 @@ class ImageWidget : public QLabel {
     
     cv::Mat getImage();
     void setImage(const cv::Mat& im);
-  private:
+
+    private:
     cv::Mat image;
     //Selection
     bool isCroping;
