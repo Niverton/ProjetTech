@@ -54,6 +54,10 @@ class ImageTools {
    
    cv::Mat disparityMapBM(cv::Mat& img_droite, cv::Mat& img_gauche);
    
+   /*
+    depth  = (Baseline*focal) / (disparity*SensorSize) 
+   */
+   cv::Mat depthMap();   
    #if NON_FREE == 1
    cv::Mat flann(cv::Mat& img_1, cv::Mat img_2);
    #endif
