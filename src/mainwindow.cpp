@@ -86,6 +86,9 @@ void MainWindow::initMenuBar() {
     menuOpenCV->addAction(DispMapAction);
     connect(DispMapAction, SIGNAL(triggered(bool)), this, SLOT(dispMapSlot()));
 
+    QAction* DepthMapAction = new QAction("&Carte de profondeur", menuOpenCV);
+    menuOpenCV->addAction(DepthMapAction);
+    connect(DepthMapAction, SIGNAL(triggered(bool)), this, SLOT(depthMapSlot()));
 
     //About
     QMenu* menuAbout = new QMenu("À &Propos", mBar);
@@ -209,8 +212,25 @@ void MainWindow::dispMapSlot(){
   centralWidget()->adjustSize();
 }
 
+void MainWindow::depthMapSlot(){
+    if (!drawLeft || !drawRight)
+      return;
+    ImageTools& tools = ImageTools::getInstance();
 
-  void MainWindow::flannSlot(){
+    cv::Mat img_droite = imageRight->getImage();
+    cv::Mat img_gauche = imageLeft->getImage();
+
+    cv::Mat empty;
+    cv::Mat disp = tools.depthMap(img_gauche, empty); // img_gauche = dispMap (creer la disp map avant) 
+
+
+    imageLeft->setImage(disp);
+    imageRight->setImage(empty);
+    centralWidget()->adjustSize();
+}
+
+
+void MainWindow::flannSlot(){
   #if NON_FREE == 1
     if (!drawLeft || !drawRight)
       return;
@@ -226,5 +246,5 @@ void MainWindow::dispMapSlot(){
     imageRight->setImage(empty);
     centralWidget()->adjustSize();
   #endif
-  }
+}
 
