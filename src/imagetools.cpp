@@ -167,10 +167,3 @@ cv::Mat ImageTools::disparityMapBM(cv::Mat& img_gauche, cv::Mat& img_droite){
     }
 
 #endif
-
-cv::Mat ImageTools::depthMap(cv::Mat dispMat, cv::Mat Q){
-    cv::Mat depthMat;
-    cv::reprojectImageTo3D(dispMat, depthMat, Q, false);        //ERROR : stype == CV_8UC1 || stype == CV_16SC1 || stype == CV_32SC1 || stype == CV_32
-
-    return depthMat;
-}

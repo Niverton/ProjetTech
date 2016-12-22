@@ -22,6 +22,7 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
       getCentralWidget() pour récupèrer ce widget
   */
   QWidget *central = new QWidget(this);
+  central->minimumSizeHint();
   QLayout *layout = new QHBoxLayout(central);
   central->setLayout(layout);
   setCentralWidget(central);
@@ -35,6 +36,7 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   imageRight = new ImageWidget(this);
   layout->addWidget(imageLeft);
   layout->addWidget(imageRight);
+  
 }
 
 MainWindow::~MainWindow() {}
@@ -85,11 +87,11 @@ void MainWindow::initMenuBar() {
     QAction* DispMapAction = new QAction("&Carte de dispatité", menuOpenCV);
     menuOpenCV->addAction(DispMapAction);
     connect(DispMapAction, SIGNAL(triggered(bool)), this, SLOT(dispMapSlot()));
-
+/*
     QAction* DepthMapAction = new QAction("&Carte de profondeur", menuOpenCV);
     menuOpenCV->addAction(DepthMapAction);
     connect(DepthMapAction, SIGNAL(triggered(bool)), this, SLOT(depthMapSlot()));
-
+*/
     //About
     QMenu* menuAbout = new QMenu("À &Propos", mBar);
     QAction* aboutAction = new QAction("À &Propos", menuAbout);
@@ -111,6 +113,7 @@ void MainWindow::initMenuBar() {
 
 void MainWindow::adjustSize() {
   centralWidget()->adjustSize();
+  centralWidget()->minimumSizeHint();
   QMainWindow::adjustSize();
 }
 
@@ -211,24 +214,13 @@ void MainWindow::dispMapSlot(){
   imageRight->setImage(empty);
   centralWidget()->adjustSize();
 }
-
+/*
 void MainWindow::depthMapSlot(){
     if (!drawLeft || !drawRight)
       return;
     ImageTools& tools = ImageTools::getInstance();
-
-    cv::Mat img_droite = imageRight->getImage();
-    cv::Mat img_gauche = imageLeft->getImage();
-
-    cv::Mat empty;
-    cv::Mat disp = tools.depthMap(img_gauche, empty); // img_gauche = dispMap (creer la disp map avant) 
-
-
-    imageLeft->setImage(disp);
-    imageRight->setImage(empty);
-    centralWidget()->adjustSize();
 }
-
+*/
 
 void MainWindow::flannSlot(){
   #if NON_FREE == 1
@@ -245,6 +237,10 @@ void MainWindow::flannSlot(){
     imageLeft->setImage(disp);
     imageRight->setImage(empty);
     centralWidget()->adjustSize();
+  #endif
+  #if NON_FREE == 0
+    QMessageBox::about(this, "Erreur", "Impossible de charger le module non free");
+    return;
   #endif
 }
 

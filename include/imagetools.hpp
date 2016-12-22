@@ -1,6 +1,6 @@
 #ifndef IMAGE_TOOLS_H
 #define IMAGE_TOOLS_H
-#define NON_FREE 1 // 0(false) 1(true)
+#define NON_FREE 0 // 0(false) 1(true)
 
 #include <QImage>
 #include <opencv2/core/core.hpp>
@@ -54,13 +54,6 @@ class ImageTools {
    
    cv::Mat disparityMapBM(cv::Mat& img_droite, cv::Mat& img_gauche);
    
-   /*
-    * \brief Create depth matrix from disparity matrix
-    * \param dispMat: Disparity matrix
-    * \param Q: 4x4 perspective transformation matrix than can be obtained with cv::stereoRectify()
-    * \return Depth matrix
-   */
-   cv::Mat depthMap(cv::Mat dispMat, cv::Mat Q);
 
    #if NON_FREE == 1
    cv::Mat flann(cv::Mat& img_1, cv::Mat img_2);

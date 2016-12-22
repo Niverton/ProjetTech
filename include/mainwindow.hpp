@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow {
     void sobelSlot();
     void cannySlot();
     void dispMapSlot();
-    void depthMapSlot();
+    //void depthMapSlot();  //  disparity map == depth map ? 
     void flannSlot();
 
   private:

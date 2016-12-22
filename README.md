@@ -9,6 +9,7 @@ Calcul de la carte de disparité
   * Méthodes d'appariement
   * Calcul carte de disparité
 
+__La macro NON_FREE__ se situe dans imageTools.h
 
 Standard ISO C++11
 https://isocpp.org/faq
