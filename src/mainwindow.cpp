@@ -200,6 +200,8 @@ void MainWindow::cannySlot() {
   centralWidget()->adjustSize();
 }
 void MainWindow::dispMapSlot(){
+  int stereo_bm = 0;
+  int stere_sgbm = 1;
   if (!drawLeft || !drawRight)
     return;
   ImageTools& tools = ImageTools::getInstance();
@@ -207,7 +209,7 @@ void MainWindow::dispMapSlot(){
   cv::Mat img_droite = imageRight->getImage();
   cv::Mat img_gauche = imageLeft->getImage();
 
-  cv::Mat disp = tools.disparityMapBM(img_gauche, img_droite); 
+  cv::Mat disp = tools.disparityMap(img_gauche, img_droite, stereo_bm); 
 
   cv::Mat empty;
   imageLeft->setImage(disp);

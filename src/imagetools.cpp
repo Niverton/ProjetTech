@@ -94,7 +94,7 @@ void ImageTools::canny(cv::Mat& image, int kernel_size, double threshold, int ra
   image = dst;
 }
 
-cv::Mat ImageTools::disparityMapBM(cv::Mat& img_gauche, cv::Mat& img_droite){
+cv::Mat ImageTools::disparityMap(cv::Mat& img_gauche, cv::Mat& img_droite, int mode){
     cv::Mat disp16 = cv::Mat(img_gauche.rows, img_gauche.cols, CV_16S);
     cv::Mat disp8 = cv::Mat(img_gauche.rows, img_gauche.cols, CV_8UC1);
     cv::Mat img_g, img_d;
@@ -102,13 +102,16 @@ cv::Mat ImageTools::disparityMapBM(cv::Mat& img_gauche, cv::Mat& img_droite){
     cv::cvtColor(img_gauche, img_g, CV_BGR2GRAY);
     cv::cvtColor(img_droite, img_d, CV_BGR2GRAY);
 
-    int ratio = 7;
-    int ndisparities = 16 * ratio;
-    int SADWindowSize = 21;
+    if(mode == 0){ //Stereo BM
+      int ratio = 7;
+      int ndisparities = 16 * ratio;
+      int SADWindowSize = 21;
     
-    cv::StereoBM sbm = cv::StereoBM(cv::StereoBM::BASIC_PRESET, ndisparities, SADWindowSize );
-    sbm( img_g, img_d, disp16, CV_16S );
-
+      cv::StereoBM sbm = cv::StereoBM(cv::StereoBM::BASIC_PRESET, ndisparities, SADWindowSize );
+      sbm( img_g, img_d, disp16, CV_16S );
+    }else if(mode == 1){ //Stereo SGBM
+      
+    }
     double minVal; double maxVal;
     cv::minMaxLoc( disp16, &minVal, &maxVal );
 
