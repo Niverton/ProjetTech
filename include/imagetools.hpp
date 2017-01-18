@@ -59,6 +59,7 @@ class ImageTools {
    cv::Mat flann(cv::Mat& img_1, cv::Mat img_2);
    #endif
 
+  enum {STEREO_BM=0, STEREO_SGBM=1};
   private:
     // Private constructors, do not implement
     ImageTools() {}
