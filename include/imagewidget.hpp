@@ -30,6 +30,9 @@ class QMouseEvent;
  *        OpenCV format. The ImageWidget object also features crop capabilities.
  *        An UndoStack objet can be added to this container in order to track each
  *        crop operation.
+ *        Note that undo operations are meant to be processed by an upper level widget
+ *        in the widget tree. As such, if an UndoStack object is used, it must be attached
+ *        to the ImageWidget object from the widget which handles the undo logic operations.
  */
 class ImageWidget : public QLabel {
   Q_OBJECT
