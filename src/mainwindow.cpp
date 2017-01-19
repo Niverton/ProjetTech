@@ -33,8 +33,8 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   //
   initMenuBar();
 
-  imageLeft = new ImageWidget(this);
-  imageRight = new ImageWidget(this);
+  imageLeft = new ImageWidget(this, 0);
+  imageRight = new ImageWidget(this, 1);
   layout->addWidget(imageLeft);
   layout->addWidget(imageRight);
 
@@ -43,6 +43,8 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
 
   undoStack.setLeftWidget(imageLeft);
   undoStack.setRightWidget(imageRight);
+  imageLeft->addUndoStack(&undoStack);
+  imageRight->addUndoStack(&undoStack);
 }
 
 MainWindow::~MainWindow() {}

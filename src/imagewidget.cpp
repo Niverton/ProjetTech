@@ -1,13 +1,18 @@
 #include "imagewidget.hpp"
 #include "imagetools.hpp"
+#include "undostack.hpp"
 
 #include <QMouseEvent>
 #include <QRubberBand>
 
 #include <opencv2/core/core.hpp>
 
-ImageWidget::ImageWidget(QWidget *parent) : QLabel(parent), isCroping(false), firstPoint(), secondPoint() {
+ImageWidget::ImageWidget(QWidget *parent, std::size_t index) : QLabel(parent), index(index), isCropping(false), firstPoint(), secondPoint(), undoStack(nullptr) {
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
+}
+
+void ImageWidget::addUndoStack(UndoStack* stack){
+    undoStack = stack;
 }
 
 void ImageWidget::setImage(const cv::Mat& im) {
@@ -24,8 +29,8 @@ cv::Mat ImageWidget::getImage() {
 
 void ImageWidget::mousePressEvent(QMouseEvent* ev) {
     // Beginning crop
-    if(rect().contains(ev->pos()) && !isCroping && !image.empty()){
-        isCroping = true;
+    if(rect().contains(ev->pos()) && !isCropping && !image.empty()){
+        isCropping = true;
 
         // Getting position
         firstPoint.setX(ev->pos().x());
@@ -37,7 +42,7 @@ void ImageWidget::mousePressEvent(QMouseEvent* ev) {
 }
 
 void ImageWidget::mouseReleaseEvent(QMouseEvent* ev) {
-    if(!isCroping)
+    if(!isCropping)
         return;
   
     secondPoint.setX((ev->pos().x() > image.cols) ? image.cols : ev->pos().x());
@@ -46,16 +51,33 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent* ev) {
 
     if(firstPoint != secondPoint){
         if(rect().contains(ev->pos())){
+            if(undoStack != nullptr)
+            {
+                UndoStack::UndoStackOp op = static_cast<UndoStack::UndoStackOp>(index);
+
+                switch(op){
+                    case UndoStack::UndoStackOp::UNDO_STACK_OP_FIRST:{
+                        undoStack->pushLeft(image);
+                        break;
+                    }
+
+                    case UndoStack::UndoStackOp::UNDO_STACK_OP_SECOND:{
+                        undoStack->pushRight(image);
+                        break;
+                    }
+                }
+            }
+
             cropImage();
         }
     }
 
-    isCroping = false;
+    isCropping = false;
 }
 
 void ImageWidget::mouseMoveEvent(QMouseEvent *event) {
   // Updating rubberBand if cropping
-  if(isCroping)
+  if(isCropping)
     rubberBand->setGeometry(QRect(firstPoint, event->pos()).normalized());
 }
 

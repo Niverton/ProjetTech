@@ -7,6 +7,8 @@
 
 #include <QLabel>
 
+class UndoStack;
+
 class QRubberBand;
 class QMouseEvent;
 
@@ -17,7 +19,9 @@ class ImageWidget : public QLabel {
   Q_OBJECT
 
 public:
-    ImageWidget(QWidget *parent = nullptr);
+    ImageWidget(QWidget* parent = nullptr, std::size_t index = 0);
+
+    void addUndoStack(UndoStack* stack);
 
     cv::Mat getImage();
     void setImage(const cv::Mat& im);
@@ -41,15 +45,18 @@ protected:
     //QSize sizeHint() const;
 
 private:
-    cv::Mat         image;
+    std::size_t     index;          /*!< Index of the widget. */
 
-    //Selection
-    bool            isCroping;
+    cv::Mat         image;          /*!< Widget image. */
 
-    QRubberBand*    rubberBand;
+    bool            isCropping;     /*!< Indicates if the user is cropping the image of the widget. */
 
-    QPoint          firstPoint;
-    QPoint          secondPoint;
+    QRubberBand*    rubberBand;     /*!< Crop indicator. */
+
+    QPoint          firstPoint;     /*!< Start point of the crop operation. */
+    QPoint          secondPoint;    /*!< End point of the crop operaton. */
+
+    UndoStack*      undoStack;      /*!<  */
 };
 
 #endif // IMAGEWIDGET
