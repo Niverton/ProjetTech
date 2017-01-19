@@ -75,10 +75,10 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent* ev) {
     isCropping = false;
 }
 
-void ImageWidget::mouseMoveEvent(QMouseEvent *event) {
+void ImageWidget::mouseMoveEvent(QMouseEvent *ev) {
   // Updating rubberBand if cropping
   if(isCropping)
-    rubberBand->setGeometry(QRect(firstPoint, event->pos()).normalized());
+    rubberBand->setGeometry(QRect(firstPoint, ev->pos()).normalized());
 }
 
 void ImageWidget::cropImage(){
