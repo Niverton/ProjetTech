@@ -2,6 +2,7 @@
 #include "imagetools.hpp"
 #include "imagewidget.hpp"
 
+#include <stack>
 #include <QMessageBox>
 #include <QMainWindow>
 #include <QLabel>
@@ -36,7 +37,6 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   imageRight = new ImageWidget(this);
   layout->addWidget(imageLeft);
   layout->addWidget(imageRight);
-  
 }
 
 MainWindow::~MainWindow() {}
@@ -59,6 +59,11 @@ void MainWindow::initMenuBar() {
 
     //Edit
     QMenu* menuEdit = new QMenu("&Editer", mBar);
+    //Edit - undo
+    QAction* undoAction = new QAction("&Undo", menuEdit);
+    undoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z));
+    menuEdit->addAction(undoAction);
+    connect(undoAction, SIGNAL(triggered(bool)), this, SLOT(undoSlot()));
     //Edit - cut
     QAction* cutAction = new QAction("&Couper l'image", menuEdit);
     cutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
@@ -111,6 +116,13 @@ void MainWindow::initMenuBar() {
     mBar->addMenu(menuAbout);
 }
 
+void MainWindow::changeImages(cv::Mat& left, cv::Mat& right) {
+  undoStackLeft.push(imageLeft->getImage());
+  undoStackRight.push(imageRight->getImage());
+  imageLeft->setImage(left);
+  imageRight->setImage(right);
+}
+
 void MainWindow::adjustSize() {
   centralWidget()->adjustSize();
   centralWidget()->minimumSizeHint();
@@ -131,9 +143,13 @@ void MainWindow::openFile() {
   if(!p.isEmpty()) {
     QImage imageLoaded(p);
     ImageTools& tools = ImageTools::getInstance();
+    /*
     imageLeft->setImage(tools.imageToMat(imageLoaded));
     cv::Mat empty;
     imageRight->setImage(empty);
+    */
+    cv::Mat empty, img(tools.imageToMat(imageLoaded));
+    changeImages(img, empty);
     drawLeft = true;
     drawRight = false;
 
@@ -141,6 +157,16 @@ void MainWindow::openFile() {
   }
   adjustSize();
 }
+
+void MainWindow::undoSlot() {
+  if (undoStackLeft.empty() || undoStackRight.empty()) return;
+  
+  imageLeft->setImage(undoStackLeft.top());
+  undoStackLeft.pop();
+  imageRight->setImage(undoStackRight.top());
+  undoStackRight.pop();
+}
+
 void MainWindow::cutImgSlot() {
   if (!drawLeft)
     return;
@@ -148,13 +174,16 @@ void MainWindow::cutImgSlot() {
   ImageTools& tools = ImageTools::getInstance();  
   cv::Mat left, right;
   tools.split(img, left, right);
+  /*
   imageLeft->setImage(left);
   imageRight->setImage(right); 
+  */
+  changeImages(left, right);
   centralWidget()->adjustSize();
   drawRight = true;
 }
 void MainWindow::clipImgSlot() {
-  //TODO A voir
+  //TODO A voir toggle fonction sur les widgets
   centralWidget()->adjustSize();
 }
 void MainWindow::blurSlot() {
@@ -163,12 +192,13 @@ void MainWindow::blurSlot() {
   ImageTools& tools = ImageTools::getInstance();  
   cv::Mat img = imageLeft->getImage();
   tools.blur(img, 3);
-  imageLeft->setImage(img);
+  //imageLeft->setImage(img);
   if (!drawRight)
     return;
-  img = imageRight->getImage();
-  tools.blur(img, 3);
-  imageRight->setImage(img);
+  cv::Mat img2 = imageRight->getImage();
+  tools.blur(img2, 3);
+  //imageRight->setImage(img);
+  changeImages(img, img2);
   centralWidget()->adjustSize();
 }
 void MainWindow::sobelSlot() {
@@ -177,12 +207,13 @@ void MainWindow::sobelSlot() {
   ImageTools& tools = ImageTools::getInstance();  
   cv::Mat img = imageLeft->getImage();
   tools.sobel(img, 3, 1);
-  imageLeft->setImage(img);
+  //imageLeft->setImage(img);
   if (!drawRight)
     return;
-  img = imageRight->getImage();
-  tools.sobel(img, 3, 1);
-  imageRight->setImage(img);
+  cv::Mat img2 = imageRight->getImage();
+  tools.sobel(img2, 3, 1);
+  //imageRight->setImage(img);
+  changeImages(img, img2);
   centralWidget()->adjustSize();
 }
 void MainWindow::cannySlot() {
@@ -191,12 +222,13 @@ void MainWindow::cannySlot() {
   ImageTools& tools = ImageTools::getInstance();  
   cv::Mat img = imageLeft->getImage();
   tools.canny(img, 3, 20, 2);
-  imageLeft->setImage(img);
+  //imageLeft->setImage(img);
   if (!drawRight)
     return;
-  img = imageRight->getImage();
-  tools.canny(img, 3, 20, 2);
-  imageRight->setImage(img);
+  cv::Mat img2 = imageRight->getImage();
+  tools.canny(img2, 3, 20, 2);
+  //imageRight->setImage(img);
+  changeImages(img, img2);
   centralWidget()->adjustSize();
 }
 void MainWindow::dispMapSlot(){
@@ -210,8 +242,9 @@ void MainWindow::dispMapSlot(){
   cv::Mat disp = tools.disparityMapBM(img_gauche, img_droite); 
 
   cv::Mat empty;
-  imageLeft->setImage(disp);
-  imageRight->setImage(empty);
+  /*imageLeft->setImage(disp);
+  imageRight->setImage(empty);*/
+  changeImages(disp, empty);  
   centralWidget()->adjustSize();
 }
 /*
@@ -234,8 +267,9 @@ void MainWindow::flannSlot(){
     cv::Mat disp = tools.flann(img_gauche, img_droite);
 
     cv::Mat empty;
-    imageLeft->setImage(disp);
-    imageRight->setImage(empty);
+    /*imageLeft->setImage(disp);
+    imageRight->setImage(empty);*/
+    changeImages(disp, empty);
     centralWidget()->adjustSize();
   #endif
   #if NON_FREE == 0
