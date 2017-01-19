@@ -1,12 +1,9 @@
 #include "imagewidget.hpp"
-
 #include "imagetools.hpp"
 
-#include <QRect>
-#include <QPoint>
-#include <QRubberBand>
-#include <QLabel>
 #include <QMouseEvent>
+#include <QRubberBand>
+
 #include <opencv2/core/core.hpp>
 
 ImageWidget::ImageWidget(QWidget *parent /*= Q_NULLPTR*/) : QLabel(parent), isCroping(false), firstPoint(), secondPoint() {
@@ -25,16 +22,17 @@ cv::Mat ImageWidget::getImage() {
 }
 
 void ImageWidget::mousePressEvent(QMouseEvent* ev){
-  // Beginning crop
-  if(!isCroping && !image.empty()){
-    isCroping = true;
-    // Getting position
-    firstPoint.setX(ev->pos().x());
-    firstPoint.setY(ev->pos().y());
+    // Beginning crop
+    if(!isCroping && !image.empty()){
+        isCroping = true;
 
-    rubberBand->setGeometry(QRect(firstPoint, firstPoint));
-    rubberBand->show();
-  }
+        // Getting position
+        firstPoint.setX(ev->pos().x());
+        firstPoint.setY(ev->pos().y());
+
+        rubberBand->setGeometry(QRect(firstPoint, firstPoint));
+        rubberBand->show();
+    }
 }
 
 void ImageWidget::mouseReleaseEvent(QMouseEvent *ev){
