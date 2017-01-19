@@ -6,7 +6,7 @@
 
 #include <opencv2/core/core.hpp>
 
-ImageWidget::ImageWidget(QWidget *parent /*= Q_NULLPTR*/) : QLabel(parent), isCroping(false), firstPoint(), secondPoint() {
+ImageWidget::ImageWidget(QWidget *parent) : QLabel(parent), isCroping(false), firstPoint(), secondPoint() {
   rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 }
 
@@ -21,9 +21,9 @@ cv::Mat ImageWidget::getImage() {
   return image.clone();
 }
 
-void ImageWidget::mousePressEvent(QMouseEvent* ev){
+void ImageWidget::mousePressEvent(QMouseEvent* ev) {
     // Beginning crop
-    if(!isCroping && !image.empty()){
+    if(rect().contains(ev->pos()) && !isCroping && !image.empty()){
         isCroping = true;
 
         // Getting position
@@ -35,17 +35,22 @@ void ImageWidget::mousePressEvent(QMouseEvent* ev){
     }
 }
 
-void ImageWidget::mouseReleaseEvent(QMouseEvent *ev){
-  if (!isCroping)
-    return;
+void ImageWidget::mouseReleaseEvent(QMouseEvent* ev) {
+    if(!isCroping)
+        return;
   
-  secondPoint.setX((ev->pos().x() > image.cols) ? image.cols : ev->pos().x());
-  secondPoint.setY((ev->pos().y() > image.cols) ? image.cols : ev->pos().y());
+    secondPoint.setX((ev->pos().x() > image.cols) ? image.cols : ev->pos().x());
+    secondPoint.setY((ev->pos().y() > image.rows) ? image.rows : ev->pos().y());
+    rubberBand->hide();
 
-  rubberBand->hide();
-  if(firstPoint != secondPoint)
-    cropImage();
-  isCroping = false;
+    // inclomplet.
+    if(firstPoint != secondPoint){
+        if(rect().contains(ev->pos())){
+            cropImage();
+        }
+    }
+
+    isCroping = false;
 }
 
 void ImageWidget::mouseMoveEvent(QMouseEvent *event) {
