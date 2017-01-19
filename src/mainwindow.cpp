@@ -201,21 +201,32 @@ void MainWindow::clipImgSlot() {
   //TODO A voir toggle fonction sur les widgets
   centralWidget()->adjustSize();
 }
+
 void MainWindow::blurSlot() {
-  if (!drawLeft)
-    return;
-  ImageTools& tools = ImageTools::getInstance();  
-  cv::Mat img = imageLeft->getImage();
-  tools.blur(img, 3);
-  //imageLeft->setImage(img);
-  if (!drawRight)
-    return;
-  cv::Mat img2 = imageRight->getImage();
-  tools.blur(img2, 3);
-  //imageRight->setImage(img);
-  //changeImages(img, img2);
-  centralWidget()->adjustSize();
+    if (!drawLeft)
+        return;
+
+    ImageTools& tools = ImageTools::getInstance();
+    cv::Mat img = imageLeft->getImage();
+
+    undoStack.pushLeft(img);
+
+    tools.blur(img, 3);
+    imageLeft->setImage(img);
+
+    if (!drawRight)
+        return;
+
+    img = imageRight->getImage();
+
+    undoStack.pushRight(img);
+
+    tools.blur(img, 3);
+    imageRight->setImage(img);
+
+    centralWidget()->adjustSize();
 }
+
 void MainWindow::sobelSlot() {
   if (!drawLeft)
     return;
@@ -234,21 +245,25 @@ void MainWindow::sobelSlot() {
 void MainWindow::cannySlot() {
   if (!drawLeft)
     return;
-  ImageTools& tools = ImageTools::getInstance();  
+
+  ImageTools& tools = ImageTools::getInstance();
   cv::Mat img = imageLeft->getImage();
   tools.canny(img, 3, 20, 2);
-  //imageLeft->setImage(img);
+  imageLeft->setImage(img);
+
   if (!drawRight)
     return;
+
   cv::Mat img2 = imageRight->getImage();
   tools.canny(img2, 3, 20, 2);
-  //imageRight->setImage(img);
+  imageRight->setImage(img);
   //changeImages(img, img2);
   centralWidget()->adjustSize();
 }
 void MainWindow::dispMapSlot(){
   if (!drawLeft || !drawRight)
     return;
+
   ImageTools& tools = ImageTools::getInstance();
 
   cv::Mat img_droite = imageRight->getImage();
@@ -257,9 +272,9 @@ void MainWindow::dispMapSlot(){
   cv::Mat disp = tools.disparityMap(img_gauche, img_droite, ImageTools::STEREO_SGBM); 
 
   cv::Mat empty;
-  /*imageLeft->setImage(disp);
-  imageRight->setImage(empty);*/
-  //changeImages(disp, empty);
+  imageLeft->setImage(disp);
+  imageRight->setImage(empty);
+
   centralWidget()->adjustSize();
 }
 
