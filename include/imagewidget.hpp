@@ -12,8 +12,6 @@
 #ifndef IMAGEWIDGET_H
 #define IMAGEWIDGET_H
 
-#include "imagetools.hpp"
-
 #include <opencv2/core/core.hpp>
 
 #include <QLabel>

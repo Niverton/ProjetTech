@@ -1,3 +1,13 @@
+/*!
+ * \file imagewidget.cpp
+ * \brief Implementation of the methods of the ImageWidget class declared in the imagewidget.hpp header.
+ * \author Jérémi Bernard
+ *         Benjamin De Pourquery
+ *         Rémy Maugey
+ *         Hadrien Decoudras
+ * \version 0.2
+ */
+
 #include "imagewidget.hpp"
 #include "imagetools.hpp"
 #include "undostack.hpp"
@@ -5,16 +15,32 @@
 #include <QMouseEvent>
 #include <QRubberBand>
 
-#include <opencv2/core/core.hpp>
-
+/**************************************************************
+ **************************************************************
+ *
+ * Constructor
+ *
+ **************************************************************/
 ImageWidget::ImageWidget(QWidget *parent, std::size_t index) : QLabel(parent), index(index), isCropping(false), firstPoint(), secondPoint(), undoStack(nullptr) {
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Adds undo manager.
+ *
+ **************************************************************/
 void ImageWidget::addUndoStack(UndoStack* stack){
     undoStack = stack;
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Sets an image.
+ *
+ **************************************************************/
 void ImageWidget::setImage(const cv::Mat& im) {
     setMinimumSize(QSize(0, 0));
     ImageTools& tools = ImageTools::getInstance();
@@ -23,10 +49,22 @@ void ImageWidget::setImage(const cv::Mat& im) {
     adjustSize();
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Gets an image.
+ *
+ **************************************************************/
 cv::Mat ImageWidget::getImage() {
   return image.clone();
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Mouse press.
+ *
+ **************************************************************/
 void ImageWidget::mousePressEvent(QMouseEvent* ev) {
     // Beginning crop
     if(rect().contains(ev->pos()) && !isCropping && !image.empty()){
@@ -41,6 +79,12 @@ void ImageWidget::mousePressEvent(QMouseEvent* ev) {
     }
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Mouse release.
+ *
+ **************************************************************/
 void ImageWidget::mouseReleaseEvent(QMouseEvent* ev) {
     if(!isCropping)
         return;
@@ -75,12 +119,24 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent* ev) {
     isCropping = false;
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Mouse move.
+ *
+ **************************************************************/
 void ImageWidget::mouseMoveEvent(QMouseEvent *ev) {
   // Updating rubberBand if cropping
   if(isCropping)
     rubberBand->setGeometry(QRect(firstPoint, ev->pos()).normalized());
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Crop.
+ *
+ **************************************************************/
 void ImageWidget::cropImage(){
     if (image.empty())
         return;
