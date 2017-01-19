@@ -37,6 +37,9 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   imageRight = new ImageWidget(this);
   layout->addWidget(imageLeft);
   layout->addWidget(imageRight);
+
+  layout->setAlignment(imageLeft, Qt::AlignCenter);
+  layout->setAlignment(imageRight, Qt::AlignCenter);
 }
 
 MainWindow::~MainWindow() {}
@@ -46,11 +49,13 @@ void MainWindow::initMenuBar() {
 
     //File
     QMenu* menuFile = new QMenu("&Fichier", mBar);
+
     //File - Open
     QAction* openAction = new QAction("&Ouvrir", menuFile);
     openAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
     menuFile->addAction(openAction);
     connect(openAction, SIGNAL(triggered(bool)), this, SLOT(openFile()));
+
     //File - Quit
     QAction* quitAction = new QAction("&Quitter", menuFile);
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
@@ -69,6 +74,7 @@ void MainWindow::initMenuBar() {
     cutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
     menuEdit->addAction(cutAction);
     connect(cutAction, SIGNAL(triggered(bool)), this, SLOT(cutImgSlot()));
+
     //Edit - clipAction
     QAction* clipAction = new QAction("&Rogner l'image", menuEdit);
     clipAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
@@ -77,21 +83,25 @@ void MainWindow::initMenuBar() {
 
     //OpenCV
     QMenu* menuOpenCV = new QMenu("&OpenCV", mBar);
+
     QAction* blurAction = new QAction("&Flouter l'image", menuOpenCV);
+    blurAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_B));
     menuOpenCV->addAction(blurAction);
     connect(blurAction, SIGNAL(triggered(bool)), this, SLOT(blurSlot()));
 
     QAction* sobelAction = new QAction("Appliquer &Sobel", menuOpenCV);
+    sobelAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_S));
     menuOpenCV->addAction(sobelAction);
     connect(sobelAction, SIGNAL(triggered(bool)), this, SLOT(sobelSlot()));
 
     QAction* cannyAction = new QAction("Appliquer &Canny", menuOpenCV);
+    cannyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_C));
     menuOpenCV->addAction(cannyAction);
     connect(cannyAction, SIGNAL(triggered(bool)), this, SLOT(cannySlot()));
 
-    QAction* DispMapAction = new QAction("&Carte de dispatité", menuOpenCV);
-    menuOpenCV->addAction(DispMapAction);
-    connect(DispMapAction, SIGNAL(triggered(bool)), this, SLOT(dispMapSlot()));
+    QAction* dispMapAction = new QAction("&Carte de dispatité", menuOpenCV);
+    menuOpenCV->addAction(dispMapAction);
+    connect(dispMapAction, SIGNAL(triggered(bool)), this, SLOT(dispMapSlot()));
 /*
     QAction* DepthMapAction = new QAction("&Carte de profondeur", menuOpenCV);
     menuOpenCV->addAction(DepthMapAction);
@@ -239,7 +249,7 @@ void MainWindow::dispMapSlot(){
   cv::Mat img_droite = imageRight->getImage();
   cv::Mat img_gauche = imageLeft->getImage();
 
-  cv::Mat disp = tools.disparityMapBM(img_gauche, img_droite); 
+  cv::Mat disp = tools.disparityMap(img_gauche, img_droite, ImageTools::STEREO_SGBM); 
 
   cv::Mat empty;
   /*imageLeft->setImage(disp);
@@ -247,6 +257,7 @@ void MainWindow::dispMapSlot(){
   changeImages(disp, empty);  
   centralWidget()->adjustSize();
 }
+
 /*
 void MainWindow::depthMapSlot(){
     if (!drawLeft || !drawRight)

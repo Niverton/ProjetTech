@@ -3,12 +3,12 @@
 
 #include "imagetools.hpp"
 
-#include <QWidget>
-#include <QLabel>
-#include <QRubberBand>
-#include <QPoint>
-#include <QImage>
 #include <opencv2/core/core.hpp>
+
+#include <QLabel>
+
+class QRubberBand;
+class QMouseEvent;
 
 /*!
  * \brief Cropable Image Widget
@@ -16,8 +16,13 @@
 class ImageWidget : public QLabel {
   Q_OBJECT
 
-  public:
+public:
     ImageWidget(QWidget *parent = nullptr);
+
+    cv::Mat getImage();
+    void setImage(const cv::Mat& im);
+
+protected:
     //TODO Document
     void mousePressEvent(QMouseEvent* ev);
     //TODO Document
@@ -34,17 +39,17 @@ class ImageWidget : public QLabel {
     //*/
 
     //QSize sizeHint() const;
-    
-    cv::Mat getImage();
-    void setImage(const cv::Mat& im);
 
-    private:
-    cv::Mat image;
+private:
+    cv::Mat         image;
+
     //Selection
-    bool isCroping;
-    QRubberBand* rubberBand;
-    QPoint firstPoint;
-    QPoint secondPoint;
+    bool            isCroping;
+
+    QRubberBand*    rubberBand;
+
+    QPoint          firstPoint;
+    QPoint          secondPoint;
 };
 
 #endif // IMAGEWIDGET

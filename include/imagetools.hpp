@@ -52,13 +52,14 @@ class ImageTools {
     //TODO Document canny
    void canny(cv::Mat& image, int kernel_size, double threshold, int ratio);
    
-   cv::Mat disparityMapBM(cv::Mat& img_droite, cv::Mat& img_gauche);
+  cv::Mat disparityMap(cv::Mat& img_droite, cv::Mat& img_gauche, int mode);
    
 
    #if NON_FREE == 1
    cv::Mat flann(cv::Mat& img_1, cv::Mat img_2);
    #endif
 
+  enum {STEREO_BM=0, STEREO_SGBM=1};
   private:
     // Private constructors, do not implement
     ImageTools() {}
