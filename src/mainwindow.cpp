@@ -251,23 +251,30 @@ void MainWindow::sobelSlot() {
 
     centralWidget()->adjustSize();
 }
+
 void MainWindow::cannySlot() {
-  if (!drawLeft)
-    return;
+    if (!drawLeft)
+        return;
 
-  ImageTools& tools = ImageTools::getInstance();
-  cv::Mat img = imageLeft->getImage();
-  tools.canny(img, 3, 20, 2);
-  imageLeft->setImage(img);
+    ImageTools& tools = ImageTools::getInstance();
+    cv::Mat img = imageLeft->getImage();
 
-  if (!drawRight)
-    return;
+    undoStack.pushLeft(img);
 
-  cv::Mat img2 = imageRight->getImage();
-  tools.canny(img2, 3, 20, 2);
-  imageRight->setImage(img);
-  //changeImages(img, img2);
-  centralWidget()->adjustSize();
+    tools.canny(img, 3, 20, 2);
+    imageLeft->setImage(img);
+
+    if (!drawRight)
+        return;
+
+    img = imageRight->getImage();
+
+    undoStack.pushRight(img);
+
+    tools.canny(img, 3, 20, 2);
+    imageRight->setImage(img);
+
+    centralWidget()->adjustSize();
 }
 void MainWindow::dispMapSlot(){
   if (!drawLeft || !drawRight)
