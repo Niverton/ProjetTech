@@ -2,12 +2,13 @@
 #define MAINWINDOW_H
 
 #include "imagetools.hpp"
-#include "imagewidget.hpp"
+#include "undostack.hpp"
 
-#include <stack>
 #include <QMainWindow>
 
 #include <opencv2/core/core.hpp>
+
+class ImageWidget;
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -49,7 +50,7 @@ class MainWindow : public QMainWindow {
      */
     void cutImgSlot();
 
-    // Non implemented yet.
+    // Not implemented yet.
     void clipImgSlot();
 
     /*!
@@ -88,20 +89,14 @@ class MainWindow : public QMainWindow {
      * \brief Init all menus and actions in the menu bar
      */
     void initMenuBar();
-    /*!
-     * \brief Change widget images and add previous to the stacks
-     */
-    void changeImages(cv::Mat& left, cv::Mat& right);
 
-    //Vars
-    bool drawLeft; //Are labels drawn
-    bool drawRight;
-    std::stack<cv::Mat> undoStackLeft; //Stack of previous images
-    std::stack<cv::Mat> undoStackRight;
+    bool drawLeft;                      /*!< Indicates if the left image is drawn. */
+    bool drawRight;                     /*!< Indicates if the right image is drawn. */
 
-    //Widget
-    ImageWidget* imageLeft;
-    ImageWidget* imageRight;
+    ImageWidget* imageLeft;             /*!< Left image. */
+    ImageWidget* imageRight;            /*!< Right image. */
+
+    UndoStack undoStack;
 };
 
 #endif // MAINWINDOW
