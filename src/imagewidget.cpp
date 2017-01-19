@@ -44,7 +44,6 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent* ev) {
     secondPoint.setY((ev->pos().y() > image.rows) ? image.rows : ev->pos().y());
     rubberBand->hide();
 
-    // inclomplet.
     if(firstPoint != secondPoint){
         if(rect().contains(ev->pos())){
             cropImage();
