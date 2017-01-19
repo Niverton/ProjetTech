@@ -7,14 +7,15 @@
 #include <opencv2/core/core.hpp>
 
 ImageWidget::ImageWidget(QWidget *parent) : QLabel(parent), isCroping(false), firstPoint(), secondPoint() {
-  rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
+    rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 }
 
 void ImageWidget::setImage(const cv::Mat& im) {
-  ImageTools& tools = ImageTools::getInstance();
-  image = im.clone();
-  setPixmap(QPixmap::fromImage(tools.cvMatToImage(image)));
-  adjustSize();
+    setMinimumSize(QSize(0, 0));
+    ImageTools& tools = ImageTools::getInstance();
+    image = im.clone();
+    setPixmap(QPixmap::fromImage(tools.cvMatToImage(image)));
+    adjustSize();
 }
 
 cv::Mat ImageWidget::getImage() {
@@ -60,21 +61,22 @@ void ImageWidget::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void ImageWidget::cropImage(){
-  if (image.empty())
-    return;
+    if (image.empty())
+        return;
   
-  QPoint origin(
-    (firstPoint.x() < secondPoint.x()) ? firstPoint.x() : secondPoint.x(), //X
-    (firstPoint.y() < secondPoint.y()) ? firstPoint.y() : secondPoint.y()  //Y
-  );
-  QSize size(
-    (firstPoint.x() > secondPoint.x()) ? firstPoint.x() - origin.x() : secondPoint.x() - origin.x(), //W
-    (firstPoint.y() > secondPoint.y()) ? firstPoint.y() - origin.y() : secondPoint.y() - origin.y()  //H
-  );
+    QPoint origin(
+        (firstPoint.x() < secondPoint.x()) ? firstPoint.x() : secondPoint.x(), //X
+        (firstPoint.y() < secondPoint.y()) ? firstPoint.y() : secondPoint.y()  //Y
+    );
 
-  cv::Rect selec(origin.x(), origin.y(), size.width(), size.height());
-  cv::Mat cropped = image(selec);
-  setImage(cropped.clone());
-  adjustSize();
-  parentWidget()->adjustSize();
+    QSize size(
+        (firstPoint.x() > secondPoint.x()) ? firstPoint.x() - origin.x() : secondPoint.x() - origin.x(), //W
+        (firstPoint.y() > secondPoint.y()) ? firstPoint.y() - origin.y() : secondPoint.y() - origin.y()  //H
+    );
+
+    cv::Rect selec(origin.x(), origin.y(), size.width(), size.height());
+    cv::Mat cropped = image(selec);
+    setImage(cropped.clone());
+    adjustSize();
+    parentWidget()->adjustSize();
 }

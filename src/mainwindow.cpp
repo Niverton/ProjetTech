@@ -36,7 +36,8 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   imageRight = new ImageWidget(this);
   layout->addWidget(imageLeft);
   layout->addWidget(imageRight);
-  
+  layout->setAlignment(imageLeft, Qt::AlignCenter);
+  layout->setAlignment(imageRight, Qt::AlignCenter);
 }
 
 MainWindow::~MainWindow() {}

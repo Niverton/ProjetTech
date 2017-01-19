@@ -18,6 +18,11 @@ class ImageWidget : public QLabel {
 
 public:
     ImageWidget(QWidget *parent = nullptr);
+
+    cv::Mat getImage();
+    void setImage(const cv::Mat& im);
+
+protected:
     //TODO Document
     void mousePressEvent(QMouseEvent* ev);
     //TODO Document
@@ -34,16 +39,15 @@ public:
     //*/
 
     //QSize sizeHint() const;
-    
-    cv::Mat getImage();
-    void setImage(const cv::Mat& im);
 
 private:
     cv::Mat         image;
 
     //Selection
     bool            isCroping;
+
     QRubberBand*    rubberBand;
+
     QPoint          firstPoint;
     QPoint          secondPoint;
 };
