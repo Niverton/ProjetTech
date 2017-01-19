@@ -228,19 +228,28 @@ void MainWindow::blurSlot() {
 }
 
 void MainWindow::sobelSlot() {
-  if (!drawLeft)
-    return;
-  ImageTools& tools = ImageTools::getInstance();  
-  cv::Mat img = imageLeft->getImage();
-  tools.sobel(img, 3, 1);
-  //imageLeft->setImage(img);
-  if (!drawRight)
-    return;
-  cv::Mat img2 = imageRight->getImage();
-  tools.sobel(img2, 3, 1);
-  //imageRight->setImage(img);
-  //changeImages(img, img2);
-  centralWidget()->adjustSize();
+    if (!drawLeft)
+        return;
+
+    ImageTools& tools = ImageTools::getInstance();
+    cv::Mat img = imageLeft->getImage();
+
+    undoStack.pushLeft(img);
+
+    tools.sobel(img, 3, 1);
+    imageLeft->setImage(img);
+
+    if (!drawRight)
+        return;
+
+    img = imageRight->getImage();
+
+    undoStack.pushRight(img);
+
+    tools.sobel(img, 3, 1);
+    imageRight->setImage(img);
+
+    centralWidget()->adjustSize();
 }
 void MainWindow::cannySlot() {
   if (!drawLeft)
