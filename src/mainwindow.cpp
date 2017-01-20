@@ -307,10 +307,13 @@ void MainWindow::dispMapSlot(){
 
     ImageTools& tools = ImageTools::getInstance();
 
-    cv::Mat img_droite = imageRight->getImage();
-    cv::Mat img_gauche = imageLeft->getImage();
+    cv::Mat rImage = imageRight->getImage();
+    cv::Mat lImage = imageLeft->getImage();
 
-    cv::Mat disp = tools.disparityMap(img_gauche, img_droite, ImageTools::STEREO_SGBM);
+    undoStack.pushLeft(lImage);
+    undoStack.pushRight(rImage);
+
+    cv::Mat disp = tools.disparityMap(lImage, rImage, ImageTools::STEREO_SGBM);
 
     cv::Mat empty;
     imageLeft->setImage(disp);
