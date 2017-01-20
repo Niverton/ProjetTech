@@ -13,6 +13,7 @@
 #include <QFileDialog>
 #include <QString>
 #include <QDesktopWidget>
+#include <QScrollArea>
 
 
 MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
@@ -28,15 +29,19 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   central->setLayout(layout);
   setCentralWidget(central);
 
-  //Ajuster le taille de la fenêtre en fonction de la taille de l'image.
-  adjustSize();
-  //
   initMenuBar();
+
+  QScrollArea* scA = new QScrollArea(this);
+  QScrollArea* scB = new QScrollArea(this);
+  scA->setAlignment(Qt::AlignCenter);
+  scB->setAlignment(Qt::AlignCenter);
 
   imageLeft = new ImageWidget(this, 0);
   imageRight = new ImageWidget(this, 1);
-  layout->addWidget(imageLeft);
-  layout->addWidget(imageRight);
+  layout->addWidget(scA);
+  layout->addWidget(scB);
+  scA->setWidget(imageLeft);
+  scB->setWidget(imageRight);
 
   layout->setAlignment(imageLeft, Qt::AlignCenter);
   layout->setAlignment(imageRight, Qt::AlignCenter);
@@ -88,6 +93,15 @@ void MainWindow::initMenuBar() {
     menuEdit->addAction(clipAction);
     connect(clipAction, SIGNAL(triggered(bool)), this, SLOT(clipImgSlot()));
 
+    // View
+    /*QMenu* menuView = new QMenu("&View", mBar);
+
+    // View - ZoomIn
+    QAction* zoomInAction = new QAction("&Zoom-In", menuView);
+    zoomInAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Mou));
+    menuView->addAction(zoomInAction);
+    connect(clipAction, SIGNAL(triggered(bool)), this, SLOT(clipImgSlot()));*/
+
     //OpenCV
     QMenu* menuOpenCV = new QMenu("&OpenCV", mBar);
 
@@ -133,12 +147,6 @@ void MainWindow::initMenuBar() {
     mBar->addMenu(menuAbout);
 }
 
-void MainWindow::adjustSize() {
-  centralWidget()->adjustSize();
-  centralWidget()->minimumSizeHint();
-  QMainWindow::adjustSize();
-}
-
 /*******
   SLOTS
 *******/
@@ -146,24 +154,23 @@ void MainWindow::adjustSize() {
 void MainWindow::renderAbout() {
   QMessageBox::about(this, "A propos", "Projet technologique L3");
 }
+
 void MainWindow::openFile() {
-  QString p = QFileDialog::getOpenFileName( 0, "Ouvrir", QString(), "Images (*.png *.jpg)");
-                                          //this
+    QString p = QFileDialog::getOpenFileName(nullptr, "Ouvrir", QString(), "Images (*.png *.jpg)");
 
-  if(!p.isEmpty()) {
-    QImage imageLoaded(p);
-    ImageTools& tools = ImageTools::getInstance();
-    imageLeft->setImage(tools.imageToMat(imageLoaded));
+    if(!p.isEmpty()) {
+        QImage imageLoaded(p);
+        ImageTools& tools = ImageTools::getInstance();
+        imageLeft->setImage(tools.imageToMat(imageLoaded));
 
-    cv::Mat empty;
-    imageRight->setImage(empty);
-    //changeImages(img, empty);
-    drawLeft = true;
-    drawRight = false;
+        cv::Mat empty;
+        imageRight->setImage(empty);
 
-    move((QApplication::desktop()->screenGeometry().width() / 2) - (size().width() / 2), (QApplication::desktop()->screenGeometry().height() / 2) - (size().height() / 2));
-  }
-  adjustSize();
+        drawLeft = true;
+        drawRight = false;
+
+        move((QApplication::desktop()->screenGeometry().width() / 2) - (size().width() / 2), (QApplication::desktop()->screenGeometry().height() / 2) - (size().height() / 2));
+    }
 }
 
 void MainWindow::undoSlot() {
@@ -195,7 +202,6 @@ void MainWindow::cutImgSlot() {
     imageLeft->setImage(left);
     imageRight->setImage(right);
 
-    centralWidget()->adjustSize();
     drawRight = true;
 }
 
@@ -278,22 +284,21 @@ void MainWindow::cannySlot() {
 
     centralWidget()->adjustSize();
 }
+
 void MainWindow::dispMapSlot(){
-  if (!drawLeft || !drawRight)
-    return;
+    if (!drawLeft || !drawRight)
+        return;
 
-  ImageTools& tools = ImageTools::getInstance();
+    ImageTools& tools = ImageTools::getInstance();
 
-  cv::Mat img_droite = imageRight->getImage();
-  cv::Mat img_gauche = imageLeft->getImage();
+    cv::Mat img_droite = imageRight->getImage();
+    cv::Mat img_gauche = imageLeft->getImage();
 
-  cv::Mat disp = tools.disparityMap(img_gauche, img_droite, ImageTools::STEREO_SGBM); 
+    cv::Mat disp = tools.disparityMap(img_gauche, img_droite, ImageTools::STEREO_SGBM);
 
-  cv::Mat empty;
-  imageLeft->setImage(disp);
-  imageRight->setImage(empty);
-
-  centralWidget()->adjustSize();
+    cv::Mat empty;
+    imageLeft->setImage(disp);
+    imageRight->setImage(empty);
 }
 
 /*

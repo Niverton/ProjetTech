@@ -20,6 +20,7 @@ class UndoStack;
 
 class QRubberBand;
 class QMouseEvent;
+class QWheelEvent;
 
 /*!
  * \class ImageWidget
@@ -83,6 +84,8 @@ protected:
      */
     void mouseMoveEvent(QMouseEvent* ev);
 
+    void wheelEvent(QWheelEvent* ev);
+
     /*!
      * \brief Crops the image of the container according to the data collected by
      *        the mouse event reimplemented functions.
@@ -97,6 +100,14 @@ protected:
     //*/
 
     //QSize sizeHint() const;
+
+
+private slots:
+    void zoomIn();
+    //void zoomOut();
+
+private:
+    void zoom(float factor);
 
 private:
     std::size_t     index;          /*!< Index of the widget. */

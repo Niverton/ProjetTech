@@ -13,7 +13,9 @@
 #include "undostack.hpp"
 
 #include <QMouseEvent>
+#include <QWheelEvent>
 #include <QRubberBand>
+
 
 /**************************************************************
  **************************************************************
@@ -131,6 +133,16 @@ void ImageWidget::mouseMoveEvent(QMouseEvent *ev) {
     rubberBand->setGeometry(QRect(firstPoint, ev->pos()).normalized());
 }
 
+void ImageWidget::wheelEvent(QWheelEvent* ev){
+    if(ev->modifiers() == Qt::ControlModifier){
+        if(ev->delta() > 0){
+            zoom(1.10f);
+        }else{
+            zoom(0.90f);
+        }
+    }
+}
+
 /**************************************************************
  **************************************************************
  *
@@ -156,4 +168,32 @@ void ImageWidget::cropImage(){
     setImage(cropped.clone());
     adjustSize();
     parentWidget()->adjustSize();
+}
+
+void ImageWidget::zoomIn(){
+    zoom(1.10f);
+}
+
+void ImageWidget::zoom(float factor){
+    if(undoStack != nullptr)
+    {
+        UndoStack::UndoStackOp op = static_cast<UndoStack::UndoStackOp>(index);
+
+        switch(op){
+            case UndoStack::UndoStackOp::UNDO_STACK_OP_FIRST:{
+                undoStack->pushLeft(image);
+                break;
+            }
+
+            case UndoStack::UndoStackOp::UNDO_STACK_OP_SECOND:{
+                undoStack->pushRight(image);
+                break;
+            }
+        }
+    }
+
+    QPixmap pMap = pixmap()->scaled(QSize(image.cols * factor, image.rows * factor), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    setPixmap(pMap);
+    ImageTools& tools = ImageTools::getInstance();
+    image = tools.imageToMat(pMap.toImage());
 }
