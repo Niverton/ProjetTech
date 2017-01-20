@@ -97,10 +97,25 @@ void MainWindow::initMenuBar() {
     // View
     QMenu* menuView = new QMenu("&View", mBar);
 
-    // View - ZoomIn
-    QAction* zoomInLeftAction = new QAction("&Zoom-In", menuView);
+    // View - Left ZoomIn
+    QAction* zoomInLeftAction = new QAction("&Left Zoom-In", menuView);
     menuView->addAction(zoomInLeftAction);
     connect(zoomInLeftAction, SIGNAL(triggered(bool)), imageLeft, SLOT(zoomIn()));
+
+    // View - Right ZoomIn
+    QAction* zoomInRightAction = new QAction("&Right Zoom-In", menuView);
+    menuView->addAction(zoomInRightAction);
+    connect(zoomInRightAction, SIGNAL(triggered(bool)), imageRight, SLOT(zoomIn()));
+
+    // View - Left ZoomOut
+    QAction* zoomOutLeftAction = new QAction("&Left Zoom-Out", menuView);
+    menuView->addAction(zoomOutLeftAction);
+    connect(zoomOutLeftAction, SIGNAL(triggered(bool)), imageLeft, SLOT(zoomOut()));
+
+    // View - Right ZoomOut
+    QAction* zoomOutRightAction = new QAction("&Right Zoom-Out", menuView);
+    menuView->addAction(zoomOutRightAction);
+    connect(zoomOutRightAction, SIGNAL(triggered(bool)), imageRight, SLOT(zoomOut()));
 
     //OpenCV
     QMenu* menuOpenCV = new QMenu("&OpenCV", mBar);

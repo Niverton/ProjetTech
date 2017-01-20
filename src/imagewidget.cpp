@@ -10,7 +10,6 @@
 
 #include "imagewidget.hpp"
 #include "imagetools.hpp"
-#include "undostack.hpp"
 
 #include <QMouseEvent>
 #include <QWheelEvent>
@@ -26,6 +25,12 @@
 ImageWidget::ImageWidget(QWidget *parent, std::size_t index) :
     QLabel(parent), index(index), isCropping(false), firstPoint(), secondPoint(), undoStack(nullptr) {
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
+
+    if(index == 0){
+        undoZoom.setLeftWidget(this);
+    }else{
+        undoZoom.setRightWidget(this);
+    }
 }
 
 /**************************************************************
@@ -173,33 +178,46 @@ void ImageWidget::cropImage(){
     parentWidget()->adjustSize();
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Zoom in.
+ *
+ **************************************************************/
 void ImageWidget::zoomIn(){
     zoom(1.10f);
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Zoom out.
+ *
+ **************************************************************/
 void ImageWidget::zoomOut(){
-
-    if(!undoStack->isEmpty()){
-        std::tuple<UndoStack::UndoStackImage, UndoStack::UndoStackOp, cv::Mat> p = undoStack->getTopTupleElement();
-
-        if(std::get<1>(p) == UndoStack::UndoStackOp::UNDO_STACK_OP_ZOOM){
-            zoom(0.90f);
-        }
+    if(!undoZoom.isEmpty()){
+        zoom(0.90f);
     }
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * zoom.
+ *
+ **************************************************************/
 void ImageWidget::zoom(float factor){
     UndoStack::UndoStackImage op = static_cast<UndoStack::UndoStackImage>(index);
 
     if(factor > 1.0f){
         switch(op){
             case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_FIRST:{
-                undoStack->pushLeft(image, UndoStack::UndoStackOp::UNDO_STACK_OP_ZOOM);
+                undoZoom.pushLeft(image);
                 break;
             }
 
             case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_SECOND:{
-                undoStack->pushRight(image, UndoStack::UndoStackOp::UNDO_STACK_OP_ZOOM);
+                undoZoom.pushRight(image);
                 break;
             }
         }
@@ -209,7 +227,7 @@ void ImageWidget::zoom(float factor){
         ImageTools& tools = ImageTools::getInstance();
         image = tools.imageToMat(pMap.toImage());
     }else{
-        undoStack->undo();
+        undoZoom.undo();
     }
 
     adjustSize();

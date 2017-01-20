@@ -12,6 +12,8 @@
 #ifndef IMAGEWIDGET_H
 #define IMAGEWIDGET_H
 
+#include "undostack.hpp"
+
 #include <opencv2/core/core.hpp>
 
 #include <QLabel>
@@ -19,8 +21,6 @@
 class QRubberBand;
 class QMouseEvent;
 class QWheelEvent;
-
-class UndoStack;
 
 /*!
  * \class ImageWidget
@@ -126,6 +126,7 @@ private:
     QPoint              secondPoint;        /*!< End point of the crop operaton. */
 
     UndoStack*          undoStack;          /*!< UndoStack object of an upper level widget. */
+    UndoStack           undoZoom;
 };
 
 #endif // IMAGEWIDGET

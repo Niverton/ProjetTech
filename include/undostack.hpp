@@ -13,7 +13,7 @@
 #define UNDOSTACK_HPP
 
 #include <stack>
-#include <tuple>
+#include <utility>
 
 #include <opencv2/core/core.hpp>
 
@@ -43,13 +43,6 @@ public:
     };
 
 public:
-    enum UndoStackOp
-    {
-        UNDO_STACK_OP_DEFAULT = 0,
-        UNDO_STACK_OP_ZOOM
-    };
-
-public:
     /*!
      * \brief Default constructor.
      */
@@ -71,24 +64,20 @@ public:
      * \brief Saves the state of the first image.
      * \param image OpenCV representation of the first image.
      */
-    inline void pushLeft(cv::Mat& image, UndoStackOp op = UNDO_STACK_OP_DEFAULT)
+    inline void pushLeft(cv::Mat& image)
     {
-        undoStack.push(std::make_tuple(UNDO_STACK_IMAGE_FIRST, op, image));
+        undoStack.push(std::make_pair(UNDO_STACK_IMAGE_FIRST, image));
     }
 
     /*!
      * \brief Saves the state of the second image.
      * \param image OpenCV representation of the second image.
      */
-    inline void pushRight(cv::Mat& image, UndoStackOp op = UNDO_STACK_OP_DEFAULT)
+    inline void pushRight(cv::Mat& image)
     {
-        undoStack.push(std::make_tuple(UNDO_STACK_IMAGE_SECOND, op, image));
+        undoStack.push(std::make_pair(UNDO_STACK_IMAGE_SECOND, image));
     }
 
-    inline std::tuple<UndoStackImage, UndoStackOp, cv::Mat> getTopTupleElement()
-    {
-        return undoStack.top();
-    }
 
     /*!
      * \brief Sets the first ImageWidget object.
@@ -119,9 +108,9 @@ public:
     void undo();
 
 private:
-    ImageWidget*                                                    lWidget;    /*!< First Widget. */
-    ImageWidget*                                                    rWidget;    /*!< Second widget. */
-    std::stack<std::tuple<UndoStackImage, UndoStackOp, cv::Mat>>    undoStack;  /*!< Saved states of images. */
+    ImageWidget*                                    lWidget;    /*!< First Widget. */
+    ImageWidget*                                    rWidget;    /*!< Second widget. */
+    std::stack<std::pair<UndoStackImage, cv::Mat>>  undoStack;  /*!< Saved states of images. */
 };
 
 #endif // UNDOSTACK_HPP
