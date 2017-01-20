@@ -16,11 +16,11 @@
 
 #include <QLabel>
 
-class UndoStack;
-
 class QRubberBand;
 class QMouseEvent;
 class QWheelEvent;
+
+class UndoStack;
 
 /*!
  * \class ImageWidget
@@ -84,6 +84,10 @@ protected:
      */
     void mouseMoveEvent(QMouseEvent* ev);
 
+    /*!
+     * \brief Reimplemented method used to zoom an image.
+     * \param ev
+     */
     void wheelEvent(QWheelEvent* ev);
 
     /*!
@@ -104,24 +108,24 @@ protected:
 
 private slots:
     void zoomIn();
-    //void zoomOut();
+    void zoomOut();
 
 private:
     void zoom(float factor);
 
 private:
-    std::size_t     index;          /*!< Index of the widget. */
+    std::size_t         index;              /*!< Index of the widget. */
 
-    cv::Mat         image;          /*!< Widget image. */
+    cv::Mat             image;              /*!< Widget image. */
 
-    bool            isCropping;     /*!< Indicates if the user is cropping the image of the widget. */
+    bool                isCropping;         /*!< Indicates if the user is cropping the image of the widget. */
 
-    QRubberBand*    rubberBand;     /*!< Crop indicator. */
+    QRubberBand*        rubberBand;         /*!< Crop indicator. */
 
-    QPoint          firstPoint;     /*!< Start point of the crop operation. */
-    QPoint          secondPoint;    /*!< End point of the crop operaton. */
+    QPoint              firstPoint;         /*!< Start point of the crop operation. */
+    QPoint              secondPoint;        /*!< End point of the crop operaton. */
 
-    UndoStack*      undoStack;      /*!< UndoStack object of un upper level widget. */
+    UndoStack*          undoStack;          /*!< UndoStack object of an upper level widget. */
 };
 
 #endif // IMAGEWIDGET

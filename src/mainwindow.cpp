@@ -29,8 +29,6 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   central->setLayout(layout);
   setCentralWidget(central);
 
-  initMenuBar();
-
   QScrollArea* scA = new QScrollArea(this);
   QScrollArea* scB = new QScrollArea(this);
   scA->setAlignment(Qt::AlignCenter);
@@ -38,6 +36,7 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
 
   imageLeft = new ImageWidget(this, 0);
   imageRight = new ImageWidget(this, 1);
+
   layout->addWidget(scA);
   layout->addWidget(scB);
   scA->setWidget(imageLeft);
@@ -50,6 +49,8 @@ MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
   undoStack.setRightWidget(imageRight);
   imageLeft->addUndoStack(&undoStack);
   imageRight->addUndoStack(&undoStack);
+
+  initMenuBar();
 }
 
 MainWindow::~MainWindow() {}
@@ -94,13 +95,12 @@ void MainWindow::initMenuBar() {
     connect(clipAction, SIGNAL(triggered(bool)), this, SLOT(clipImgSlot()));
 
     // View
-    /*QMenu* menuView = new QMenu("&View", mBar);
+    QMenu* menuView = new QMenu("&View", mBar);
 
     // View - ZoomIn
-    QAction* zoomInAction = new QAction("&Zoom-In", menuView);
-    zoomInAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Mou));
-    menuView->addAction(zoomInAction);
-    connect(clipAction, SIGNAL(triggered(bool)), this, SLOT(clipImgSlot()));*/
+    QAction* zoomInLeftAction = new QAction("&Zoom-In", menuView);
+    menuView->addAction(zoomInLeftAction);
+    connect(zoomInLeftAction, SIGNAL(triggered(bool)), imageLeft, SLOT(zoomIn()));
 
     //OpenCV
     QMenu* menuOpenCV = new QMenu("&OpenCV", mBar);
@@ -143,6 +143,7 @@ void MainWindow::initMenuBar() {
 
     mBar->addMenu(menuFile);
     mBar->addMenu(menuEdit);
+    mBar->addMenu(menuView);
     mBar->addMenu(menuOpenCV);
     mBar->addMenu(menuAbout);
 }

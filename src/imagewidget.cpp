@@ -23,7 +23,8 @@
  * Constructor
  *
  **************************************************************/
-ImageWidget::ImageWidget(QWidget *parent, std::size_t index) : QLabel(parent), index(index), isCropping(false), firstPoint(), secondPoint(), undoStack(nullptr) {
+ImageWidget::ImageWidget(QWidget *parent, std::size_t index) :
+    QLabel(parent), index(index), isCropping(false), firstPoint(), secondPoint(), undoStack(nullptr) {
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 }
 
@@ -99,15 +100,15 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent* ev) {
         if(rect().contains(ev->pos())){
             if(undoStack != nullptr)
             {
-                UndoStack::UndoStackOp op = static_cast<UndoStack::UndoStackOp>(index);
+                UndoStack::UndoStackImage op = static_cast<UndoStack::UndoStackImage>(index);
 
                 switch(op){
-                    case UndoStack::UndoStackOp::UNDO_STACK_OP_FIRST:{
+                    case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_FIRST:{
                         undoStack->pushLeft(image);
                         break;
                     }
 
-                    case UndoStack::UndoStackOp::UNDO_STACK_OP_SECOND:{
+                    case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_SECOND:{
                         undoStack->pushRight(image);
                         break;
                     }
@@ -136,10 +137,12 @@ void ImageWidget::mouseMoveEvent(QMouseEvent *ev) {
 void ImageWidget::wheelEvent(QWheelEvent* ev){
     if(ev->modifiers() == Qt::ControlModifier){
         if(ev->delta() > 0){
-            zoom(1.10f);
+            zoomIn();
         }else{
-            zoom(0.90f);
+            zoomOut();
         }
+    }else{
+        QLabel::wheelEvent(ev);
     }
 }
 
@@ -174,26 +177,40 @@ void ImageWidget::zoomIn(){
     zoom(1.10f);
 }
 
-void ImageWidget::zoom(float factor){
-    if(undoStack != nullptr)
-    {
-        UndoStack::UndoStackOp op = static_cast<UndoStack::UndoStackOp>(index);
+void ImageWidget::zoomOut(){
 
+    if(!undoStack->isEmpty()){
+        std::tuple<UndoStack::UndoStackImage, UndoStack::UndoStackOp, cv::Mat> p = undoStack->getTopTupleElement();
+
+        if(std::get<1>(p) == UndoStack::UndoStackOp::UNDO_STACK_OP_ZOOM){
+            zoom(0.90f);
+        }
+    }
+}
+
+void ImageWidget::zoom(float factor){
+    UndoStack::UndoStackImage op = static_cast<UndoStack::UndoStackImage>(index);
+
+    if(factor > 1.0f){
         switch(op){
-            case UndoStack::UndoStackOp::UNDO_STACK_OP_FIRST:{
-                undoStack->pushLeft(image);
+            case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_FIRST:{
+                undoStack->pushLeft(image, UndoStack::UndoStackOp::UNDO_STACK_OP_ZOOM);
                 break;
             }
 
-            case UndoStack::UndoStackOp::UNDO_STACK_OP_SECOND:{
-                undoStack->pushRight(image);
+            case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_SECOND:{
+                undoStack->pushRight(image, UndoStack::UndoStackOp::UNDO_STACK_OP_ZOOM);
                 break;
             }
         }
+
+        QPixmap pMap = pixmap()->scaled(QSize(image.cols * factor, image.rows * factor), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        setPixmap(pMap);
+        ImageTools& tools = ImageTools::getInstance();
+        image = tools.imageToMat(pMap.toImage());
+    }else{
+        undoStack->undo();
     }
 
-    QPixmap pMap = pixmap()->scaled(QSize(image.cols * factor, image.rows * factor), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    setPixmap(pMap);
-    ImageTools& tools = ImageTools::getInstance();
-    image = tools.imageToMat(pMap.toImage());
+    adjustSize();
 }

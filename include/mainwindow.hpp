@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "imagetools.hpp"
 #include "undostack.hpp"
 
 #include <QMainWindow>

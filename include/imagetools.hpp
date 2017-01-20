@@ -1,8 +1,10 @@
 #ifndef IMAGE_TOOLS_H
 #define IMAGE_TOOLS_H
+
 #define NON_FREE 0 // 0(false) 1(true)
 
 #include <QImage>
+
 #include <opencv2/core/core.hpp>
 
 /*!

@@ -13,7 +13,7 @@
 #define UNDOSTACK_HPP
 
 #include <stack>
-#include <utility>
+#include <tuple>
 
 #include <opencv2/core/core.hpp>
 
@@ -32,14 +32,21 @@ class UndoStack
 {
 public:
     /*!
-     * \enum UndoStack
+     * \enum UndoStackImage
      * \brief The UndoStackOp enum is used as an index in order to identify
      *        which image needs to be updated.
      */
+    enum UndoStackImage
+    {
+        UNDO_STACK_IMAGE_FIRST = 0,    /*!< First image. */
+        UNDO_STACK_IMAGE_SECOND        /*!< Second image. */
+    };
+
+public:
     enum UndoStackOp
     {
-        UNDO_STACK_OP_FIRST = 0,    /*!< First image. */
-        UNDO_STACK_OP_SECOND        /*!< Second image. */
+        UNDO_STACK_OP_DEFAULT = 0,
+        UNDO_STACK_OP_ZOOM
     };
 
 public:
@@ -64,18 +71,23 @@ public:
      * \brief Saves the state of the first image.
      * \param image OpenCV representation of the first image.
      */
-    inline void pushLeft(cv::Mat& image)
+    inline void pushLeft(cv::Mat& image, UndoStackOp op = UNDO_STACK_OP_DEFAULT)
     {
-        undoStack.push(std::make_pair(UNDO_STACK_OP_FIRST, image));
+        undoStack.push(std::make_tuple(UNDO_STACK_IMAGE_FIRST, op, image));
     }
 
     /*!
      * \brief Saves the state of the second image.
      * \param image OpenCV representation of the second image.
      */
-    inline void pushRight(cv::Mat& image)
+    inline void pushRight(cv::Mat& image, UndoStackOp op = UNDO_STACK_OP_DEFAULT)
     {
-        undoStack.push(std::make_pair(UNDO_STACK_OP_SECOND, image));
+        undoStack.push(std::make_tuple(UNDO_STACK_IMAGE_SECOND, op, image));
+    }
+
+    inline std::tuple<UndoStackImage, UndoStackOp, cv::Mat> getTopTupleElement()
+    {
+        return undoStack.top();
     }
 
     /*!
@@ -96,15 +108,20 @@ public:
         rWidget = widget;
     }
 
+    inline bool isEmpty() const
+    {
+        return undoStack.empty();
+    }
+
     /*!
      * \brief Allows to restore the previous state of an image.
      */
     void undo();
 
 private:
-    ImageWidget*                                lWidget;    /*!< First Widget. */
-    ImageWidget*                                rWidget;    /*!< Second widget. */
-    std::stack<std::pair<UndoStackOp, cv::Mat>> undoStack;  /*!< Saved states of images. */
+    ImageWidget*                                                    lWidget;    /*!< First Widget. */
+    ImageWidget*                                                    rWidget;    /*!< Second widget. */
+    std::stack<std::tuple<UndoStackImage, UndoStackOp, cv::Mat>>    undoStack;  /*!< Saved states of images. */
 };
 
 #endif // UNDOSTACK_HPP

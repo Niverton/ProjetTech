@@ -48,19 +48,19 @@ void UndoStack::undo()
         return;
     }
 
-    std::pair<UndoStackOp, cv::Mat> p = undoStack.top();
+    std::tuple<UndoStackImage, UndoStackOp, cv::Mat> p = undoStack.top();
 
-    switch(p.first)
+    switch(std::get<0>(p))
     {
-        case UndoStack::UndoStackOp::UNDO_STACK_OP_FIRST:
+        case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_FIRST:
         {
-            lWidget->setImage(p.second);
+            lWidget->setImage(std::get<2>(p));
             break;
         }
 
-        case UndoStack::UndoStackOp::UNDO_STACK_OP_SECOND:
+        case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_SECOND:
         {
-            rWidget->setImage(p.second);
+            rWidget->setImage(std::get<2>(p));
             break;
         }
     }
