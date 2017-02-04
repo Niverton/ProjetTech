@@ -1,9 +1,5 @@
-#include "mainwindow.h"
+#include "mainwindow.hpp"
 #include <QApplication>
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-
-
 
 int main(int argc, char *argv[])
 {
@@ -13,5 +9,3 @@ int main(int argc, char *argv[])
 
   return a.exec();
 }
-
-
