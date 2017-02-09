@@ -102,9 +102,9 @@ cv::Mat ImageTools::disparityMap(cv::Mat& img_gauche, cv::Mat& img_droite, int m
     img_g.convertTo(img_g, CV_8UC1);
     img_d.convertTo(img_d, CV_8UC1);
 
-    int ratio = 7;
+    int ratio = 16;
     int numDisp = ratio * 16;
-    int SADWindowSize = 21;
+    int SADWindowSize = 6;
     
     if (mode == 0){
       cv::StereoBM sbm = cv::StereoBM(cv::StereoBM::BASIC_PRESET, numDisp, SADWindowSize);
