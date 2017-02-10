@@ -1,4 +1,0 @@
-sceneSetups:
-- path: Assets/StudioNewPunch/SuitPack/SuitedMan/ManInSuitScene.unity
-  isLoaded: 1
-  isActive: 1
