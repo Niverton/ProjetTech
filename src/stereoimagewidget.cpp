@@ -224,4 +224,6 @@ void StereoImageWidget::zoom(float factor)
     {
         undoZoom.undo();
     }
+
+    adjustSize();
 }
