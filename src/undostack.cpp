@@ -5,6 +5,7 @@
  *         Benjamin De Pourquery
  *         Rémy Maugey
  *         Hadrien Decoudras
+ * \date 2017-01-27
  * \version 0.2
  */
 
@@ -17,7 +18,7 @@
  * Constructor
  *
  **************************************************************/
-UndoStack::UndoStack() {}
+UndoStack::UndoStack() : lWidget(nullptr), rWidget(nullptr) {}
 
 /**************************************************************
  **************************************************************
@@ -48,17 +49,17 @@ void UndoStack::undo()
         return;
     }
 
-    std::pair<UndoStackImage, cv::Mat> p = undoStack.top();
+    std::pair<StereoUndoStackImage, cv::Mat> p = undoStack.top();
 
     switch(p.first)
     {
-        case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_FIRST:
+        case UndoStack::StereoUndoStackImage::UNDO_STACK_IMAGE_FIRST:
         {
             lWidget->setImage(p.second);
             break;
         }
 
-        case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_SECOND:
+        case UndoStack::StereoUndoStackImage::UNDO_STACK_IMAGE_SECOND:
         {
             rWidget->setImage(p.second);
             break;

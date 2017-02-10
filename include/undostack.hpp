@@ -6,7 +6,8 @@
  *         Benjamin De Pourquery
  *         Rémy Maugey
  *         Hadrien Decoudras
- * \version 0.2
+ * \date 2017-01-27
+ * \version 0.3
  */
 
 #ifndef UNDOSTACK_HPP
@@ -25,8 +26,8 @@ class ImageWidget;
  *        It simply allows to undo one or more operations done by a user.
  *        This component can be seen as a "sort of" delegation in which the owner
  *        of this object will temporarily yield part of its logic to the UndoStack
- *        object. The UndoStack object will operate on the two ImageWidget components
- *        of the main window.
+ *        object. The UndoStack object will operate on the ImageWidget and derived
+ *        objects.
  */
 class UndoStack
 {
@@ -36,7 +37,7 @@ public:
      * \brief The UndoStackOp enum is used as an index in order to identify
      *        which image needs to be updated.
      */
-    enum UndoStackImage
+    enum StereoUndoStackImage
     {
         UNDO_STACK_IMAGE_FIRST = 0,    /*!< First image. */
         UNDO_STACK_IMAGE_SECOND        /*!< Second image. */
@@ -49,22 +50,27 @@ public:
     UndoStack();
 
     /*!
-     * \brief Constructor get an instance of a ready to use UndoStack object.
-     * \param rWidget First image.
-     * \param lWidget Second image
+     * \brief Constructor which instanciates a ready to use StereoUndoStack object.
+     * \param lWidget First image.
+     * \param rWidget Second image
      */
-    UndoStack(ImageWidget* rWidget, ImageWidget* lWidget);
+    UndoStack(ImageWidget* lWidget, ImageWidget* rWidget);
 
     /*!
      * \brief Default destructor.
      */
     ~UndoStack();
 
+    inline void push(const cv::Mat& image)
+    {
+        undoStack.push(std::make_pair(UNDO_STACK_IMAGE_FIRST, image));
+    }
+
     /*!
      * \brief Saves the state of the first image.
      * \param image OpenCV representation of the first image.
      */
-    inline void pushLeft(cv::Mat& image)
+    inline void pushLeft(const cv::Mat& image)
     {
         undoStack.push(std::make_pair(UNDO_STACK_IMAGE_FIRST, image));
     }
@@ -73,11 +79,19 @@ public:
      * \brief Saves the state of the second image.
      * \param image OpenCV representation of the second image.
      */
-    inline void pushRight(cv::Mat& image)
+    inline void pushRight(const cv::Mat& image)
     {
         undoStack.push(std::make_pair(UNDO_STACK_IMAGE_SECOND, image));
     }
 
+    /*!
+     * \brief Sets the first ImageWidget object.
+     * \param widget The fisrt ImageWidget object.
+     */
+    inline void setWidget(ImageWidget* widget)
+    {
+        lWidget = widget;
+    }
 
     /*!
      * \brief Sets the first ImageWidget object.
@@ -97,6 +111,10 @@ public:
         rWidget = widget;
     }
 
+    /*!
+     * \brief Checks if the stack is empty.
+     * \return True if the stack is empty; false otherwise.
+     */
     inline bool isEmpty() const
     {
         return undoStack.empty();
@@ -108,9 +126,9 @@ public:
     void undo();
 
 private:
-    ImageWidget*                                    lWidget;    /*!< First Widget. */
-    ImageWidget*                                    rWidget;    /*!< Second widget. */
-    std::stack<std::pair<UndoStackImage, cv::Mat>>  undoStack;  /*!< Saved states of images. */
+    ImageWidget*                                            lWidget;    /*!< Left widget */
+    ImageWidget*                                            rWidget;    /*!< Right widget */
+    std::stack<std::pair<StereoUndoStackImage, cv::Mat>>    undoStack;  /*!< Saved states of images. */
 };
 
 #endif // UNDOSTACK_HPP

@@ -1,5 +1,16 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+/*!
+ * \file mainwindow.hpp
+ * \brief Header containing the declaration of the MainWindow class which acts as the main entry point of the application.
+ * \author Jérémi Bernard
+ *         Benjamin De Pourquery
+ *         Rémy Maugey
+ *         Hadrien Decoudras
+ * \date 2016-09-01
+ * \version 0.2
+ */
+
+#ifndef MAINWINDOW_HPP
+#define MAINWINDOW_HPP
 
 #include "undostack.hpp"
 
@@ -7,12 +18,24 @@
 
 #include <opencv2/core/core.hpp>
 
-class ImageWidget;
+class StereoImageWidget;
+class StereoTransformWidget;
+class AboutWidget;
 
-class MainWindow : public QMainWindow {
-  Q_OBJECT
+/*!
+ * \class MainWindow
+ * \brief The MainWindow class gathers all the functionalities of the program.
+ *        It consists of two ImageWidget objects used to display a stereo picture.
+ *        Several image transformations are availables such as: blur, canny or flann.
+ *        The main purposes of this class is to represent a depth map and a disparity
+ *        map from a stereo image.
+ *        In addition to this, the MainWindow class features undo and zoom operations.
+ */
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
 
-  public:
+public:
     /*!
      * \brief Default constructor.
      */
@@ -28,44 +51,44 @@ class MainWindow : public QMainWindow {
      */
     void adjustSize();
 
-  private slots:
+private slots:
     /*!
-     * \brief Displays the "About" modal window.
+     * \brief Displays the 'About' modal window.
      */
-    void renderAbout();
+    void about();
 
     /*!
      * \brief Allows the user to import an image.
      */
-    void openFile();
+    void open();
     
     /*!
-     * \brief Previous manipulation
+     * \brief Previous manipulation.
      */
-    void undoSlot();
+    void undo();
 
     /*!
      * \brief Cuts an image.
      */
-    void cutImgSlot();
+    void cut();
 
     // Not implemented yet.
-    void clipImgSlot();
+    void clip();
 
     /*!
      * \brief Blurs an image.
      */
-    void blurSlot();
+    void blur();
 
     /*!
      * \brief Applies a sobel filter to an image.
      */
-    void sobelSlot();
+    void sobel();
 
     /*!
      * \brief Applies a canny filter to an image.
      */
-    void cannySlot();
+    void canny();
 
     /*!
      * \brief Gets the disparity map of a pair of images.
@@ -74,28 +97,32 @@ class MainWindow : public QMainWindow {
      *        parallax (eyes’ horizontal separation). The brain uses this disparity to calculate
      *        depth information from the two dimensional images.
      */
-    void dispMapSlot();
+    void disparity();
 
     //void depthMapSlot();  //  disparity map == depth map ?
 
     /*!
      * \brief flannSlot
      */
-    void flannSlot();
+    void flann();
 
-  private:
+private:
     /*!
-     * \brief Init all menus and actions in the menu bar
+     * \brief Initializes all menus and actions of the menu bar
      */
     void initMenuBar();
 
-    bool drawLeft;                      /*!< Indicates if the left image is drawn. */
-    bool drawRight;                     /*!< Indicates if the right image is drawn. */
+    bool drawLeft;                              /*!< Indicates if the left image is drawn. */
+    bool drawRight;                             /*!< Indicates if the right image is drawn. */
 
-    ImageWidget* imageLeft;             /*!< Left image. */
-    ImageWidget* imageRight;            /*!< Right image. */
+    StereoImageWidget* imageLeft;               /*!< Left image. */
+    StereoImageWidget* imageRight;              /*!< Right image. */
 
-    UndoStack undoStack;
+    StereoTransformWidget* transformWidget;     /*!< OpenCV image transformation widget. */
+
+    AboutWidget* aboutWidget;                   /*!< About modal window. */
+
+    UndoStack undoStack;                        /*! Saved state of images. */
 };
 
 #endif // MAINWINDOW

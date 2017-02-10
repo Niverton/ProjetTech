@@ -1,54 +1,41 @@
 /*!
  * \file imagewidget.hpp
- * \brief Header containing the declaration of the ImageWidget class which is designed
- *        to contain an image.
+ * \brief Header containing the declaration of the ImageWidget class which is used to display an image.
  * \author Jérémi Bernard
  *         Benjamin De Pourquery
  *         Rémy Maugey
  *         Hadrien Decoudras
+ * \date 2016-09-01
  * \version 0.2
  */
 
-#ifndef IMAGEWIDGET_H
-#define IMAGEWIDGET_H
+#ifndef IMAGEWIDGET_HPP
+#define IMAGEWIDGET_HPP
 
 #include "undostack.hpp"
 
-#include <opencv2/core/core.hpp>
-
 #include <QLabel>
-
-class QRubberBand;
-class QMouseEvent;
-class QWheelEvent;
 
 /*!
  * \class ImageWidget
  * \brief The ImageWidget class is used to display an image.
- *        The main purpose of this container is to hold data of an image under the
- *        OpenCV format. The ImageWidget object also features crop capabilities.
- *        An UndoStack objet can be added to this container in order to track each
- *        crop operation.
- *        Note that undo operations are meant to be processed by an upper level widget
- *        in the widget tree. As such, if an UndoStack object is used, it must be attached
- *        to the ImageWidget object from the widget which handles the undo logic operations.
+ *        This class features zoom functionalities.
  */
-class ImageWidget : public QLabel {
-  Q_OBJECT
+class ImageWidget : public QLabel
+{
+    Q_OBJECT
 
 public:
     /*!
-     * \brief Default constructor.
+     * \brief Default costructor.
      * \param parent Parent widget.
-     * \param index  Index of the widget.
      */
-    ImageWidget(QWidget* parent = nullptr, std::size_t index = 0);
+    ImageWidget(QWidget* parent = nullptr);
 
     /*!
-     * \brief Allows to add an UndoStack object to the container.
-     * \param stack UndoStack object allowing to track crop operations.
+     * \brief Default destructor.
      */
-    void addUndoStack(UndoStack* stack);
+    ~ImageWidget();
 
     /*!
      * \brief Gets the image of the container under the form of a OpenCV Mat object.
@@ -62,71 +49,44 @@ public:
      */
     void setImage(const cv::Mat& im);
 
+    /*!
+     * \brief Determines if the widget has an image.
+     * \return True if the widget contains an image; false otherwise.
+     */
+    bool hasImage() const;
+
+    /*!
+     * \brief Removes an image from the widget.
+     */
+    void clean();
+
 protected:
     /*!
-     * \brief Reimplemented method used to track mouse movements in order to process
-     *        to a crop operation.
-     * \param ev Mouse event.
-     */
-    void mousePressEvent(QMouseEvent* ev);
-
-    /*!
-     * \brief Reimplemented method used to track mouse movements in order to process
-     *        to a crop operation. This function triggers the cropImage procedure.
-     * \param ev Mouse event.
-     */
-    void mouseReleaseEvent(QMouseEvent* ev);
-
-    /*!
-     * \brief Reimplemented method used to track mouse movements in order to process
-     *        to a crop operation.
-     * \param ev Mouse event.
-     */
-    void mouseMoveEvent(QMouseEvent* ev);
-
-    /*!
      * \brief Reimplemented method used to zoom an image.
-     * \param ev
+     * \param ev Mouse wheel event.
      */
     void wheelEvent(QWheelEvent* ev);
 
     /*!
-     * \brief Crops the image of the container according to the data collected by
-     *        the mouse event reimplemented functions.
+     * \brief Allows to perform zoom-in/zoom-out operations.
+     * \param factor Zoom-in/Zoom-out factor.
      */
-    void cropImage();
+    virtual void zoom(float factor);
 
-    /* TODO Plus tard Gaspard
-    //TO DO Document
-    void resizeEvent(QResizeEvent* event);
-    //TO DO Document
-    void resizeImage();
-    //*/
-
-    //QSize sizeHint() const;
-
-
-private slots:
+protected slots:
+    /*!
+     * \brief Allows to perform zoom-in operations.
+     */
     void zoomIn();
+
+    /*!
+     * \brief Allows to perform zoom-out operations.
+     */
     void zoomOut();
 
-private:
-    void zoom(float factor);
-
-private:
-    std::size_t         index;              /*!< Index of the widget. */
-
-    cv::Mat             image;              /*!< Widget image. */
-
-    bool                isCropping;         /*!< Indicates if the user is cropping the image of the widget. */
-
-    QRubberBand*        rubberBand;         /*!< Crop indicator. */
-
-    QPoint              firstPoint;         /*!< Start point of the crop operation. */
-    QPoint              secondPoint;        /*!< End point of the crop operaton. */
-
-    UndoStack*          undoStack;          /*!< UndoStack object of an upper level widget. */
-    UndoStack           undoZoom;
+protected:
+    cv::Mat             image;              /*!< Image. */
+    UndoStack           undoZoom;           /*!< Allows to perform zoom-in/zoom-out operations. */
 };
 
-#endif // IMAGEWIDGET
+#endif // IMAGEWIDGET_H

@@ -1,6 +1,20 @@
+/*!
+ * \file mainwindow.cpp
+ * \brief Implementation of the methods of the MainWindow class declared in the mainwindow.hpp header.
+ * \author Jérémi Bernard
+ *         Benjamin De Pourquery
+ *         Rémy Maugey
+ *         Hadrien Decoudras
+ * \date 2016-09-01
+ * \version 0.2
+ */
+
 #include "mainwindow.hpp"
-#include "imagetools.hpp"
-#include "imagewidget.hpp"
+
+#include "imageprocessor.hpp"
+#include "stereoimagewidget.hpp"
+#include "stereotransformwidget.hpp"
+#include "aboutwidget.hpp"
 
 #include <QMessageBox>
 #include <QMainWindow>
@@ -15,84 +29,103 @@
 #include <QDesktopWidget>
 #include <QScrollArea>
 
+/**************************************************************
+ **************************************************************
+ *
+ * Constructor.
+ *
+ **************************************************************/
+MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false)
+{
+    setMinimumSize(800, 600);
+    setWindowTitle("Robotic Vision");
 
-MainWindow::MainWindow() : QMainWindow(), drawLeft(false), drawRight(false) {
-  move(QApplication::desktop()->availableGeometry().center() / 2);
+    QWidget* central = new QWidget(this);
+    central->minimumSizeHint();
 
-  /*  QMainWindow possède son propre layout qui lui permet de disposer les barres d'outils
-      On est donc obligé de créer un widget qui contiendra le layout du contenu de la fenêtre
-      getCentralWidget() pour récupèrer ce widget
-  */
-  QWidget *central = new QWidget(this);
-  central->minimumSizeHint();
-  QLayout *layout = new QHBoxLayout(central);
-  central->setLayout(layout);
-  setCentralWidget(central);
+    QLayout* layout = new QHBoxLayout(central);
+    central->setLayout(layout);
+    setCentralWidget(central);
 
-  QScrollArea* scA = new QScrollArea(this);
-  QScrollArea* scB = new QScrollArea(this);
-  scA->setAlignment(Qt::AlignCenter);
-  scB->setAlignment(Qt::AlignCenter);
+    QScrollArea* scA = new QScrollArea(this);
+    QScrollArea* scB = new QScrollArea(this);
+    scA->setAlignment(Qt::AlignCenter);
+    scB->setAlignment(Qt::AlignCenter);
 
-  imageLeft = new ImageWidget(this, 0);
-  imageRight = new ImageWidget(this, 1);
+    imageLeft = new StereoImageWidget(this, 0);
+    imageRight = new StereoImageWidget(this, 1);
 
-  layout->addWidget(scA);
-  layout->addWidget(scB);
-  scA->setWidget(imageLeft);
-  scB->setWidget(imageRight);
+    layout->addWidget(scA);
+    layout->addWidget(scB);
+    scA->setWidget(imageLeft);
+    scB->setWidget(imageRight);
 
-  layout->setAlignment(imageLeft, Qt::AlignCenter);
-  layout->setAlignment(imageRight, Qt::AlignCenter);
+    layout->setAlignment(imageLeft, Qt::AlignCenter);
+    layout->setAlignment(imageRight, Qt::AlignCenter);
 
-  undoStack.setLeftWidget(imageLeft);
-  undoStack.setRightWidget(imageRight);
-  imageLeft->addUndoStack(&undoStack);
-  imageRight->addUndoStack(&undoStack);
+    undoStack.setLeftWidget(imageLeft);
+    undoStack.setRightWidget(imageRight);
+    imageLeft->addUndoStack(&undoStack);
+    imageRight->addUndoStack(&undoStack);
 
-  initMenuBar();
+    initMenuBar();
+
+    move((QApplication::desktop()->screenGeometry().width() / 2) - (size().width() / 2),
+         (QApplication::desktop()->screenGeometry().height() / 2) - (size().height() / 2));
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Destructor.
+ *
+ **************************************************************/
 MainWindow::~MainWindow() {}
 
+/**************************************************************
+ **************************************************************
+ *
+ * Initializes menus.
+ *
+ **************************************************************/
 void MainWindow::initMenuBar() {
     QMenuBar* mBar = menuBar();
 
     //File
-    QMenu* menuFile = new QMenu("&Fichier", mBar);
+    QMenu* menuFile = new QMenu("&File", mBar);
 
     //File - Open
-    QAction* openAction = new QAction("&Ouvrir", menuFile);
+    QAction* openAction = new QAction("&Open", menuFile);
     openAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
     menuFile->addAction(openAction);
-    connect(openAction, SIGNAL(triggered(bool)), this, SLOT(openFile()));
+    connect(openAction, SIGNAL(triggered(bool)), this, SLOT(open()));
 
     //File - Quit
-    QAction* quitAction = new QAction("&Quitter", menuFile);
+    QAction* quitAction = new QAction("&Quit", menuFile);
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     menuFile->addAction(quitAction);
     connect(quitAction, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
 
     //Edit
-    QMenu* menuEdit = new QMenu("&Editer", mBar);
+    QMenu* menuEdit = new QMenu("&Edit", mBar);
 
     //Edit - undo
     QAction* undoAction = new QAction("&Undo", menuEdit);
     undoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z));
     menuEdit->addAction(undoAction);
-    connect(undoAction, SIGNAL(triggered(bool)), this, SLOT(undoSlot()));
+    connect(undoAction, SIGNAL(triggered(bool)), this, SLOT(undo()));
 
     //Edit - cut
-    QAction* cutAction = new QAction("&Couper l'image", menuEdit);
+    QAction* cutAction = new QAction("&Split", menuEdit);
     cutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
     menuEdit->addAction(cutAction);
-    connect(cutAction, SIGNAL(triggered(bool)), this, SLOT(cutImgSlot()));
+    connect(cutAction, SIGNAL(triggered(bool)), this, SLOT(cut()));
 
     //Edit - clipAction
-    QAction* clipAction = new QAction("&Rogner l'image", menuEdit);
+    QAction* clipAction = new QAction("&Crop", menuEdit);
     clipAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
     menuEdit->addAction(clipAction);
-    connect(clipAction, SIGNAL(triggered(bool)), this, SLOT(clipImgSlot()));
+    connect(clipAction, SIGNAL(triggered(bool)), this, SLOT(clip()));
 
     // View
     QMenu* menuView = new QMenu("&View", mBar);
@@ -120,35 +153,35 @@ void MainWindow::initMenuBar() {
     //OpenCV
     QMenu* menuOpenCV = new QMenu("&OpenCV", mBar);
 
-    QAction* blurAction = new QAction("&Flouter l'image", menuOpenCV);
+    QAction* blurAction = new QAction("&Blur", menuOpenCV);
     blurAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_B));
     menuOpenCV->addAction(blurAction);
-    connect(blurAction, SIGNAL(triggered(bool)), this, SLOT(blurSlot()));
+    connect(blurAction, SIGNAL(triggered(bool)), this, SLOT(blur()));
 
-    QAction* sobelAction = new QAction("Appliquer &Sobel", menuOpenCV);
+    QAction* sobelAction = new QAction("&Sobel", menuOpenCV);
     sobelAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_S));
     menuOpenCV->addAction(sobelAction);
-    connect(sobelAction, SIGNAL(triggered(bool)), this, SLOT(sobelSlot()));
+    connect(sobelAction, SIGNAL(triggered(bool)), this, SLOT(sobel()));
 
-    QAction* cannyAction = new QAction("Appliquer &Canny", menuOpenCV);
+    QAction* cannyAction = new QAction("&Canny", menuOpenCV);
     cannyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_C));
     menuOpenCV->addAction(cannyAction);
-    connect(cannyAction, SIGNAL(triggered(bool)), this, SLOT(cannySlot()));
+    connect(cannyAction, SIGNAL(triggered(bool)), this, SLOT(canny()));
 
-    QAction* dispMapAction = new QAction("&Carte de dispatité", menuOpenCV);
+    QAction* dispMapAction = new QAction("&Disparity map", menuOpenCV);
     menuOpenCV->addAction(dispMapAction);
-    connect(dispMapAction, SIGNAL(triggered(bool)), this, SLOT(dispMapSlot()));
+    connect(dispMapAction, SIGNAL(triggered(bool)), this, SLOT(disparity()));
 /*
-    QAction* DepthMapAction = new QAction("&Carte de profondeur", menuOpenCV);
+    QAction* DepthMapAction = new QAction("&Depth map", menuOpenCV);
     menuOpenCV->addAction(DepthMapAction);
     connect(DepthMapAction, SIGNAL(triggered(bool)), this, SLOT(depthMapSlot()));
 */
     //About
-    QMenu* menuAbout = new QMenu("À &Propos", mBar);
-    QAction* aboutAction = new QAction("À &Propos", menuAbout);
+    QMenu* menuAbout = new QMenu("&Help", mBar);
+    QAction* aboutAction = new QAction("&About", menuAbout);
     aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_A));
     menuAbout->addAction(aboutAction);
-    connect(aboutAction, SIGNAL(triggered(bool)), this, SLOT(renderAbout()));
+    connect(aboutAction, SIGNAL(triggered(bool)), this, SLOT(about()));
 
 #if NON_FREE == 1
     QAction* flannAction = new QAction("&Algorithme de flann (avec surf)", menuOpenCV);
@@ -163,46 +196,74 @@ void MainWindow::initMenuBar() {
     mBar->addMenu(menuAbout);
 }
 
-/*******
-  SLOTS
-*******/
-
-void MainWindow::renderAbout() {
-  QMessageBox::about(this, "A propos", "Projet technologique L3");
+/**************************************************************
+ **************************************************************
+ *
+ * Displays about.
+ *
+ **************************************************************/
+void MainWindow::about()
+{
+    aboutWidget = new AboutWidget("<div align='center'>"
+                                    "<b>Projet Technologique</b><br/>"
+                                    "<b>Licence 3 Informatique</b><br/>"
+                                    "<b>Université Bordeaux I</b><br/><br/>"
+                                    "<i>Jérémi Bernard</i><br/>"
+                                    "<i>Benjamin De Pourquery</i><br/>"
+                                    "<i>Rémy Maugey</i><br/>"
+                                    "<i>Hadrien Decoudras</i><br/><br/>"
+                                    "<i>2016-2017</i><br/>"
+                                  "</div>");
+    aboutWidget->show();
 }
 
-void MainWindow::openFile() {
+/**************************************************************
+ **************************************************************
+ *
+ * Opens image.
+ *
+ **************************************************************/
+void MainWindow::open()
+{
     QString p = QFileDialog::getOpenFileName(nullptr, "Ouvrir", QString(), "Images (*.png *.jpg)");
 
-    if(!p.isEmpty()) {
+    if(!p.isEmpty())
+    {
         QImage imageLoaded(p);
-        ImageTools& tools = ImageTools::getInstance();
-        imageLeft->setImage(tools.imageToMat(imageLoaded));
+        ImageProcessor& tools = ImageProcessor::Instance();
+        imageLeft->setImage(tools.imageToCvMat(imageLoaded));
 
         cv::Mat empty;
         imageRight->setImage(empty);
 
         drawLeft = true;
         drawRight = false;
-
-        move((QApplication::desktop()->screenGeometry().width() / 2) - (size().width() / 2), (QApplication::desktop()->screenGeometry().height() / 2) - (size().height() / 2));
     }
 }
 
-void MainWindow::undoSlot() {
-    /*if (undoStackLeft.empty() || undoStackRight.empty())
-        return;
-
-    imageLeft->setImage(undoStackLeft.top());
-    undoStackLeft.pop();
-    imageRight->setImage(undoStackRight.top());
-    undoStackRight.pop();*/
+/**************************************************************
+ **************************************************************
+ *
+ * Undo stack.
+ *
+ **************************************************************/
+void MainWindow::undo()
+{
     undoStack.undo();
 }
 
-void MainWindow::cutImgSlot() {
-    if (!drawLeft)
+/**************************************************************
+ **************************************************************
+ *
+ * Cuts image.
+ *
+ **************************************************************/
+void MainWindow::cut()
+{
+    if(!drawLeft)
+    {
         return;
+    }
 
     cv::Mat lImg = imageLeft->getImage();
     cv::Mat rImg = imageRight->getImage();
@@ -210,7 +271,7 @@ void MainWindow::cutImgSlot() {
     undoStack.pushLeft(lImg);
     undoStack.pushRight(rImg);
 
-    ImageTools& tools = ImageTools::getInstance();
+    ImageProcessor& tools = ImageProcessor::Instance();
     cv::Mat left, right;
 
     tools.split(lImg, left, right);
@@ -221,16 +282,31 @@ void MainWindow::cutImgSlot() {
     drawRight = true;
 }
 
-void MainWindow::clipImgSlot() {
-  //TODO A voir toggle fonction sur les widgets
-  centralWidget()->adjustSize();
+/**************************************************************
+ **************************************************************
+ *
+ * Clips image.
+ *
+ **************************************************************/
+void MainWindow::clip()
+{
+
 }
 
-void MainWindow::blurSlot() {
-    if (!drawLeft)
+/**************************************************************
+ **************************************************************
+ *
+ * Blur.
+ *
+ **************************************************************/
+void MainWindow::blur()
+{
+    if(!drawLeft)
+    {
         return;
+    }
 
-    ImageTools& tools = ImageTools::getInstance();
+    ImageProcessor& tools = ImageProcessor::Instance();
     cv::Mat img = imageLeft->getImage();
 
     undoStack.pushLeft(img);
@@ -238,8 +314,10 @@ void MainWindow::blurSlot() {
     tools.blur(img, 3);
     imageLeft->setImage(img);
 
-    if (!drawRight)
+    if(!drawRight)
+    {
         return;
+    }
 
     img = imageRight->getImage();
 
@@ -247,15 +325,22 @@ void MainWindow::blurSlot() {
 
     tools.blur(img, 3);
     imageRight->setImage(img);
-
-    centralWidget()->adjustSize();
 }
 
-void MainWindow::sobelSlot() {
-    if (!drawLeft)
+/**************************************************************
+ **************************************************************
+ *
+ * Sobel.
+ *
+ **************************************************************/
+void MainWindow::sobel()
+{
+    if(!drawLeft)
+    {
         return;
+    }
 
-    ImageTools& tools = ImageTools::getInstance();
+    ImageProcessor& tools = ImageProcessor::Instance();
     cv::Mat img = imageLeft->getImage();
 
     undoStack.pushLeft(img);
@@ -263,8 +348,10 @@ void MainWindow::sobelSlot() {
     tools.sobel(img, 3, 1);
     imageLeft->setImage(img);
 
-    if (!drawRight)
+    if(!drawRight)
+    {
         return;
+    }
 
     img = imageRight->getImage();
 
@@ -272,15 +359,22 @@ void MainWindow::sobelSlot() {
 
     tools.sobel(img, 3, 1);
     imageRight->setImage(img);
-
-    centralWidget()->adjustSize();
 }
 
-void MainWindow::cannySlot() {
-    if (!drawLeft)
+/**************************************************************
+ **************************************************************
+ *
+ * Canny.
+ *
+ **************************************************************/
+void MainWindow::canny()
+{
+    if(!drawLeft)
+    {
         return;
+    }
 
-    ImageTools& tools = ImageTools::getInstance();
+    ImageProcessor& tools = ImageProcessor::Instance();
     cv::Mat img = imageLeft->getImage();
 
     undoStack.pushLeft(img);
@@ -288,8 +382,10 @@ void MainWindow::cannySlot() {
     tools.canny(img, 3, 20, 2);
     imageLeft->setImage(img);
 
-    if (!drawRight)
+    if(!drawRight)
+    {
         return;
+    }
 
     img = imageRight->getImage();
 
@@ -297,27 +393,30 @@ void MainWindow::cannySlot() {
 
     tools.canny(img, 3, 20, 2);
     imageRight->setImage(img);
-
-    centralWidget()->adjustSize();
 }
 
-void MainWindow::dispMapSlot(){
+/**************************************************************
+ **************************************************************
+ *
+ * Disparity map.
+ *
+ **************************************************************/
+void MainWindow::disparity()
+{
     if (!drawLeft || !drawRight)
+    {
         return;
+    }
 
-    ImageTools& tools = ImageTools::getInstance();
+    ImageProcessor& tools = ImageProcessor::Instance();
 
     cv::Mat rImage = imageRight->getImage();
     cv::Mat lImage = imageLeft->getImage();
 
-    undoStack.pushLeft(lImage);
-    undoStack.pushRight(rImage);
+    cv::Mat disp = tools.disparityMap(lImage, rImage, ImageProcessor::StereoMode::STEREO_MODE_SGBM);
 
-    cv::Mat disp = tools.disparityMap(lImage, rImage, ImageTools::STEREO_SGBM);
-
-    cv::Mat empty;
-    imageLeft->setImage(disp);
-    imageRight->setImage(empty);
+    transformWidget = new StereoTransformWidget(disp, "Disparity map");
+    transformWidget->show();
 }
 
 /*
@@ -328,7 +427,13 @@ void MainWindow::depthMapSlot(){
 }
 */
 
-void MainWindow::flannSlot(){
+/**************************************************************
+ **************************************************************
+ *
+ * Flann.
+ *
+ **************************************************************/
+void MainWindow::flann(){
   #if NON_FREE == 1
     if (!drawLeft || !drawRight)
       return;
@@ -350,4 +455,3 @@ void MainWindow::flannSlot(){
     return;
   #endif
 }
-

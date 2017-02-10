@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/logo">
+        <file>qt-logo.png</file>
+        <file>ocv-logo.png</file>
+    </qresource>
+</RCC>

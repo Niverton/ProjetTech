@@ -5,43 +5,34 @@
  *         Benjamin De Pourquery
  *         Rémy Maugey
  *         Hadrien Decoudras
+ * \date 2016-09-01
  * \version 0.2
  */
 
 #include "imagewidget.hpp"
-#include "imagetools.hpp"
 
-#include <QMouseEvent>
+#include "imageprocessor.hpp"
+
 #include <QWheelEvent>
-#include <QRubberBand>
-
 
 /**************************************************************
  **************************************************************
  *
- * Constructor
+ * Constructor.
  *
  **************************************************************/
-ImageWidget::ImageWidget(QWidget *parent, std::size_t index) :
-    QLabel(parent), index(index), isCropping(false), firstPoint(), secondPoint(), undoStack(nullptr) {
-    rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
-
-    if(index == 0){
-        undoZoom.setLeftWidget(this);
-    }else{
-        undoZoom.setRightWidget(this);
-    }
+ImageWidget::ImageWidget(QWidget* parent) : QLabel(parent)
+{
+    undoZoom.setWidget(this);
 }
 
 /**************************************************************
  **************************************************************
  *
- * Adds undo manager.
+ * Destructor.
  *
  **************************************************************/
-void ImageWidget::addUndoStack(UndoStack* stack){
-    undoStack = stack;
-}
+ImageWidget::~ImageWidget() {}
 
 /**************************************************************
  **************************************************************
@@ -49,9 +40,10 @@ void ImageWidget::addUndoStack(UndoStack* stack){
  * Sets an image.
  *
  **************************************************************/
-void ImageWidget::setImage(const cv::Mat& im) {
+void ImageWidget::setImage(const cv::Mat& im)
+{
     setMinimumSize(QSize(0, 0));
-    ImageTools& tools = ImageTools::getInstance();
+    ImageProcessor& tools = ImageProcessor::Instance();
     image = im.clone();
     setPixmap(QPixmap::fromImage(tools.cvMatToImage(image)));
     adjustSize();
@@ -63,119 +55,56 @@ void ImageWidget::setImage(const cv::Mat& im) {
  * Gets an image.
  *
  **************************************************************/
-cv::Mat ImageWidget::getImage() {
-  return image.clone();
+cv::Mat ImageWidget::getImage()
+{
+    return image.clone();
 }
 
 /**************************************************************
  **************************************************************
  *
- * Mouse press.
+ * Is empty.
  *
  **************************************************************/
-void ImageWidget::mousePressEvent(QMouseEvent* ev) {
-    // Beginning crop
-    if(rect().contains(ev->pos()) && !isCropping && !image.empty()){
-        isCropping = true;
-
-        // Getting position
-        firstPoint.setX(ev->pos().x());
-        firstPoint.setY(ev->pos().y());
-
-        rubberBand->setGeometry(QRect(firstPoint, firstPoint));
-        rubberBand->show();
-    }
+bool ImageWidget::hasImage() const
+{
+    return (image.empty() != false);
 }
 
 /**************************************************************
  **************************************************************
  *
- * Mouse release.
+ * Cleans.
  *
  **************************************************************/
-void ImageWidget::mouseReleaseEvent(QMouseEvent* ev) {
-    if(!isCropping)
-        return;
-  
-    secondPoint.setX((ev->pos().x() > image.cols) ? image.cols : ev->pos().x());
-    secondPoint.setY((ev->pos().y() > image.rows) ? image.rows : ev->pos().y());
-    rubberBand->hide();
-
-    if(firstPoint != secondPoint){
-        if(rect().contains(ev->pos())){
-            if(undoStack != nullptr)
-            {
-                UndoStack::UndoStackImage op = static_cast<UndoStack::UndoStackImage>(index);
-
-                switch(op){
-                    case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_FIRST:{
-                        undoStack->pushLeft(image);
-                        break;
-                    }
-
-                    case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_SECOND:{
-                        undoStack->pushRight(image);
-                        break;
-                    }
-                }
-            }
-
-            cropImage();
-        }
-    }
-
-    isCropping = false;
+void ImageWidget::clean()
+{
+    image.release();
 }
 
 /**************************************************************
  **************************************************************
  *
- * Mouse move.
+ * Wheel move.
  *
  **************************************************************/
-void ImageWidget::mouseMoveEvent(QMouseEvent *ev) {
-  // Updating rubberBand if cropping
-  if(isCropping)
-    rubberBand->setGeometry(QRect(firstPoint, ev->pos()).normalized());
-}
-
-void ImageWidget::wheelEvent(QWheelEvent* ev){
-    if(ev->modifiers() == Qt::ControlModifier){
-        if(ev->delta() > 0){
+void ImageWidget::wheelEvent(QWheelEvent* ev)
+{
+    if(ev->modifiers() == Qt::ControlModifier)
+    {
+        if(ev->delta() > 0)
+        {
             zoomIn();
-        }else{
+        }
+        else
+        {
             zoomOut();
         }
-    }else{
+    }
+    else
+    {
         QLabel::wheelEvent(ev);
     }
-}
-
-/**************************************************************
- **************************************************************
- *
- * Crop.
- *
- **************************************************************/
-void ImageWidget::cropImage(){
-    if (image.empty())
-        return;
-  
-    QPoint origin(
-        (firstPoint.x() < secondPoint.x()) ? firstPoint.x() : secondPoint.x(), //X
-        (firstPoint.y() < secondPoint.y()) ? firstPoint.y() : secondPoint.y()  //Y
-    );
-
-    QSize size(
-        (firstPoint.x() > secondPoint.x()) ? firstPoint.x() - origin.x() : secondPoint.x() - origin.x(), //W
-        (firstPoint.y() > secondPoint.y()) ? firstPoint.y() - origin.y() : secondPoint.y() - origin.y()  //H
-    );
-
-    cv::Rect selec(origin.x(), origin.y(), size.width(), size.height());
-    cv::Mat cropped = image(selec);
-    setImage(cropped.clone());
-    adjustSize();
-    parentWidget()->adjustSize();
 }
 
 /**************************************************************
@@ -184,7 +113,8 @@ void ImageWidget::cropImage(){
  * Zoom in.
  *
  **************************************************************/
-void ImageWidget::zoomIn(){
+void ImageWidget::zoomIn()
+{
     zoom(1.10f);
 }
 
@@ -194,8 +124,10 @@ void ImageWidget::zoomIn(){
  * Zoom out.
  *
  **************************************************************/
-void ImageWidget::zoomOut(){
-    if(!undoZoom.isEmpty()){
+void ImageWidget::zoomOut()
+{
+    if(!undoZoom.isEmpty())
+    {
         zoom(0.90f);
     }
 }
@@ -206,29 +138,20 @@ void ImageWidget::zoomOut(){
  * zoom.
  *
  **************************************************************/
-void ImageWidget::zoom(float factor){
-    UndoStack::UndoStackImage op = static_cast<UndoStack::UndoStackImage>(index);
-
-    if(factor > 1.0f){
-        switch(op){
-            case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_FIRST:{
-                undoZoom.pushLeft(image);
-                break;
-            }
-
-            case UndoStack::UndoStackImage::UNDO_STACK_IMAGE_SECOND:{
-                undoZoom.pushRight(image);
-                break;
-            }
-        }
+void ImageWidget::zoom(float factor)
+{
+    if(factor > 1.0f)
+    {
+        undoZoom.push(image);
 
         QPixmap pMap = pixmap()->scaled(QSize(image.cols * factor, image.rows * factor), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         setPixmap(pMap);
-        ImageTools& tools = ImageTools::getInstance();
-        image = tools.imageToMat(pMap.toImage());
-    }else{
+
+        ImageProcessor& tools = ImageProcessor::Instance();
+        image = tools.imageToCvMat(pMap.toImage());
+    }
+    else
+    {
         undoZoom.undo();
     }
-
-    adjustSize();
 }
