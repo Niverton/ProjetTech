@@ -61,6 +61,8 @@ class ImageTools {
    cv::Mat flann(cv::Mat& img_1, cv::Mat img_2);
    #endif
 
+   void calibrateStereoCamera(cv::Mat img_gauche, cv::Mat img_droite);
+
   enum {STEREO_BM=0, STEREO_SGBM=1};
   private:
     // Private constructors, do not implement
