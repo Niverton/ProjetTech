@@ -175,7 +175,7 @@ cv::Mat ImageTools::disparityMap(cv::Mat& img_gauche, cv::Mat& img_droite, int m
 
 #endif
 
-void ImageTools::calibrateStereoCamera(cv::Mat img_gauche, cv::Mat img_droite){
+void ImageTools::calibrateStereoCamera(cv::Mat& img_gauche, cv::Mat& img_droite){
     std::vector<std::vector<cv::Point2f> > imagePoints1, imagePoints2;
     std::vector<std::vector<cv::Point3f> > objectPoints;
 
@@ -194,7 +194,7 @@ void ImageTools::calibrateStereoCamera(cv::Mat img_gauche, cv::Mat img_droite){
 
 
     cv::Mat R1, R2, P1, P2, Q;
-    
+
     cv::stereoRectify(CM1, D1, 
                      CM2, D2,
                      img_gauche.size(), 
