@@ -35,7 +35,7 @@ extern "C" {
     //STEREO_SGBM: 1
     EXPORT cv::Mat disparityMap(cv::Mat& img_droite, cv::Mat& img_gauche, int mode){
         ImageTools& tools = ImageTools::getInstance();
-        tools.disparityMap(img_droite, img_gauche, mode)
+        tools.disparityMap(img_droite, img_gauche, mode);
     }
 
     EXPORT void calibrateStereoCamera(cv::Mat& img_gauche, cv::Mat& img_droite){
