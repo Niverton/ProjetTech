@@ -25,7 +25,6 @@ cv::Mat tex2Mat(int tex_id, int width, int height){
 extern "C"{
   EXPORT void display_texture(int tex_id, int width, int height){
     cv::Mat tex = tex2Mat(tex_id, width, height);
-
-    
+    cv::imshow("display", tex);
   }
 }
