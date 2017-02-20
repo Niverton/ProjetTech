@@ -25,8 +25,8 @@ SOURCES += src/projet.cpp \
     src/mainwindow.cpp \
     src/imagetools.cpp \
     src/imagewidget.cpp \
-    src/undostack.cpp
-
+    src/undostack.cpp \
+    src/libImageTools.cpp
 HEADERS  += include/mainwindow.hpp \
     include/imagetools.hpp \
     include/imagewidget.hpp \

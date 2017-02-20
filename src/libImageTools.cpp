@@ -1,45 +1,31 @@
-#include "imagetools.hpp"
+#include <stdlib.h>
 #include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #define EXPORT __attribute__((visibility("default")))
+#define UNITY 1
 
-/* 
-Cette lib utilise des cv::Mat non compatible avec unity.
-Il faut récupérer la texture opengl liée au renderTexture des deux cameras dans unity, 
-puis la convertir en cv::Mat.
-*/
+#if UNITY == 1
 
-extern "C" {
-    EXPORT void split(const cv::Mat& input, cv::Mat& outputLeft, cv::Mat& outputRight){
-        ImageTools& tools = ImageTools::getInstance();
-        tools.split(input, outputLeft, outputRight);
-    }
+#include <GL/gl.h>
+cv::Mat tex2Mat(int tex_id, int width, int height){
+  glBindTexture(GL_TEXTURE_2D, tex_id);
+  int nb_c = 3; // RGB
 
-    EXPORT void blur(cv::Mat& image, int kernel_size){
-        ImageTools& tools = ImageTools::getInstance();
-        tools.blur(image, kernel_size);
-    }
+  unsigned char* data = (unsigned char*) malloc(sizeof(unsigned char) * width * height * nb_c);
 
-    EXPORT void sobel(cv::Mat& image, int kernel_size, int scale){
-        ImageTools& tools = ImageTools::getInstance();
-        tools.sobel(image, kernel_size, scale);
-    }
+  glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
-    EXPORT void canny(cv::Mat& image, int kernel_size, double threshold, int ratio){
-        ImageTools& tools = ImageTools::getInstance();
-        tools.canny(image, kernel_size, threshold, ratio);
-    }
+  return cv::Mat(width, height, CV_8UC4, data);
+  
+}
 
-    //mode
-    //STEREO_BM: 0
-    //STEREO_SGBM: 1
-    EXPORT cv::Mat disparityMap(cv::Mat& img_droite, cv::Mat& img_gauche, int mode){
-        ImageTools& tools = ImageTools::getInstance();
-        tools.disparityMap(img_droite, img_gauche, mode);
-    }
+#endif
 
-    EXPORT void calibrateStereoCamera(cv::Mat& img_gauche, cv::Mat& img_droite){
-        ImageTools& tools = ImageTools::getInstance();
-        tools.calibrateStereoCamera(img_gauche, img_droite);
-    }
+extern "C"{
+  EXPORT void display_texture(int tex_id, int width, int height){
+    cv::Mat tex = tex2Mat(tex_id, width, height);
+
+    
+  }
 }
