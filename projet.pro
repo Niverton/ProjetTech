@@ -14,7 +14,7 @@ TEMPLATE = app
 CONFIG += c++11 debug
 
 INCLUDEPATH += include/
-LIBS += -L/usr/lib -lopencv_core -lopencv_imgproc -lopencv_features2d -lopencv_flann -lopencv_calib3d -lopencv_nonfree
+LIBS += -L/usr/lib -lopencv_core -lopencv_imgproc -lopencv_features2d -lopencv_flann -lopencv_calib3d -lopencv_nonfree -lopencv_highgui
 
 # H. Decoudras configuration (please do not remove)
 #INCLUDEPATH += include/                             \
