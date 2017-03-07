@@ -82,6 +82,8 @@ class MainWindow : public QMainWindow {
      * \brief flannSlot
      */
     void flannSlot();
+    
+    void calibrateSlot();
 
   private:
     /*!

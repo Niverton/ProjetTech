@@ -61,7 +61,7 @@ class ImageTools {
    cv::Mat flann(cv::Mat& img_1, cv::Mat img_2);
    #endif
 
-   void calibrateStereoCamera(cv::Mat& img_gauche, cv::Mat& img_droite);
+cv::Mat calibrateCamera(std::vector<cv::Mat> imgs_list, int board_width, int board_height, float square_size);
 
   enum {STEREO_BM=0, STEREO_SGBM=1};
   private:
@@ -70,3 +70,4 @@ class ImageTools {
 };
 
 #endif // IMAGE_TOOLS
+
