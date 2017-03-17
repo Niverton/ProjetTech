@@ -16,15 +16,32 @@ TEMPLATE = app
 
 CONFIG += c++11 debug
 
+# CREMI configuration (please do not remove).
+# #INCLUDEPATH += include/
+
+#LIBS +=                                                         \
+#        -L/usr/lib                                              \
+#        -lopencv_core                                           \
+#        -lopencv_imgproc                                        \
+#        -lopencv_highgui                                        \
+#        -lopencv_features2d                                     \
+#        -lopencv_flann                                          \
+#        -lopencv_calib3d                                        \
+#        -lopencv_gpu                                            \
+#        -ldl
+
+# Jérémi and Rémy configuration (please do not remove)
 #INCLUDEPATH += include/
 #LIBS +=                                                         \
 #        -L/usr/lib                                              \
 #        -lopencv_core                                           \
 #        -lopencv_imgproc                                        \
+#        -lopencv_highgui                                        \
 #        -lopencv_features2d                                     \
 #        -lopencv_flann                                          \
 #        -lopencv_calib3d                                        \
 #        -lopencv_nonfree                                        \
+#        -lopencv_gpu                                            \
 #        -ldl
 
 # H. Decoudras configuration (please do not remove)
@@ -41,7 +58,7 @@ LIBS +=                                                         \
         -lopencv_flann                                          \
         -lopencv_calib3d                                        \
         -lopencv_nonfree                                        \
-        -lopencv_gpu \
+        -lopencv_gpu                                            \
         -ldl
 
 SOURCES +=                                                      \
