@@ -1,10 +1,7 @@
 /*!
  * \file aboutwidget.hpp
  * \brief Header containing the declaration of the AboutWidget class which is used to display software informations.
- * \author Jérémi Bernard
- *         Benjamin De Pourquery
- *         Rémy Maugey
- *         Hadrien Decoudras
+ * \author Hadrien Decoudras
  * \date 2017-02-03
  * \version 0.1
  */

@@ -1,10 +1,7 @@
 /*!
  * \file aboutwidget.cpp
  * \brief Implementation of the methods of the AboutWidget class declared in the aboutwidget.hpp header.
- * \author Jérémi Bernard
- *         Benjamin De Pourquery
- *         Rémy Maugey
- *         Hadrien Decoudras
+ * \author Hadrien Decoudras
  * \date 2016-09-01
  * \version 0.2
  */
