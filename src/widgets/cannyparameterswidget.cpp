@@ -1,3 +1,11 @@
+/*!
+ * \file cannyparameterswidget.cpp
+ * \brief Implementation of the methods of the CannyParametersWidget class declared in the cannyparameterswidget.hpp header.
+ * \author Hadrien Decoudras
+ * \date 2017-01-14
+ * \version 0.2
+ */
+
 #include "widgets/cannyparameterswidget.hpp"
 
 #include "parameters/cannyparameters.hpp"
@@ -11,6 +19,12 @@
 #include <QPushButton>
 #include <QFile>
 
+/**************************************************************
+ **************************************************************
+ *
+ * Constructor.
+ *
+ **************************************************************/
 CannyParametersWidget::CannyParametersWidget(QWidget* parent, Parameters* model) : ParametersWidget("Canny", parent, model)
 {
     QGridLayout* gridLayout = static_cast<QGridLayout*>(layout());
@@ -67,18 +81,42 @@ CannyParametersWidget::CannyParametersWidget(QWidget* parent, Parameters* model)
     connect(magnCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setGMagnitude(int)));
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Destructor.
+ *
+ **************************************************************/
 CannyParametersWidget::~CannyParametersWidget() {}
 
+/**************************************************************
+ **************************************************************
+ *
+ * Gets Hysteresis 1.
+ *
+ **************************************************************/
 double CannyParametersWidget::getHThrA() const
 {
     return thrASpinBox->value();
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Gets Hysteresis 2.
+ *
+ **************************************************************/
 double CannyParametersWidget::getHThrB() const
 {
     return thrBSpinBox->value();
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Gets kernel size.
+ *
+ **************************************************************/
 int CannyParametersWidget::getAperture() const
 {
     switch(apComboBox->currentIndex())
@@ -105,11 +143,23 @@ int CannyParametersWidget::getAperture() const
     return -1;
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Gets gradiant magnitude.
+ *
+ **************************************************************/
 bool CannyParametersWidget::getGMagnitude() const
 {
     return magnCheckBox->isChecked();
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Notify.
+ *
+ **************************************************************/
 void CannyParametersWidget::notify()
 {
     if(model())
@@ -119,6 +169,12 @@ void CannyParametersWidget::notify()
     }
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Update.
+ *
+ **************************************************************/
 void CannyParametersWidget::update()
 {
     if(model())
@@ -179,21 +235,45 @@ void CannyParametersWidget::update()
     }
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Sets Hysteresis 1.
+ *
+ **************************************************************/
 void CannyParametersWidget::setHThrA(double)
 {
     notify();
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Sets Hysteresis 2.
+ *
+ **************************************************************/
 void CannyParametersWidget::setHThrB(double)
 {
     notify();
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Sets kernel size.
+ *
+ **************************************************************/
 void CannyParametersWidget::setAperture(int)
 {
     notify();
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Sets gradient magnitude
+ *
+ **************************************************************/
 void CannyParametersWidget::setGMagnitude(int)
 {
     notify();
