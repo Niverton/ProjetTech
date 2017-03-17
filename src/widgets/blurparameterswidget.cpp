@@ -1,3 +1,11 @@
+/*!
+ * \file blurparameterswidget.cpp
+ * \brief Implementation of the methods of the BlurParametersWidget class declared in the blurparameterswidget.hpp header.
+ * \author Hadrien Decoudras
+ * \date 2017-01-14
+ * \version 0.2
+ */
+
 #include "widgets/blurparameterswidget.hpp"
 
 #include "parameters/blurparameters.hpp"
@@ -9,6 +17,12 @@
 #include <QSpinBox>
 #include <QPushButton>
 
+/**************************************************************
+ **************************************************************
+ *
+ * Constructor.
+ *
+ **************************************************************/
 BlurParametersWidget::BlurParametersWidget(QWidget* parent, Parameters* model) : ParametersWidget("Blur", parent, model)
 {
     QGridLayout* gridLayout = static_cast<QGridLayout*>(layout());
@@ -48,18 +62,42 @@ BlurParametersWidget::BlurParametersWidget(QWidget* parent, Parameters* model) :
     connect(kHSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setKSizeH(int)));
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Destructor.
+ *
+ **************************************************************/
 BlurParametersWidget::~BlurParametersWidget() {}
 
+/**************************************************************
+ **************************************************************
+ *
+ * Gets kernel width.
+ *
+ **************************************************************/
 int BlurParametersWidget::getKSizeW() const
 {
     return kWSpinBox->value();
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Gets kernel height.
+ *
+ **************************************************************/
 int BlurParametersWidget::getKSizeH() const
 {
     return kHSpinBox->value();
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Notify.
+ *
+ **************************************************************/
 void BlurParametersWidget::notify()
 {
     if(model())
@@ -69,6 +107,12 @@ void BlurParametersWidget::notify()
     }
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Update.
+ *
+ **************************************************************/
 void BlurParametersWidget::update()
 {
     if(model())
@@ -111,17 +155,36 @@ void BlurParametersWidget::update()
     }
 }
 
+/**************************************************************
+ **************************************************************
+ *
+ * Sets kernel width.
+ *
+ **************************************************************/
 void BlurParametersWidget::setKSizeW(int)
 {
     notify();
 }
+
+/**************************************************************
+ **************************************************************
+ *
+ * Sets kernel height.
+ *
+ **************************************************************/
 void BlurParametersWidget::setKSizeH(int)
 {
     notify();
 }
 
-void BlurParametersWidget::setKSize(int kW, int kH)
+/**************************************************************
+ **************************************************************
+ *
+ * Sets kernel size.
+ *
+ **************************************************************/
+void BlurParametersWidget::setKSize(int w, int h)
 {
-    setKSizeW(kW);
-    setKSizeH(kH);
+    setKSizeW(w);
+    setKSizeH(h);
 }
