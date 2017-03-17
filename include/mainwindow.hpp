@@ -1,18 +1,49 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+/*!
+ * \file mainwindow.hpp
+ * \brief Header containing the declaration of the MainWindow class which acts as the main entry point of the application.
+ * \author Jérémi Bernard
+ *         Benjamin De Pourquery
+ *         Rémy Maugey
+ *         Hadrien Decoudras
+ * \date 2016-09-01
+ * \version 0.4
+ */
 
-#include "undostack.hpp"
+#ifndef MAINWINDOW_HPP
+#define MAINWINDOW_HPP
+
+#include "utils/undostack.hpp"
+#include "utils/applicationstates.hpp"
 
 #include <QMainWindow>
 
 #include <opencv2/core/core.hpp>
 
-class ImageWidget;
+class StereoImagesWidget;
+class ParametersDockWidget;
+class ParameterObservers;
+class StereoTransformWidget;
+class CudaGPUInfoWidget;
+class AboutWidget;
+class MainStatusBarLeftWidget;
+class MainStatusBarRightWidget;
 
-class MainWindow : public QMainWindow {
-  Q_OBJECT
+class VideoWidget;
 
-  public:
+/*!
+ * \class MainWindow
+ * \brief The MainWindow class gathers all the functionalities of the program.
+ *        It consists of two ImageWidget objects used to display a stereo picture.
+ *        Several image transformations are availables such as: blur, canny or flann.
+ *        The main purposes of this class is to represent a depth map and a disparity
+ *        map from a stereo image.
+ *        In addition to this, the MainWindow class features undo and zoom operations.
+ */
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
     /*!
      * \brief Default constructor.
      */
@@ -24,48 +55,56 @@ class MainWindow : public QMainWindow {
     ~MainWindow();
 
     /*!
-     * \brief Wrapper used to adjust the size of the window.
+     * \brief Initializes all menus and actions of the menu bar
      */
-    void adjustSize();
+    void initMenuBar();
 
-  private slots:
-    /*!
-     * \brief Displays the "About" modal window.
-     */
-    void renderAbout();
+signals:
+    void method(int which);
 
+private slots:
     /*!
      * \brief Allows the user to import an image.
      */
-    void openFile();
-    
+    void open();
+
     /*!
-     * \brief Previous manipulation
+     * \brief Previous manipulation.
      */
-    void undoSlot();
+    void undo();
+
+    void saveStereoTransitoryStates(bool value);
 
     /*!
      * \brief Cuts an image.
      */
-    void cutImgSlot();
+    void cut();
 
     // Not implemented yet.
-    void clipImgSlot();
+    void clip();
+
+    void blurMenuClicked();
+    void sobelMenuClicked();
+    void cannyMenuClicked();
+    void disparityMenuClicked();
 
     /*!
      * \brief Blurs an image.
      */
-    void blurSlot();
+    void blur();
+    void blurRealTime();
 
     /*!
      * \brief Applies a sobel filter to an image.
      */
-    void sobelSlot();
+    void sobel();
+    void sobelRealTime();
 
     /*!
      * \brief Applies a canny filter to an image.
      */
-    void cannySlot();
+    void canny();
+    void cannyRealTime();
 
     /*!
      * \brief Gets the disparity map of a pair of images.
@@ -74,30 +113,48 @@ class MainWindow : public QMainWindow {
      *        parallax (eyes’ horizontal separation). The brain uses this disparity to calculate
      *        depth information from the two dimensional images.
      */
-    void dispMapSlot();
+    void disparity();
+    void disparityRealTime();
 
-    //void depthMapSlot();  //  disparity map == depth map ?
+    //void depth();
 
     /*!
      * \brief flannSlot
      */
-    void flannSlot();
-    
-    void calibrateSlot();
+    void flann();
 
-  private:
+    void parametersDockWidgetClosed();
+
+    void gpuInfo();
+
     /*!
-     * \brief Init all menus and actions in the menu bar
+     * \brief Displays the 'About' modal window.
      */
-    void initMenuBar();
+    void about();
 
-    bool drawLeft;                      /*!< Indicates if the left image is drawn. */
-    bool drawRight;                     /*!< Indicates if the right image is drawn. */
+private:
+    void generateParametersDockWidget();
 
-    ImageWidget* imageLeft;             /*!< Left image. */
-    ImageWidget* imageRight;            /*!< Right image. */
+private:
+    bool cudaRunTimeLibraryDetected;                                                /*!< Indicates if Cuda Run Time Library is present. */
 
-    UndoStack undoStack;
+private:
+    StereoImagesWidget* stereoWidget;                                               /*!< Stereo image widget */
+    VideoWidget*        videoWidget;
+
+    ParametersDockWidget* parametersDockWidget;                                     /*!< Allows to manipulate OpenCV related attributes. */
+
+    StereoTransformWidget* transformWidget;                                         /*!< OpenCV image transformation widget. */
+
+    CudaGPUInfoWidget* gpuInfoWidget;                                               /*!< GPU modal window. */
+    AboutWidget* aboutWidget;                                                       /*!< About modal window. */
+
+    MainStatusBarLeftWidget* leftStatusBarWidget;                                   /*!< Left part of the status bar. */
+    MainStatusBarRightWidget* rightStatusBarWidget;                                 /*!< Right part of the status bar. */
+
+    ParameterObservers* observers;                                                  /*!< Observers of OpenCV related attributes. */
+
+    ApplicationStates appStates;                                                    /*! Saved state of images. */
 };
 
 #endif // MAINWINDOW

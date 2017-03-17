@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/styles">
+        <file>parametersdockwidget/parametersdockwidget.qss</file>
+        <file>mainstatusbarwidget/mainstatusbarwidget.qss</file>
+        <file>mainstatusbarwidget/notificationvalid.qss</file>
+        <file>mainstatusbarwidget/notificationinvalid.qss</file>
+        <file>cudagpuinfowidget/cudagpuinfowidget.qss</file>
+        <file>stereoimagewidget/stereoimagewidget.qss</file>
+    </qresource>
+</RCC>

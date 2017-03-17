@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>stereoimagewidget/stereo2.svg</file>
+        <file>stereoimagewidget/stereo1.svg</file>
+    </qresource>
+</RCC>

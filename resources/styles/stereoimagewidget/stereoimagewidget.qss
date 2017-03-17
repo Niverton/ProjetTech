@@ -1,0 +1,7 @@
+QScrollArea{
+    background-color: #666666;
+}
+
+QLabel{
+    border: none;
+}

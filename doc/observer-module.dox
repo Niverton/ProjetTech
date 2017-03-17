@@ -1,0 +1,72 @@
+/*!
+ * \page observermodule Observer Module
+ *   
+ * \tableofcontents
+ *
+ *   The content of this page describes the observer pattern used in order to propagate the parameters
+ *   chosen by the user.
+ *
+ * \section sectiona Applications
+ *
+ *   The following documentation applies to two families of objects:
+ *   * The family of Parameters objects which represent the observers;
+ *   * The family of ParametersWidget objects which represent the observables.
+ *
+ *   The ParametersWidget family of objects are nested (visually, not programmatically) into the 
+ *   ParametersDockWidget object represented below:
+ *
+ * \image html parametersdockwidget.png The ParametersDockWidget object
+ *
+ *   The Parameters family of objects are not visible but they are bound to the content of the ParametersDockWidget.
+ *   These objects ensure data persistence and propagation over the various other components of the software.
+ *
+ * \section sectionb Motivations
+ *    
+ *   The use of an observer pattern between <a href="http://doc.qt.io/qt-5/qwidget.html">QWidget</a> objects
+ *   already exists in <a href="https://www.qt.io/">Qt</a>. In fact, designers of <a href="https://www.qt.io/">Qt</a> 
+ *   have called it the <a href="http://doc.qt.io/qt-5/model-view-programming.html">Model/View Programming pattern</a>.
+ *   Each class suffixed by the <i>Model</i> word is used as an observer object and each class suffixed by the <i>View</i> 
+ *   word is a observable object. The <a href="http://doc.qt.io/qt-5/model-view-programming.html">Model/View Programming pattern</a> 
+ *   provided by <a href="https://www.qt.io/">Qt</a> is reliable and quite easy to use.
+ *   However, this one does not work with each object. In fact, as mentioned above, only classes which derivate from the
+ *   <a href="doc.qt.io/qt-5/qabstractitemview.html">QAbstractItemView</a> class can benefit from this pattern. 
+ *
+ *   Most of the components used in this application derivate from <a href="http://doc.qt.io/qt-5/qwidget.html">QWidget</a>. 
+ *   As such they do not have a <a href="http://doc.qt.io/qt-5/qabstractitemview.html#setModel">setModel</a> method. 
+ *   Actually, this is the case for the content of the ParametersDockWidget object which only contains several primitive types
+ *   gathered in customized <a href="http://doc.qt.io/qt-5/qwidget.html">QWidget</a>. 
+ *   We could have used components derived from <a href="doc.qt.io/qt-5/qabstractitemview.html">QAbstractItemView</a>, but it
+ *   would have been too time consuming. Moreover, the processes involved by the
+ *   <a href="http://doc.qt.io/qt-5/model-view-programming.html">Qt Model/View Programming pattern</a> are complex and slower
+ *   than a simplist observer pattern approach which will only retrieve primitive data. 
+ *   
+ *  \section sectionc Observer
+ *   
+ *   As mentionned in the \ref sectiona section, all the object which acts as observers originate from the Parameters class
+ *   which is an abstract class establishing the basics functionalities of an observer. We can distinguish three kinds of
+ *   observers:
+ *   * The BlurParameters object which is responsible to hold the parameters entered by the user in order to apply a blur filter to an image;
+ *   * The SobelParameters object which is responsible to hold the parameters entered by the user in order to a apply a sobel filter to an image;
+ *   * The CannyParameters object which is responsible to hold the parameters entered by the user in order to apply a canny filter to an image;
+ *   * The DisparityMapParameters object which is repsonsible to hold the parameters entereded by the user in order to obtain a disparity map from a stereo pair.
+ *
+ *   All the observers mentioned above are nearly Plain Old Data (<i>POD</i>) components. The two pure virtual methods from the base class Parameters
+ *   allow to adapt which values need to be retrieved from the <i>View</i>. These ones are:
+ *   * Parameters::update()
+ *   * Parameters::notify()
+ *   
+ *   A specific and unique observable object is attached (through the use of pointer or reference) to an observer in order to retrieve 
+ *   consistent data. The Parameters::update() method will allow to pull data from the observable which is accessible through the observer.
+ *   This method is not invoked by the observer itself, but by the observable object when a parameter value is altered by the user.
+ *
+ *   Note that more than one observable can be linked to an observer through little modifications. This has not been done because it is
+ *   not necessary now.
+ *
+ *   The purpose of the Parameters::notify() method will be discussed later in the \ref sectione section.
+ *
+ * \section sectiond Observable
+ *
+ * \section sectione An observable is also an observer
+ *
+ * \section sectionf Conclusion 
+ */

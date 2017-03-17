@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/logos">
+        <file>qt/qt-logo.png</file>
+        <file>ocv/ocv-logo.png</file>
+        <file>cuda/cuda-logo.png</file>
+    </qresource>
+</RCC>

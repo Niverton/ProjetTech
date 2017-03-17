@@ -1,0 +1,27 @@
+QStatusBar{
+    border: 1px solid rgba(0, 0, 0, 0.30);
+}
+
+QWidget#LeftLabel{
+    border-style: inset;
+    border-width: 2px;
+    border-radius: 1px;
+    border-color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+QWidget#RightLabel{
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 1px;
+    border-color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+QWidget#SeparatorA{
+    background-color: rgba(0, 0, 0, 0.30);
+}
+
+QWidget#SeparatorB{
+    background-color: rgba(0, 0, 0, 0.30);
+}

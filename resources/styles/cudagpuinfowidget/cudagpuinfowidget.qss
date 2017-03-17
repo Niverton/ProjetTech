@@ -1,0 +1,140 @@
+QLabel#DeviceNameLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#CudaSupportedLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#DeviceMemoryLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#SharedMemoryPerBlockLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#RegistersPerBlockLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#WarpSizeLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#MaxPitchLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#MaxThreadsPerBlockLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#MaxThreadsDimensionLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#MaxGridSizeLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#ClockFrqLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#ConstMemLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#MinimumRevisionComputeCapabilityLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#MaximumRevisionComputeCapabilityLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#TextureAlignmentLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#DeviceOverlapLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#StreamingMultiprocessorsLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#KernelRunTimeLimitLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#IntegratedDeviceLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#MapHostMemLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#ComputeModeLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#ConcurrentKernelsLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#ECCLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#PCIBusIDLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#PCIDeviceLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#TCCDriverLabel{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#CudaRunTimeVersion{
+    color: black;
+    font-weight: bold;
+}
+
+QLabel#CudaVersionLabel{
+    color: black;
+    font-weight: bold;
+}
+
