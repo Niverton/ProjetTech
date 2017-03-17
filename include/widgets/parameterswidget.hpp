@@ -18,45 +18,38 @@ class QCheckBox;
 
 /*!
  * \class ParametersWidget
- * \brief The ParametersWidget is an abstract class which provides the minimum functionalities for building the content of a ParametersDockWidget object.
- *        This class is a View component which inheritates from the <a href="http://doc.qt.io/qt-5/qwidget.html">QWidget<a/> class.
- *        The ParametersWidget class works hand in hand with a Model class which is derived from the Parameters class. An observer pattern has
- *        been implemented between these two families of objects.
- *        As such, this class supplies two pure virtual methods:
- *          - notify()
- *          - update()
- *        The notify() method will push the data of the View into the underlying Model, while the update() method will pull the data from the Model into
- *        the View.
+ * \inherits QWidget
+ * \brief The ParametersWidget is an abstract class which provides the minimum required functionalities for building the content of
+ *        a ParametersDockWidget object.
  *
- *        The notify() method will involve the following mechanisms:
+ *        This class is a <i>observable</i> component which inheritates from the <a href="http://doc.qt.io/qt-5/qwidget.html">QWidget<a/> class.
+ *        The ParametersWidget class works hand in hand with a <i>observer</i> class which is derived from the Parameters class.
+ *        An <i>observer pattern</i> has been implemented between these two families of objects. As such, this class supplies
+ *        two pure virtual methods:
+ *          - ParametersWidget::notify()
+ *          - ParametersWidget::update()
+ *        The ParametersWidget::notify() method will push the data of the <i>observable</i> into the underlying <i>observer</i>,
+ *        while the ParametersWidget::update() method will pull the data from the <i>observer</i> into the <i>observable</i>.
  *
- * \image html observer-notify.png
+ *        The ParametersWidget holds a pointer towards the family of Parameters objects. The same goes for the family of
+ *        Parameters objects.
  *
- *        The ParametersWidget holds a pointer towards a Parameters family object. The same goes for a Parameters family object.
- *        The notify() method
+ *        Thanks to the ParametersWidget::notify() and ParametersWidget::update() methods, all ParametersWidget derived objects
+ *        can act as:
+ *          - An <i>observable</i> object;
+ *          - An <i>observer</i> object;
+ *          - Both an <i>observable</i> object and an <i>observer</i> object.
  *
- *        Thanks to the notify() and update() methods, all ParametersWidget derived objects can act as:
- *          - An observable object;
- *          - An observer object;
- *          - Both an observable object and an observer object.
- *
- *       The observer pattern used also allows to retrieve the parameters entered by the user for a determined operation if the ParametersDockWidget is closed.
- *
- *        The ParametersWidget abstract class also the base layout for all widgets which will be inserted in the derived classes:
- *          - A <a href="http://doc.qt.io/qt-5/QGridLayout.html">QGridLayout</a> object;
- *          - A <a href="http://doc.qt.io/qt-5/qlabel.html">QLabel</a> object;
- *          - A <a href="http://doc.qt.io/qt-5/QCheckBox.html">QCheckBox</a> object;
- *          - A <a href="http://doc.qt.io/qt-5/qpushbutton.html">QPushButton</a> object;
- *        The three last widgets are naturally layed out in the <a href="http://doc.qt.io/qt-5/QGridLayout.html">QGridLayout</a> object.
- *
- *        The purposes of these widgets are indicated below:
+ *        This ParametersWidget class also contains several <i>widget</i> which will be common to each of the derived object.
+ *        The purposes of these <i>widgets</i> are indicated below:
  *          - The label is used to notifies the user which operation he/she has chosen.
  *          - The check box is used to apply the modifications made by the user in real time.
  *          - The button is used to apply the modification made by the user.
  *
- *        The ParametersWidget family of objects do not owns the Model. It is not its responsability to delete it.
+ *        The family of ParametersWidget objects do not owns the <i>observers</i> and vice-versa. It is not its responsability to delete it.
  *
  * \note A connection between the check box and the button has been put in place. If the check box is checked the apply button is disabled.
+ * \see The \ref observermodule for more details about the relation between <i>observers</i> and <i>observables</i> objects.
  */
 class ParametersWidget : public QWidget
 {
@@ -64,11 +57,11 @@ class ParametersWidget : public QWidget
 
 public:
     /*!
-     * \brief Constructor which allows to instantiate a ParametersWidget object without specifying a Model.
-     *        A call to the attach(model) method is mandatory if an observer pattern has to be put in place.
+     * \brief Constructor which allows to instantiate a ParametersWidget object.
      *        The constructor builds all the GUI components.
      * \param title     Title of the operation which is processed.
-     * \param parent    Parent widget.
+     * \param parent    Parent <i>widget</i>.
+     * \param model     <i>Observer</i>.
      */
     ParametersWidget(const QString& title = QString(), QWidget* parent = nullptr);
 
@@ -87,21 +80,22 @@ public:
     virtual ~ParametersWidget();
 
     /*!
-     * \brief Allows to attach a model.
-     *        This method must be called if an Observer pattern is desired and if no Model has been specified.
-     * \param model Observer.
+     * \brief Allows to attach a <i>Model</i>.
+     *        This method must be called if an <i>observer pattern</i> is desired and if no <i>Model</i> has been specified.
+     * \param model <i>Observer</i>.
      */
     void attach(Parameters* model);
 
     /*!
-     * \brief Gets the Model attached a ParametersWidget family object.
-     * \return A Parameters family object if a Model has been attached; or nullptr if no Model has been attached.
+     * \brief Gets the <i>Model</i> attached to a member of the family of ParametersWidget objects.
+     * \return An object which belongs to the family of Parameters objects if a <i>Model</i> has been attached;
+     *         or nullptr if no <i>Model</i> has been attached.
      */
     Parameters* model() const;
 
     /*!
-     * \brief Determines if a ParametersWidget family object has a Model.
-     * \return True if a ParametersWidget family object has a Model; or false if no Model has been attached.
+     * \brief Determines if a member of the family of ParametersWidget objects has a <i>Model</i>.
+     * \return True if the object has a <i>Model</i>; or false if no <i>Model</i> has been attached.
      */
     bool hasModel() const;
 
@@ -112,14 +106,14 @@ public:
     bool hasRealTime() const;
 
     /*!
-     * \brief Updates the Model.
-     *        The values manipulated in the View are injected into the Model.
+     * \brief Updates the <i>Model</i>.
+     *        The values manipulated in the View are injected into the <i>Model</i>.
      */
     virtual void notify() = 0;
 
     /*!
      * \brief Updates the View.
-     *        The values stored in the Model are injected into the View.
+     *        The values stored in the <i>Model</i> are injected into the View.
      */
     virtual void update() = 0;
 
@@ -158,7 +152,7 @@ private:
     QCheckBox*      realTimeCheckBox;       /*!< Check box which allows to process operations in real time */
 
 private:
-    Parameters* m;                          /*!< Observer. */
+    Parameters* m;                          /*!< <i>Observer</i>. */
 };
 
 #endif // PARAMETERSWIDGET_HPP
